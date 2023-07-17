@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>Sigma - Free Bootstrap 4.0 Template</title>
+</head>
+
+<body>
+<div class="row sigma-home single-page-nav">
+
+        	<div class="col-md-offset-2 col-lg-offset-3 col-lg-6 col-md-8 col-sm-12 text-center">
+            	<h1>한국 산 사진클럽</h1>
+            	<p>간단 소개 란</p>
+                <a href="#gallery" class="btn btn-danger sigma-start">최근사진</a>
+                <a href="#about" class="btn btn-success sigma-start">클럽소개</a>
+            </div>
+
+        </div>
+
+<section id="gallery">
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <a href="images/tm-sigma-01.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 01">
+                <img src="images/tm-sigma-01.jpg" alt="Image 1"
+                     class="img-fluid sigmapad col-lg-4 col-md-6 col-sm-6"></a>
+
+            <a href="images/tm-sigma-02.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 02"
+               data-footer="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque non nunc dictum.">
+                <img src="images/tm-sigma-02.jpg" alt="Image 2"
+                     class="img-fluid sigmapad col-lg-4 col-md-6 col-sm-6"></a>
+
+            <a href="images/tm-sigma-02.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 03">
+                <img src="images/tm-sigma-03.jpg" alt="Image 3" class="img-fluid sigmapad col-lg-4 col-md-8 col-sm-12"></a>
+
+            <a href="images/tm-sigma-04.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 04"
+               data-footer="Aenean et tortor nec odio tempor volutpat nec in dui. Etiam libero turpis, accumsan nec.">
+                <img src="images/tm-sigma-04.jpg" alt="Image 4"
+                     class="img-fluid sigmapad col-lg-8 col-md-4 col-sm-6"></a>
+
+            <a href="images/tm-sigma-05.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 05">
+                <img src="images/tm-sigma-05.jpg" alt="Image 5"
+                     class="img-fluid sigmapad col-lg-4 col-md-4 col-sm-6"></a>
+
+            <a href="images/tm-sigma-06.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 06">
+                <img src="images/tm-sigma-06.jpg" alt="Image 6" class="img-fluid sigmapad col-lg-4" title="Bicycle"></a>
+
+
+            <a href="images/tm-sigma-07.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 07">
+                <img src="images/tm-sigma-07.jpg" alt="Image 7" class="img-fluid sigmapad col-sm-6" title="Walking"></a>
+
+            <a href="images/tm-sigma-08.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 08">
+                <img src="images/tm-sigma-08.jpg" alt="Image 8" class="img-fluid sigmapad col-sm-6" title="Camera"></a>
+
+            <a href="images/tm-sigma-01.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 09">
+                <img src="images/tm-sigma-01.jpg" alt="Image 9" class="img-fluid sigmapad col-lg-3 col-md-8 col-sm-12"></a>
+
+
+            <a href="images/tm-sigma-02.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 10">
+                <img src="images/tm-sigma-02.jpg" alt="Image 10" class="img-fluid sigmapad col-lg-3 col-md-4 col-sm-6"></a>
+
+            <a href="images/tm-sigma-03.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 11">
+                <img src="images/tm-sigma-03.jpg" alt="Image 11" class="img-fluid sigmapad col-lg-3 col-md-4 col-sm-6"></a>
+
+            <a href="images/tm-sigma-04.jpg" data-toggle="lightbox" data-gallery="sigma-gallery"
+               data-title="Image Title 12">
+                <img src="images/tm-sigma-04.jpg" alt="Image 12" class="img-fluid sigmapad col-lg-3 col-sm-12"></a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+    // Prevent console.log from generating errors in IE for the purposes of the demo
+    if (!window.console) console = {
+        log: function () {
+        }
+    };
+
+    // The actual plugin
+    $('.single-page-nav').singlePageNav({
+        offset: $('.single-page-nav').outerHeight(),
+        filter: ':not(.external)',
+        updateHash: true,
+        beforeStart: function () {
+            console.log('begin scrolling');
+        },
+        onComplete: function () {
+            console.log('done scrolling');
+        }
+    });
+
+    $(document).ready(function ($) {
+
+        // delegate calls to data-toggle="lightbox"
+        $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
+            event.preventDefault();
+            return $(this).ekkoLightbox({
+                always_show_close: true
+            });
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

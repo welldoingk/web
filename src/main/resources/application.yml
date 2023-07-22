@@ -1,9 +1,22 @@
 spring:
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/kmpc
+#    username: kmpc
+#    password: kmpc
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/kmpc
-    username: kmpc
-    password: kmpc
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
   thymeleaf:
     cache: false
     check-template-location: true
@@ -19,3 +32,4 @@ spring:
 logging:
   level:
     root: info
+    org.hibernate.sql: debug

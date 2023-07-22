@@ -3,23 +3,37 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       th:fragment="FooterFragment">
-<div class="container-fluid">
+<body>
 
-    <div class="row">
-        <div class="col-md-12">
-            <hr class="sigma-hr">
+
+    <footer class="site-footer">
+        <div class="container">
+
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    c
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="overlayer"></div>
+    <div class="loader">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
-    <div class="row">
-        <div class="sigma-copyright col-lg-8">
-            <p>Copyright © 2016 Sigma HTML CSS Template</p>
-        </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/tiny-slider.js}"></script>
 
-        <div class="sigma-copyright col-lg-4 single-page-nav text-right">
-            <p><a href="#top">Go to top</a></p>
-        </div>
-    </div>
+    <script th:src="@{/js/flatpickr.min.js}"></script>
 
-</div>
+    <script th:src="@{/js/aos.js}"></script>
+    <script th:src="@{/js/glightbox.min.js}"></script>
+    <script th:src="@{/js/navbar.js}"></script>
+    <script th:src="@{/js/counter.js}"></script>
+    <script th:src="@{/js/custom.js}"></script>
+
+</body>
 </html>

@@ -15,6 +15,11 @@ public class MainController {
 
     @RequestMapping({"2"})
     public String index2(){
-        return "pages/indexO";
+        return "pages/board/list";
+    }
+
+    @RequestMapping({"1"})
+    public String index1(){
+        return "pages/MT/list";
     }
 }

@@ -1,0 +1,98 @@
+.signin-wrapper {
+    flex-grow: 1;
+}
+
+.signup-wrapper {
+    flex-grow: 1;
+}
+
+
+html, body {
+    font-family: "Roboto";
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+}
+
+h5 {
+    color: #212121;
+    font-size: 20px;
+    margin: 15px 0 30px 0;
+    text-align: center;
+}
+
+.form, .form-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-wrapper {
+    background-color: white;
+    width: 300px;
+    padding-top: 20px;
+    margin: 20px auto;
+    border-radius: 15px;
+    border: #0d0d0d 10px;
+}
+
+.form-wrapper button {
+    cursor: pointer;
+    font-weight: bold;
+    width: 230px;
+    margin: 0 35px 20px;
+    height: 45px;
+    padding: 6px 15px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    font-size: 14px;
+}
+
+.form-wrapper button.primary {
+    color: white;
+    background: #8da8bd;
+}
+
+.form-wrapper button.primary:hover {
+    opacity: 0.9;
+}
+
+.form-wrapper button.secondary {
+    background: white;
+    color: #4e575c;
+}
+
+.form-wrapper button.secondary:hover {
+    background: #f5f5f5;
+}
+
+.form-wrapper .form-field {
+    font-weight: bold;
+    width: 230px;
+    margin: 0 35px 20px;
+    height: 35px;
+    padding: 6px 15px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    background: #f5f5f5;
+    color: #748194;
+    font-size: 14px;
+}
+
+.form-wrapper p {
+    color: #424242;
+    font-size: 14px;
+    text-align: center;
+}
+
+.form-wrapper p a {
+    cursor: pointer;
+    color: #4e575c;
+}
+
+.form-wrapper p a:hover {
+    color: #009688;
+}

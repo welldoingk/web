@@ -82,6 +82,19 @@ h5 {
     font-size: 14px;
 }
 
+.form-wrapper .form-chk {
+    font-weight: bold;
+    width: 230px;
+    margin: 0 35px 20px;
+    height: 35px;
+    padding: 6px 15px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    color: #748194;
+    font-size: 14px;
+}
+
 .form-wrapper p {
     color: #424242;
     font-size: 14px;

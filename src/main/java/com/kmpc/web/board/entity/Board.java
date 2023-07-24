@@ -1,6 +1,6 @@
 package com.kmpc.web.board.entity;
 
-import com.kmpc.web.Member.entity.Member;
+import com.kmpc.web.User.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,7 +37,7 @@ public class Board {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private User user;
 
     public Board update(String title, String content){
         this.title = title;
@@ -51,11 +51,11 @@ public class Board {
     }
 
     @Builder
-    public Board(String title, String content, Member member){
+    public Board(String title, String content, User user){
         this.title = title;
         this.content = content;
         this.viewCount = 0L;
         this.delYn = "N";
-        this.member = member;
+        this.user = user;
     }
 }

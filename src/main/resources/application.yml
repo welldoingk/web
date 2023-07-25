@@ -30,6 +30,7 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     enabled: true
+
   devtools:
     livereload:
       enabled: true

@@ -2,19 +2,21 @@ package com.kmpc.web.board.repository.Impl;
 
 import java.util.List;
 
+import com.kmpc.web.board.dto.BoardDto;
+import com.kmpc.web.board.dto.QBoardDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.kmpc.web.board.dto.BoardDto;
-import com.kmpc.web.board.dto.QBoardDto;
 import com.kmpc.web.board.repository.CustomBoardRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.kmpc.web.Member.entity.QMember.member;
 import static com.kmpc.web.board.entity.QBoard.board;
+
 @Repository
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements CustomBoardRepository {

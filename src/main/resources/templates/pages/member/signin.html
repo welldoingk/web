@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="kr"
-      xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layouts/default_layout}"
       layout:fragment="Content"
@@ -15,14 +14,16 @@
     <h3 class="text-center">로그인</h3>
     <div class="signin-wrapper">
         <div class="signin form-wrapper" style="height: 340px;">
-            <input type="text" placeholder="아이디" class="form-field"/>
-            <input type="password" placeholder="비밀번호" class="form-field"/>
-            <div class="form-chk">
-                <input type="checkbox" name="remember-me" id="rememberMe">
-                <label for="rememberMe">자동 로그인</label>
-            </div>
-            <button class="button primary">로그인</button>
-            <button class="button secondary" id="click-signup">회원가입</button>
+            <form th:action="@{/api/authenticate}" method="post">
+                <input type="text" name="username" placeholder="아이디" class="form-field"/>
+                <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
+                <div class="form-chk">
+                    <input type="checkbox" name="remember-me" id="rememberMe">
+                    <label for="rememberMe">자동 로그인</label>
+                </div>
+                <button class="button primary">로그인</button>
+                <a class="button secondary" id="click-signup" href="/join">회원가입</a>
+            </form>
         </div>
     </div>
 </section>

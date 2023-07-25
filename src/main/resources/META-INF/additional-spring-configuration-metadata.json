@@ -11,7 +11,7 @@
   },
   {
     "name": "jwt.token-validity-in-seconds",
-    "type": "java.lang.String",
+    "type": "java.lang.Long",
     "description": "A description for 'jwt.token-validity-in-seconds'"
   }
 ]}

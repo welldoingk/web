@@ -71,9 +71,23 @@ tasks.named('test') {
 //    options.annotationProcessorPath = configurations.querydsl
 //}
 def querydslSrcDir = 'src/main/generated'
-clean {
-    delete file(querydslSrcDir)
+
+sourceSets {
+  main {
+    java {
+      srcDirs += [ querydslSrcDir ]
+    }
+  }
 }
+
+compileJava {
+    options.compilerArgs << '-Aquerydsl.generatedAnnotationClass=javax.annotation.Generated'
+}
+
 tasks.withType(JavaCompile) {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}
+
+clean {
+    delete file(querydslSrcDir)
 }

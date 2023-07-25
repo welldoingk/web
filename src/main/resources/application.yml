@@ -6,7 +6,7 @@ spring:
 #    password: kmpc
   datasource:
     # url: jdbc:h2:tcp://localhost/~/test
-    url: jdbc:h2:~/tes
+    url: jdbc:h2:~/test
     username: sa
     password:
     driver-class-name: org.h2.Driver

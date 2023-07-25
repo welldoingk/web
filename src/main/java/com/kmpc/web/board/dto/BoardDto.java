@@ -1,6 +1,6 @@
 package com.kmpc.web.board.dto;
 
-import com.kmpc.web.Member.entity.Member;
+import com.kmpc.web.User.entity.User;
 import com.kmpc.web.board.entity.Board;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotEmpty;
@@ -52,9 +52,9 @@ public class BoardDto {
         this.username = username;
     }
 
-    public Board toEntity(Member member) {
+    public Board toEntity(User user) {
         return Board.builder()
-                .member(member)
+                .user(user)
                 .title(title)
                 .content(content)
                 .build();

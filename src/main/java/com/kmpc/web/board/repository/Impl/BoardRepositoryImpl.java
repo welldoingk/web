@@ -13,8 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.kmpc.web.Member.entity.QMember.member;
+import static com.kmpc.web.User.entity.QUser.user;
 import static com.kmpc.web.board.entity.QBoard.board;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -47,9 +48,9 @@ public class BoardRepositoryImpl implements CustomBoardRepository {
                         ,board.regDate
                         ,board.uptDate
                         ,board.viewCount
-                        ,member.username))
+                        ,user.username))
                 .from(board)
-                .leftJoin(board.member, member)
+                .leftJoin(board.user, user)
                 .orderBy(board.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

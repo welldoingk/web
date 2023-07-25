@@ -1,4 +1,4 @@
-package com.kmpc.web.Member.entity;
+package com.kmpc.web.member.entity;
 
 import com.kmpc.web.board.entity.Board;
 import jakarta.persistence.*;
@@ -6,10 +6,13 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Member {
 
     @Id
@@ -23,25 +26,14 @@ public class Member {
     private String telNo; // 핸드폰번호
     private String email; // 핸드폰번호
 
-    @Column(name = "member_role")
-    @Enumerated(EnumType.STRING)
-    private Role role; // 권한 [ROLE_USER, ROLE_ADMIN]
-
     @OneToMany(mappedBy = "member")
-    private List<Board> boards = new ArrayList<>();
+    private List<Board> boards;
 
-    @Builder
-    public Member(String username,
-            String password,
-            String nickname,
-            String telNo,
-            String email,
-            Role role) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.telNo = telNo;
-        this.email = email;
-        this.role = role;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "member_role",
+            joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "member_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_name", referencedColumnName = "role_name")})
+    private Set<Role> role;
+
 }

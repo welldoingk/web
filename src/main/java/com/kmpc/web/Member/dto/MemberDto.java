@@ -1,7 +1,10 @@
-package com.kmpc.web.Member.dto;
+package com.kmpc.web.member.dto;
 
-import com.kmpc.web.Member.entity.Member;
-import com.kmpc.web.Member.entity.Role;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.member.entity.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +18,12 @@ import lombok.NoArgsConstructor;
 public class MemberDto {
 
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String nickname;
     private String telNo;
     private String email;
-    private Role role;
+    private Set<Role> role;
 
     /* DTO -> Entity */
     public Member toEntity() {
@@ -29,7 +33,7 @@ public class MemberDto {
                 .nickname(nickname)
                 .telNo(telNo)
                 .email(email)
-                .role(role.ROLE_USER)
+                .role(role)
                 .build();
         return member;
     }

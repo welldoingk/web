@@ -1,4 +1,4 @@
-package com.kmpc.web.security;
+package com.kmpc.web.member.security;
 
 import lombok.AllArgsConstructor;
 
@@ -8,7 +8,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.kmpc.web.Member.entity.Member;
+import com.kmpc.web.member.entity.Member;
 
 /*
  * 스프링 시큐리티가 로그인 요청을 가로채 로그인을 진행하고 완료 되면 UserDetails 타입의 오브젝트를

@@ -1,11 +1,12 @@
-package com.kmpc.web.Member.dto;
+package com.kmpc.web.member.dto;
 
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.util.Set;
 
-import com.kmpc.web.Member.entity.Member;
-import com.kmpc.web.Member.entity.Role;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.member.entity.Role;
 
 @Getter
 public class MemberSessionDto implements Serializable {
@@ -13,7 +14,7 @@ public class MemberSessionDto implements Serializable {
     private String password;
     private String nickname;
     private String email;
-    private Role role;
+    private Set<Role> role;
 
     /* Entity -> Dto */
     public MemberSessionDto(Member user) {

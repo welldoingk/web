@@ -1,4 +1,4 @@
-package com.kmpc.web.security;
+package com.kmpc.web.member.security;
 
 
 import jakarta.servlet.http.HttpSession;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.kmpc.web.Member.dto.MemberSessionDto;
-import com.kmpc.web.Member.entity.Member;
-import com.kmpc.web.Member.repository.MemberRepository;
+import com.kmpc.web.member.dto.MemberSessionDto;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.member.repository.MemberRepository;
 
 @RequiredArgsConstructor
 @Component

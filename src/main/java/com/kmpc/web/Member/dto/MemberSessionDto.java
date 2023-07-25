@@ -1,13 +1,14 @@
-package com.kmpc.web.User.dto;
+package com.kmpc.web.Member.dto;
 
-import com.kmpc.web.User.entity.Role;
-import com.kmpc.web.User.entity.User;
 import lombok.Getter;
 
 import java.io.Serializable;
 
+import com.kmpc.web.Member.entity.Member;
+import com.kmpc.web.Member.entity.Role;
+
 @Getter
-public class UserSessionDto implements Serializable {
+public class MemberSessionDto implements Serializable {
     private String username;
     private String password;
     private String nickname;
@@ -15,7 +16,7 @@ public class UserSessionDto implements Serializable {
     private Role role;
 
     /* Entity -> Dto */
-    public UserSessionDto(User user) {
+    public MemberSessionDto(Member user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.nickname = user.getNickname();

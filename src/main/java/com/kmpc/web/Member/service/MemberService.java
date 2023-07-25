@@ -1,25 +1,26 @@
-package com.kmpc.web.User.service;
+package com.kmpc.web.Member.service;
 
-import com.kmpc.web.User.dto.UserDto;
-import com.kmpc.web.User.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.kmpc.web.Member.dto.MemberDto;
+import com.kmpc.web.Member.repository.MemberRepository;
+
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class MemberService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public Long join(UserDto dto) {
+    public Long join(MemberDto dto) {
         dto.setPassword(encoder.encode(dto.getPassword()));
 
-        return userRepository.save(dto.toEntity()).getId();
+        return memberRepository.save(dto.toEntity()).getId();
     }
 
 }

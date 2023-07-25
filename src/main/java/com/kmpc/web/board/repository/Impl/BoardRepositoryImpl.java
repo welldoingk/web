@@ -1,26 +1,23 @@
 package com.kmpc.web.board.repository.Impl;
 
-import com.kmpc.web.board.dto.BoardDto;
-import com.kmpc.web.board.dto.QBoardDto;
-import com.kmpc.web.board.repository.CustomBoardRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.kmpc.web.board.dto.BoardDto;
+import com.kmpc.web.board.dto.QBoardDto;
+import com.kmpc.web.board.repository.CustomBoardRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import static com.kmpc.web.User.entity.QUser.user;
+import lombok.RequiredArgsConstructor;
+
 import static com.kmpc.web.board.entity.QBoard.board;
-
-
 @Repository
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements CustomBoardRepository {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -48,16 +45,13 @@ public class BoardRepositoryImpl implements CustomBoardRepository {
                         ,board.regDate
                         ,board.uptDate
                         ,board.viewCount
-                        ,user.username))
+                        ,member.username))
                 .from(board)
-                .leftJoin(board.user, user)
+                .leftJoin(board.member, member)
                 .orderBy(board.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         return content;
-    }
-    private BooleanExpression containsSearch(String searchVal){
-        return searchVal != null ? board.title.contains(searchVal) : null;
     }
 }

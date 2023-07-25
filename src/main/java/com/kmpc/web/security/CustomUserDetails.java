@@ -1,8 +1,14 @@
 package com.kmpc.web.security;
 
-import com.kmpc.web.User.entity.User;
 import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.kmpc.web.Member.entity.Member;
 
 /*
  * 스프링 시큐리티가 로그인 요청을 가로채 로그인을 진행하고 완료 되면 UserDetails 타입의 오브젝트를
@@ -11,16 +17,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final Member member;
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return member.getUsername();
     }
 
     /* 계정 만료 여부
@@ -64,7 +70,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collectors = new ArrayList<>();
 
-        collectors.add(() -> "ROLE_" + user.getRole());
+        collectors.add(() -> "ROLE_" + member.getRole());
 
         return collectors;
     }

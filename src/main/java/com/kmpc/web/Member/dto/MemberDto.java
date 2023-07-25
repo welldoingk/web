@@ -1,7 +1,8 @@
-package com.kmpc.web.User.dto;
+package com.kmpc.web.Member.dto;
 
-import com.kmpc.web.User.entity.Role;
-import com.kmpc.web.User.entity.User;
+import com.kmpc.web.Member.entity.Member;
+import com.kmpc.web.Member.entity.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,30 +12,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class MemberDto {
 
     private String username;
-
     private String password;
-
     private String nickname;
-
     private String telNo;
-
     private String email;
-
     private Role role;
 
     /* DTO -> Entity */
-    public User toEntity() {
-        User user = User.builder()
+    public Member toEntity() {
+        Member member = Member.builder()
                 .username(username)
                 .password(password)
                 .nickname(nickname)
                 .telNo(telNo)
                 .email(email)
-                .role(role.USER)
+                .role(role.ROLE_USER)
                 .build();
-        return user;
+        return member;
     }
 }

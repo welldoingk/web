@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.kmpc.web.memeber.entity.Member;
+import com.kmpc.web.member.entity.Member;
 
 import java.util.ArrayList;
 import java.util.Collection;

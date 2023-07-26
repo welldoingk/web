@@ -1,4 +1,4 @@
-package com.kmpc.web.memeber.service;
+package com.kmpc.web.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kmpc.web.jwt.JwtUtil;
-import com.kmpc.web.memeber.dto.LoginRequestDto;
-import com.kmpc.web.memeber.dto.SignUpRequestDto;
-import com.kmpc.web.memeber.entity.Member;
-import com.kmpc.web.memeber.repositroy.MemberRepository;
+import com.kmpc.web.member.dto.LoginRequestDto;
+import com.kmpc.web.member.dto.SignUpRequestDto;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.member.repositroy.MemberRepository;
 import com.kmpc.web.security.UserRoleEnum;
 
 import jakarta.servlet.http.Cookie;

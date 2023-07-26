@@ -1,4 +1,4 @@
-package com.kmpc.web.memeber.controller;
+package com.kmpc.web.member.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -6,9 +6,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.kmpc.web.memeber.dto.LoginRequestDto;
-import com.kmpc.web.memeber.dto.SignUpRequestDto;
-import com.kmpc.web.memeber.service.MemberService;
+import com.kmpc.web.member.dto.LoginRequestDto;
+import com.kmpc.web.member.dto.SignUpRequestDto;
+import com.kmpc.web.member.service.MemberService;
 import com.kmpc.web.security.UserDetailsImpl;
 
 import jakarta.servlet.http.Cookie;

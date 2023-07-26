@@ -15,7 +15,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import static com.kmpc.web.board.entity.QBoard.board;
-import static com.kmpc.web.memeber.entity.QMember.member;
+import static com.kmpc.web.member.entity.QMember.member;
 
 
 @Repository

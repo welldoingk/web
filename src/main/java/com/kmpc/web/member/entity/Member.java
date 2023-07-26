@@ -1,4 +1,4 @@
-package com.kmpc.web.memeber.entity;
+package com.kmpc.web.member.entity;
 
 import com.kmpc.web.security.UserRoleEnum;
 

@@ -1,11 +1,12 @@
-package com.kmpc.web.memeber.dto;
+package com.kmpc.web.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequestDto {
+public class SignUpRequestDto {
     private String memberName;
     private String password;
+    private String role;
 }

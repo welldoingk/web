@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.kmpc.web.memeber.entity.Member;
-import com.kmpc.web.memeber.repositroy.MemberRepository;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.member.repositroy.MemberRepository;
 
 @Service
 @RequiredArgsConstructor

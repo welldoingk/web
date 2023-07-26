@@ -36,7 +36,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:'
-    
+// https://mvnrepository.com/artifact/com.github.gavlyukovskiy/datasource-decorator-spring-boot-autoconfigure
+    implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.0'
+
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
@@ -47,7 +49,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
 //	runtimeOnly 'org.postgresql:postgresql'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation ' org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
@@ -73,11 +75,11 @@ tasks.named('test') {
 def querydslSrcDir = 'src/main/generated'
 
 sourceSets {
-  main {
-    java {
-      srcDirs += [ querydslSrcDir ]
+    main {
+        java {
+            srcDirs += [querydslSrcDir]
+        }
     }
-  }
 }
 
 compileJava {

@@ -16,11 +16,13 @@ public class UserDetailsImpl implements UserDetails {
     private final Member member;
     private final String password;
     private final String username;
+    private final String name;
 
-    public UserDetailsImpl(Member member, String password, String username) {
+    public UserDetailsImpl(Member member, String password, String username, String name) {
         this.member = member;
         this.password = password;
         this.username = username;
+        this.name = name;
     }
 
     public Member getMember(){
@@ -47,6 +49,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
+    }
+
+    public String getname() {
+        return this.name;
     }
 
     @Override

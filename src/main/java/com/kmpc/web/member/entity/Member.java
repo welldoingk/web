@@ -29,6 +29,8 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    private String name;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;

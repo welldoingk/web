@@ -2,6 +2,7 @@
 <!-- Thymeleaf 선언 / headerFragment 임을 선언-->
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:fragment="HeaderFragment">
 <head>
     <title>K-MPC</title>
@@ -67,7 +68,9 @@
                         </a>
                         <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
                             <li><a href="/join">회원가입</a></li>
-                            <li><a href="/login" class="bi bi-person-fill">로그인</a></li>
+                            <li><a href="/login" class="bi bi-person-fill">로그인
+                                 <span sec:authentication="principal.name">
+                            </a></li>
                         </ul>
                     </div>
                 </div>

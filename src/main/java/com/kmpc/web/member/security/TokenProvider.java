@@ -1,89 +1,94 @@
 package com.kmpc.web.member.security;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.stream.Collectors;
+import com.kmpc.web.member.dto.MemberSessionDto;
+import com.kmpc.web.util.RedisUtil;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
 
 @Component
-public class TokenProvider implements InitializingBean {
+public class TokenProvider  {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-    private static final String AUTHORITIES_KEY = "auth";
-    private final String secret;
-    private final long tokenValidityInMilliseconds;
-    private Key key;
+    private final RedisUtil redisUtil;
 
-    public TokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
-        this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+    private final long tokenValidityInSecond;
+    public final static long TOKEN_VALIDATION_SECOND = 1000L * 600; // 10분
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24 * 7; // 7일
+    //액세스토큰과 리프레쉬 토큰의 만료시간 설정
+
+    final static public String ACCESS_TOKEN_NAME = "accessToken";
+    final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    //토큰 이름 설정
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+	//키 발급에 사용될 시크릿키 (yaml 파일에서 값을 가져온다.)
+    public TokenProvider(RedisUtil redisUtil, @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSecond) {
+        this.redisUtil = redisUtil;
+        this.tokenValidityInSecond = tokenValidityInSecond;
     }
 
-    // 빈이 생성되고 주입을 받은 후에 secret값을 Base64 Decode해서 key 변수에 할당하기 위해
-    @Override
-    public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    private Key getSigningKey(String secretKey) {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
+    } //서명키를 시크릿키를 바탕으로 암호화해 설정한다.
+
+    public Claims extractAllClaims(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey(SECRET_KEY))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    } // 식별을 위해 저장했거나 저장된 값들을 다시 가져오기 위한 메소드(압축해제와 비슷하다.)
+
+    public String getUsername(String token) {
+        return extractAllClaims(token).get("username", String.class);
+    } //payload 에서 유저이름을 가져온다.
+
+    public Boolean isTokenExpired(String token) {
+        final Date expiration = extractAllClaims(token).getExpiration();
+        return expiration.before(new Date());
+    } //토큰이 만료되었는지 확인해주는 메소드
+
+    public String generateToken(MemberSessionDto member) {
+        return doGenerateToken(member.getUsername(), TOKEN_VALIDATION_SECOND);
     }
 
-    public String createToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+    public String generateRefreshToken(MemberSessionDto member) {
+        return doGenerateToken(member.getUsername(), REFRESH_TOKEN_VALIDATION_SECOND);
+    }
 
-        // 토큰의 expire 시간을 설정
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+    public String doGenerateToken(String username, long expireTime) {
 
-        return Jwts.builder().setSubject(authentication.getName()).claim(AUTHORITIES_KEY, authorities) // 정보 저장
-                .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-                .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
+        Claims claims = Jwts.claims();
+        claims.put("username", username);
+
+        String jwt = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
+                .signWith(getSigningKey(SECRET_KEY), SignatureAlgorithm.HS256)
                 .compact();
-    }
 
-    // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return jwt;
+    } //토큰을 생성해주는 메소드 (claim에 식별을 위한 다양한 정보를 저장할 수 있다.)
 
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    public Long getExpireTime(String token) {
+        return extractAllClaims(token).getExpiration().getTime();
+    } //토큰의 만료시간을 반환해주는 메소드
 
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-    }
-
-    // 토큰의 유효성 검증을 수행
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-
-            logger.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-
-            logger.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-
-            logger.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-
-            logger.info("JWT 토큰이 잘못되었습니다.");
+    public Boolean validateToken(String token) {
+        if (redisUtil.hasKeyBlackList("LOGOUT_"+token)) {
+            return false;
         }
-        return false;
-    }
+        return true;
+    } //토큰을 검증해주는 메소드. 탈취당한 토큰이라면 접근을 거부시킨다.
 }

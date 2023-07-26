@@ -14,6 +14,7 @@ public class MemberSessionDto implements Serializable {
     private String password;
     private String nickname;
     private String email;
+    private String telNo;
     private Set<Role> role;
 
     /* Entity -> Dto */
@@ -22,6 +23,7 @@ public class MemberSessionDto implements Serializable {
         this.password = user.getPassword();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
+        this.email = user.getTelNo();
         this.role = user.getRole();
     }
 }

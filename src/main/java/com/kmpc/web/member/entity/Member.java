@@ -4,7 +4,6 @@ import com.kmpc.web.board.entity.Board;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

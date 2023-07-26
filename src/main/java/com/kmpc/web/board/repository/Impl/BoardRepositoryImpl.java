@@ -15,7 +15,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import static com.kmpc.web.board.entity.QBoard.board;
-import static com.kmpc.web.member.entity.QMember.member;
+import static com.kmpc.web.memeber.entity.QMember.member;
 
 
 @Repository
@@ -48,7 +48,7 @@ public class BoardRepositoryImpl implements CustomBoardRepository {
                         ,board.regDate
                         ,board.uptDate
                         ,board.viewCount
-                        ,member.username))
+                        ,member.memberName))
                 .from(board)
                 .leftJoin(board.member, member)
                 .orderBy(board.id.desc())

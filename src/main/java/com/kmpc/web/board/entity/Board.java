@@ -9,7 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.memeber.entity.Member;
 
 import java.time.LocalDateTime;
 

@@ -32,14 +32,16 @@ public class MemberService {
     public void signUp(SignUpRequestDto requestDto) {
 
         /*아이디*/
-        String memberName = requestDto.getMemberName();
+        String memberId = requestDto.getMemberId();
         /*패스워드*/
         String password = passwordEncoder.encode(requestDto.getPassword());
         /*유저 권한*/
         // UserRoleEnum role = UserRoleEnum.valueOf(requestDto.getRole());
         UserRoleEnum role = UserRoleEnum.MEMBER;
+        String memberName = requestDto.getMemberName();
+        String nickname = requestDto.getNickname();
         
-        Member member = new Member(memberName, password, role);
+        Member member = new Member(memberId, password, role, memberName,nickname);
         memberRepository.save(member);
 
     }
@@ -48,7 +50,7 @@ public class MemberService {
     @Transactional
     public void login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        Optional<Member> optionalMember = memberRepository.findByMemberName(requestDto.getMemberName());
+        Optional<Member> optionalMember = memberRepository.findByMemberId(requestDto.getMemberId());
 
         if (optionalMember.isEmpty()) {
             log.warn("회원이 존재하지 않음");
@@ -67,7 +69,8 @@ public class MemberService {
         /*토큰을 쿠키로 발급 및 응답에 추가*/
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,
                 jwtUtil.createToken(member.getMemberName(), member.getRole()));
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        // cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        cookie.setMaxAge(30 * 60);// 7일 동안 유효
         cookie.setPath("/");
         cookie.setDomain("localhost");
         cookie.setSecure(false);

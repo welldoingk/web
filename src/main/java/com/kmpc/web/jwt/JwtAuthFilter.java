@@ -29,6 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (!jwtUtil.validateToken(token)) {
                 log.warn("JWT Token 인증 실패");
                 throw new IllegalArgumentException("JWT Token 인증 실패");
+
+                
             }
             Claims info = jwtUtil.getUserInfoFromToken(token);
             setAuthentication(info.getSubject());

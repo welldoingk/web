@@ -1,0 +1,67 @@
+package com.kmpc.web.board.repository.Impl;
+
+import java.util.List;
+
+import com.kmpc.web.board.dto.BoardDto;
+import com.kmpc.web.board.dto.PostDto;
+import com.kmpc.web.board.dto.QPostDto;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import com.kmpc.web.board.repository.CustomPostRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
+
+import static com.kmpc.web.board.entity.QPost.post;
+import static com.kmpc.web.member.entity.QMember.member;
+
+@Repository
+@RequiredArgsConstructor
+public class PostRepositoryImpl implements CustomPostRepository {
+    private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Page<PostDto> selectPostList(String searchVal, Pageable pageable) {
+        List<PostDto> content = getPostMemberDtos(searchVal, pageable);
+        Long count = getCount(searchVal);
+        return new PageImpl<>(content, pageable, count);
+    }
+
+    private Long getCount(String searchVal){
+        Long count = jpaQueryFactory
+                .select(post.count())
+                .from(post)
+                //.leftJoin(board.member, member)   //검색조건 최적화
+                .fetchOne();
+        return count;
+    }
+
+    private List<PostDto> getPostMemberDtos(String searchVal, Pageable pageable){
+        List<PostDto> content = jpaQueryFactory
+                .select(new QPostDto(
+                         post.id
+                        ,post.title
+                        ,post.content
+                        ,post.regDate
+                        ,post.uptDate
+                        ,post.viewCount
+                        ,member.memberName))
+                .from(post)
+                .leftJoin(post.member, member)
+                .where(containsSearch(searchVal))
+                .orderBy(post.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return content;
+    }
+
+    private BooleanExpression containsSearch(String searchVal){
+        return searchVal != null ? post.title.contains(searchVal) : null;
+    }
+}

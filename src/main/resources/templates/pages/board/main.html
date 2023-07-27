@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>Sigma - Free Bootstrap 4.0 Template</title>
+</head>
+
+<body>
+<section class="section bg-light">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">공지사항</h5>
+                        <table class="table table-hover">
+                            <colgroup>
+                              <col width="2%" />
+                              <col width="5%" />
+                              <col width="20%" />
+                              <col width="5%" />
+                              <col width="5%" />
+                              <col width="5%" />
+                            </colgroup>
+                            <thead>
+                              <tr>
+                                <th>
+                                  <label class="checkbox-inline">
+                                    <input type="checkbox" id="allCheckBox" class="chk" />
+                                  </label>
+                                </th>
+                                <th>번호</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>날짜</th>
+                                <th>조회수</th>
+                              </tr>
+                            </thead>
+                
+                            <tbody>
+                              <tr th:each="list, index : ${list}">
+                                <td>
+                                  <label class="checkbox-inline">
+                                    <input type="checkbox" class="chk" name="cchk" value="" />
+                                  </label>
+                                </td>
+                
+                                <td
+                                  th:text="${totalCount - (size * number) - index.index}"
+                                ></td>
+                                <td><a th:text="${list.title}" href=""></a></td>
+                                <td th:text="${list.username}"></td>
+                                <td
+                                  th:text="${#temporals.format(list.regDate, 'yyyy-MM-dd')}"
+                                ></td>
+                                <td th:text="${list.viewCount}"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                    </div>
+                    <button class="btn">글쓰기</button>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">자유 게시판</h5>
+                        <table class="table table-hover">
+                            <colgroup>
+                              <col width="2%" />
+                              <col width="5%" />
+                              <col width="20%" />
+                              <col width="5%" />
+                              <col width="5%" />
+                              <col width="5%" />
+                            </colgroup>
+                            <thead>
+                              <tr>
+                                <th>
+                                  <label class="checkbox-inline">
+                                    <input type="checkbox" id="allCheckBox" class="chk" />
+                                  </label>
+                                </th>
+                                <th>번호</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>날짜</th>
+                                <th>조회수</th>
+                              </tr>
+                            </thead>
+                
+                            <tbody>
+                              <tr th:each="list, index : ${list}">
+                                <td>
+                                  <label class="checkbox-inline">
+                                    <input type="checkbox" class="chk" name="cchk" value="" />
+                                  </label>
+                                </td>
+                
+                                <td
+                                  th:text="${totalCount - (size * number) - index.index}"
+                                ></td>
+                                <td><a th:text="${list.title}" href=""></a></td>
+                                <td th:text="${list.username}"></td>
+                                <td
+                                  th:text="${#temporals.format(list.regDate, 'yyyy-MM-dd')}"
+                                ></td>
+                                <td th:text="${list.viewCount}"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                    </div>
+                    <button class="btn">글쓰기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

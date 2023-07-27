@@ -14,11 +14,12 @@
 <section class="section bg-d5">
     <h3 class="text-center">회원가입</h3>
     <div class="signup-wrapper">
-        <div class="signup form-wrapper" style="height: 500px; padding-top:40px">
+        <div class="signup form-wrapper" style="height: 520px; padding-top:40px">
             <form th:action="@{/api/signup}" th:object="${SignUpRequestDto}" method="post">
-                <input type="text" name="memberName" placeholder="아이디" class="form-field"/>
+                <input type="text" name="memberId" placeholder="아이디" class="form-field"/>
                 <input type="email" name="email" placeholder="이메일" class="form-field"/>
-                <input type="test" name="name" placeholder="이름" class="form-field"/>
+                <input type="test" name="memberName" placeholder="이름" class="form-field"/>
+                <input type="test" name="nickname" placeholder="별명" class="form-field"/>
                 <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
                 <input type="password" placeholder="비밀번호2" class="form-field"/>
                 <button class="button primary">회원가입</button>

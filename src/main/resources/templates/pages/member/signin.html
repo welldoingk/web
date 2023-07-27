@@ -14,14 +14,14 @@
     <div class="signin-wrapper">
         <div class="signin form-wrapper" style="height: 340px;">
             <form th:action="@{/api/signin}" method="post">
-                <input type="text" name="memberName" placeholder="아이디" class="form-field"/>
+                <input type="text" name="memberId" placeholder="아이디" class="form-field"/>
                 <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
                 <div class="form-chk">
                     <input type="checkbox" name="remember-me" id="rememberMe">
                     <label for="rememberMe">자동 로그인</label>
                 </div>
                 <button class="button primary">로그인</button>
-                <button type="button" class="button secondary" id="sginup">회원가입</a>
+                <button type="button" class="button secondary" id="sginup">회원가입</button>
             </form>
         </div>
     </div>

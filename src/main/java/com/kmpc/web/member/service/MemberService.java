@@ -10,7 +10,7 @@ import com.kmpc.web.jwt.JwtUtil;
 import com.kmpc.web.member.dto.LoginRequestDto;
 import com.kmpc.web.member.dto.SignUpRequestDto;
 import com.kmpc.web.member.entity.Member;
-import com.kmpc.web.member.repositroy.MemberRepository;
+import com.kmpc.web.member.repository.MemberRepository;
 import com.kmpc.web.security.UserRoleEnum;
 
 import jakarta.servlet.http.Cookie;
@@ -68,7 +68,7 @@ public class MemberService {
 
         /*토큰을 쿠키로 발급 및 응답에 추가*/
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,
-                jwtUtil.createToken(member.getMemberName(), member.getRole()));
+                jwtUtil.createToken(member.getMemberId(), member.getRole()));
         // cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
         cookie.setMaxAge(30 * 60);// 7일 동안 유효
         cookie.setPath("/");

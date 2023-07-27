@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.repository.PostRepository;
-import com.kmpc.web.member.repositroy.MemberRepository;
+import com.kmpc.web.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 

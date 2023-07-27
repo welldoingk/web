@@ -3,6 +3,7 @@ package com.kmpc.web.jwt;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -28,9 +30,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null) {
             if (!jwtUtil.validateToken(token)) {
                 log.warn("JWT Token 인증 실패");
-                throw new IllegalArgumentException("JWT Token 인증 실패");
 
-                
+                Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                throw new IllegalArgumentException("JWT Token 인증 실패 쿠키 초기화");
             }
             Claims info = jwtUtil.getUserInfoFromToken(token);
             setAuthentication(info.getSubject());

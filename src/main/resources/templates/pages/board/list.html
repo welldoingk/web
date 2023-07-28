@@ -57,7 +57,7 @@
                 <td
                   th:text="${totalCount - (size * number) - index.index}"
                 ></td>
-                <td><a th:text="${list.title}" href=""></a></td>
+                <td><a th:text="${list.title}" th:href="@{/update/{postId}(postId=${list.id})}"></a></td>
                 <td th:text="${list.username}"></td>
                 <td
                   th:text="${#temporals.format(list.regDate, 'yyyy-MM-dd')}"

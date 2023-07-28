@@ -5,6 +5,7 @@ import java.util.List;
 import com.kmpc.web.board.dto.BoardDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.dto.QPostDto;
+import com.kmpc.web.file.dto.QPostFileDto;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.kmpc.web.board.repository.CustomPostRepository;
+import com.kmpc.web.file.dto.PostFileDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 import static com.kmpc.web.board.entity.QPost.post;
 import static com.kmpc.web.member.entity.QMember.member;
+import static com.kmpc.web.file.entity.QPostFile.postFile;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,25 +35,38 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return new PageImpl<>(content, pageable, count);
     }
 
-    private Long getCount(String searchVal){
+    @Override
+    public List<PostFileDto> selectPostFileDetail(Long boardId) {
+        List<PostFileDto> content = jpaQueryFactory
+                .select(new QPostFileDto(
+                         postFile.id
+                        ,postFile.file.id
+                        ,postFile.file.originFileName
+                        ,postFile.file.size
+                        ,postFile.file.extension
+                ))
+                .from(postFile)
+                .leftJoin(postFile.file)
+                .where(postFile.postId.eq(boardId))
+                .where(postFile.delYn.eq("N"))
+                .fetch();
+        return content;
+    }
+
+    private Long getCount(String searchVal) {
         Long count = jpaQueryFactory
                 .select(post.count())
                 .from(post)
-                //.leftJoin(board.member, member)   //검색조건 최적화
+                // .leftJoin(board.member, member) //검색조건 최적화
                 .fetchOne();
         return count;
     }
 
-    private List<PostDto> getPostMemberDtos(String searchVal, Pageable pageable){
+    private List<PostDto> getPostMemberDtos(String searchVal, Pageable pageable) {
         List<PostDto> content = jpaQueryFactory
                 .select(new QPostDto(
-                         post.id
-                        ,post.title
-                        ,post.content
-                        ,post.regDate
-                        ,post.uptDate
-                        ,post.viewCount
-                        ,member.memberName))
+                        post.id, post.title, post.content, post.regDate, post.uptDate, post.viewCount,
+                        member.memberName))
                 .from(post)
                 .leftJoin(post.member, member)
                 .where(containsSearch(searchVal))
@@ -61,7 +77,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return content;
     }
 
-    private BooleanExpression containsSearch(String searchVal){
+    private BooleanExpression containsSearch(String searchVal) {
         return searchVal != null ? post.title.contains(searchVal) : null;
     }
 }

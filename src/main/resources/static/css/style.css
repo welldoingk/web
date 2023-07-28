@@ -9728,7 +9728,7 @@ a, .btn {
       transform: translateY(-50%); }
 
 .form-control {
-  height: 54px;
+  /* height: 54px; */
   border-color: rgba(0, 0, 0, 0.1);
   background-color: transparent !important;
   margin-bottom: 10px; }

@@ -8,6 +8,6 @@ import com.kmpc.web.member.entity.Member;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, String> {
     Optional<Member> findByMemberId(String memberName);
 }

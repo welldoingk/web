@@ -17,10 +17,12 @@ public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_seq")
+    @Column(name = "board_id")
     private Long id; // 번호
 
     private String boardName; // 게시판 번호
+    
+    private String boardTpye; // 게시판 타입
     
     private String delYn; // 삭제여부
 

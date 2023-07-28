@@ -51,7 +51,7 @@ public class UserDetailsImpl implements UserDetails {
         return this.username;
     }
 
-    public String getname() {
+    public String getName() {
         return this.name;
     }
 

@@ -4,17 +4,19 @@ import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
 
+import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class PostDto {
 
     private Long id; // 시퀀스
 
-    @NotEmpty(message = "제목은 필수 입니다.")
+    @NotEmpty(message = "제목은 필수입니다.")
     private String title; // 제목
 
     private String content; // 내용
@@ -26,6 +28,8 @@ public class PostDto {
     private Long viewCount; // 조회수
 
     private String username; // 사용자 이름
+
+    private List<MultipartFile> multipartFile;
 
     public PostDto() {
 

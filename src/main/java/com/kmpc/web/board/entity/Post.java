@@ -21,7 +21,7 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_seq")
+    @Column(name = "post_id")
     private Long id; // 번호
 
     private String bbsNo; // 게시판 번호
@@ -38,7 +38,7 @@ public class Post {
     private String delYn; // 삭제여부
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_seq")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public Post update(String title, String content) {
@@ -49,6 +49,11 @@ public class Post {
 
     public Post delete(String delYn) {
         this.delYn = delYn;
+        return this;
+    }
+
+    public Post updateViewCount(Long viewCount){
+        this.viewCount = viewCount+1;
         return this;
     }
 

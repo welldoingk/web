@@ -1,6 +1,5 @@
 package com.kmpc.web.security;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +22,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        return new UserDetailsImpl(member, member.getPassword(), member.getMemberName(), member.getMemberName());
+        return new UserDetailsImpl(
+                member,
+                member.getPassword(),
+                member.getMemberId(),
+                member.getMemberName()
+                );
     }
 
 }

@@ -6,34 +6,95 @@
   layout:decorate="~{common/layouts/default_layout}"
   layout:fragment="Content"
 >
-  <section class="section bg-light">
-    <div class="container" role="main">
-      <form th:action th:object="${form}" method="post">
-        <article>
+  <head layout:fragment="css">
+    <style>
+      .fieldError {
+        border-color: #bd2130;
+      }
+
+      .form-group p {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="section bg-light">
+      <div class="container" role="main">
+        <form th:actio="@{/board/write}" th:object="${postDto}" method="post" enctype="multipart/form-data">
+          <article>
             <div class="container" role="main">
-                <div class="mb-3">
-                    <label for="boardTitle">제목</label>
-                    <input type="text" class="form-control" id="boardTitle" name="title" placeholder="제목을 입력해 주세요">
-                </div>
-                <br>
-                <div class="mb-3">
-                    <label for="reg_id">작성자</label>
-                    <input type="text" class="form-control" id="reg_id" name="regId"  value="관리자" readonly>
-                </div>
-                <br>
-                <div class="mb-3">
-                    <label for="boardContent">내용</label>
-                    <textarea class="form-control" rows="5" id="boardContent" name="content" placeholder="내용을 입력해 주세요"></textarea>
-                </div>
-                <br>
-                <br>
-                <div>
-                    <button type="submit" class="btn btn-sm btn-primary" id="btnSave">저장</button>
-                    <button onclick="location.href='/'" type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
-                </div>
+              <div class="form-group">
+                <label for="title">제목</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  placeholder="제목을 입력해 주세요"
+                  th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'"
+                />
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+                  Incorrect date
+                </p>
+              </div>
+              <br />
+              <div class="mb-3">
+                <label for="reg_id">작성자</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="reg_id"
+                  name="regId"
+                  th:value="${postDto.username}"
+                  readonly
+                />
+              </div>
+              <br />
+              <div class="mb-3">
+                <label for="boardContent">내용</label>
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  id="boardContent"
+                  name="content"
+                  placeholder="내용을 입력해 주세요"
+                ></textarea>
+              </div>
+              <br />
+              <div class="mb-3">
+                <label for="formFileMultiple" class="form-label"
+                  >파일업로드</label
+                >
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFileMultiple"
+                  name="multipartFile"
+                  multiple
+                />
+              </div>
+              <br />
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  id="btnSave"
+                >
+                  저장
+                </button>
+                <button
+                  onclick="location.href='/'"
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  id="btnList"
+                >
+                  목록
+                </button>
+              </div>
             </div>
-        </article>
-    </form>
-    </div>
-  </section>
+          </article>
+        </form>
+      </div>
+    </section>
+  </body>
 </html>

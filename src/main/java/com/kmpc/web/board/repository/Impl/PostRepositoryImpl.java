@@ -2,11 +2,10 @@ package com.kmpc.web.board.repository.Impl;
 
 import java.util.List;
 
-import com.kmpc.web.board.dto.BoardDto;
+
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.dto.QPostDto;
 import com.kmpc.web.file.dto.QPostFileDto;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +19,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import static com.kmpc.web.board.entity.QPost.post;
-import static com.kmpc.web.member.entity.QMember.member;
 import static com.kmpc.web.file.entity.QPostFile.postFile;
+import static com.kmpc.web.member.entity.QMember.member;
+
 
 @Repository
 @RequiredArgsConstructor

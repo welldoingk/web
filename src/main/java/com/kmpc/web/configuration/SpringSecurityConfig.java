@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
@@ -37,7 +39,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         /* csrf 설정 해제. */
         http.csrf(CsrfConfigurer::disable);
 
@@ -47,7 +50,8 @@ public class SpringSecurityConfig {
 
         /* URL Mapping */
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**", "/**/**").permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/**/**")).permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                 // .anyRequest().authenticated()
         );

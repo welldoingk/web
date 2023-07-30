@@ -60,7 +60,7 @@
                 <td><a th:text="${list.title}" th:href="@{/update/{postId}(postId=${list.id})}"></a></td>
                 <td th:text="${list.username}"></td>
                 <td
-                  th:text="${#temporals.format(list.regDate, 'yyyy-MM-dd')}"
+                  th:text="${#temporals.format(list.createAt, 'yyyy-MM-dd')}"
                 ></td>
                 <td th:text="${list.viewCount}"></td>
               </tr>

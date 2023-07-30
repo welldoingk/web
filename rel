@@ -7,6 +7,20 @@ https://velog.io/@brince/TIL-%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-JPA-%
 https://dev-jwblog.tistory.com/40
 
 메타데이더
-https://blog.groupdocs.com/ko/metadata/handle-exif-data-of-jpg-png-webp-images-in-java/
+https://mitw.tistory.com/40
+EXIF.getTag(this, "Make"),
+EXIF.getTag(this, "Model"),
+EXIF.getTag(this, "ImageUniqueID"),
+EXIF.getTag(this, "ShutterSpeedValue"),
+EXIF.getTag(this, "Software"),
+EXIF.getTag(this, "ImageWidth"),
+EXIF.getTag(this, "ImageHeight"),
+EXIF.getTag(this, "DateTimeOriginal"),
+EXIF.getTag(this, "DateTimeDigitized"),
+EXIF.getTag(this, "DateTime"),
+EXIF.getTag(this, "GPSLongitude"),
+EXIF.getTag(this, "GPSLongitudeRef"),
+EXIF.getTag(this, "GPSLatitude"),
+EXIF.getTag(this, "GPSLatitudeRef")
 
-metadata-extractor-2.6.4
+hyJbcER81KFjvc92o9tLI4uUPqxSZl4lSFULr6T8

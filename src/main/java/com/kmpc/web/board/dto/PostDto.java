@@ -4,6 +4,7 @@ import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
 
+import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -21,33 +22,29 @@ public class PostDto {
 
     private String content; // 내용
 
-    private LocalDateTime regDate; // 등록 날짜
+    private LocalDateTime createAt;
 
-    private LocalDateTime uptDate; // 수정 날짜
+    private LocalDateTime modifiedAt;
 
     private Long viewCount; // 조회수
 
     private String username; // 사용자 이름
 
-    private List<MultipartFile> multipartFile;
+    private List<MultipartFile> imageFiles;
 
     public PostDto() {
 
     }
 
-    public PostDto(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
     @QueryProjection
-    public PostDto(Long id, String title, String content, LocalDateTime regDate, LocalDateTime uptDate, Long viewCount,
-            String username) {
+    @Builder
+    public PostDto(Long id, String title, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Long viewCount,
+                   String username) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.regDate = regDate;
-        this.uptDate = uptDate;
+        this.createAt = createAt;
+        this.modifiedAt = modifiedAt;
         this.viewCount = viewCount;
         this.username = username;
     }
@@ -59,4 +56,5 @@ public class PostDto {
                 .content(content)
                 .build();
     }
+
 }

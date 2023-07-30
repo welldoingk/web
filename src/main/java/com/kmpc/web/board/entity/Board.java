@@ -1,5 +1,6 @@
 package com.kmpc.web.board.entity;
 
+import com.kmpc.web.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Board {
+public class Board extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +26,6 @@ public class Board {
     private String boardTpye; // 게시판 타입
     
     private String delYn; // 삭제여부
-
-    @CreatedDate
-    private LocalDateTime regDate; // 등록 날짜
-
-    @LastModifiedDate
-    private LocalDateTime uptDate; // 수정 날짜
 
     public Board delete(String delYn) {
         this.delYn = delYn;

@@ -23,6 +23,7 @@ public class PostFileDto {
     private Long size;
 
     private String extension;
+    private String uploadDir;
 
     public PostFileDto(){
 
@@ -34,12 +35,13 @@ public class PostFileDto {
     }
 
     @QueryProjection
-    public PostFileDto(Long postFileId, Long fileId, String originFileName, Long size, String extension){
+    public PostFileDto(Long postFileId, Long fileId, String originFileName, Long size, String extension, String uploadDir){
         this.postFileId = postFileId;
         this.fileId = fileId;
         this.originFileName = originFileName;
         this.size = size;
         this.extension = extension;
+        this.uploadDir = uploadDir;
     }
 
     public PostFile toEntity(File file){

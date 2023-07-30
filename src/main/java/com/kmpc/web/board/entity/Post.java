@@ -1,45 +1,46 @@
 package com.kmpc.web.board.entity;
 
+import com.kmpc.web.board.dto.PostDto;
+import com.kmpc.web.member.entity.Member;
+import com.kmpc.web.util.Timestamped;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.kmpc.web.member.entity.Member;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.time.LocalDateTime;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Post extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id; // 번호
-
     private String bbsNo; // 게시판 번호
     private String title; // 제목
     private String content; // 내용
-
-    @CreatedDate
-    private LocalDateTime regDate; // 등록 날짜
-
-    @LastModifiedDate
-    private LocalDateTime uptDate; // 수정 날짜
-
+    @ColumnDefault("0")
     private Long viewCount; // 조회수
     private String delYn; // 삭제여부
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<PostImage> postImages;
 
     public Post update(String title, String content) {
         this.title = title;
@@ -52,9 +53,19 @@ public class Post {
         return this;
     }
 
-    public Post updateViewCount(Long viewCount){
-        this.viewCount = viewCount+1;
+    public Post updateViewCount(Long viewCount) {
+        this.viewCount = viewCount + 1;
         return this;
+    }
+
+    public PostDto toDto() {
+        return PostDto.builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .viewCount(viewCount)
+                .username(member.getMemberName())
+                .build();
     }
 
     @Builder

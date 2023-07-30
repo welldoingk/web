@@ -27,6 +27,8 @@ public class FileService {
 
     @Value("${upload.path}")
     private String uploadDir;
+    @Value("${upload.path2}")
+    private String uploadDir2;
 
     private final FileRepository fileRepository;
 
@@ -36,7 +38,10 @@ public class FileService {
 
     @Transactional
     public Map<String, Object> saveFile(PostDto postDto, Long postId) throws Exception {
-        List<MultipartFile> multipartFile = postDto.getMultipartFile();
+
+        String os = System.getProperty("os.name").toLowerCase();
+
+        List<MultipartFile> multipartFile = postDto.getImageFiles();
 
         // 결과 Map
         Map<String, Object> result = new HashMap<String, Object>();
@@ -52,7 +57,7 @@ public class FileService {
                         String extension = originalFileName.substring(originalFileName.lastIndexOf(".")); // 파일 확장자
                         String savedFileName = UUID.randomUUID() + extension; // 저장될 파일 명
 
-                        File targetFile = new File(uploadDir + savedFileName);
+                        File targetFile = new File(os.equals("win") ? uploadDir : uploadDir2 + savedFileName);
 
                         // 초기값으로 fail 설정
                         result.put("result", "FAIL");
@@ -60,7 +65,7 @@ public class FileService {
                         FileDto fileDto = FileDto.builder()
                                 .originFileName(originalFileName)
                                 .savedFileName(savedFileName)
-                                .uploadDir(uploadDir)
+                                .uploadDir(os.equals("win") ? uploadDir : uploadDir2)
                                 .extension(extension)
                                 .size(file1.getSize())
                                 .contentType(file1.getContentType())

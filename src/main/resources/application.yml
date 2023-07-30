@@ -7,28 +7,46 @@ jwt:
 
 upload:
   path: C:/temp_/file/
+  path2: ~/temp_/file/
+
+cloud:
+  aws:
+    s3:
+      bucket: kmpc-img-bucket
+    credentials:
+      access-key: AKIA5GWRXYVSPUV7R4W6
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
 
 spring:
   mvc:
     hiddenmethod:
       filter:
         enabled: true
-#  datasource:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+  #  datasource:
 #    driver-class-name: org.postgresql.Driver
 #    url: jdbc:postgresql://localhost:5432/kmpc
 #    username: kmpc
 #    password: kmpc
   datasource:
-    # url: jdbc:h2:tcp://localhost/~/test
     url: jdbc:h2:~/test
+#    url: jdbc:h2:tcp://localhost/~/test
     username: sa
     password:
     driver-class-name: org.h2.Driver
   
   h2:
     console:
-      enabled: true
-      path: /h2-console
+#      enabled: true
+#      path: /h2-console
 
   jpa:
     hibernate:
@@ -46,6 +64,9 @@ spring:
     enabled: true
 
   devtools:
+    remote:
+      restart:
+        enabled: true
     livereload:
       enabled: true
     restart:

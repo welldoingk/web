@@ -2,6 +2,7 @@ package com.kmpc.web.file.entity;
 
 import java.time.LocalDateTime;
 
+import com.kmpc.web.util.Timestamped;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class File {
+public class File extends Timestamped {
 
     @Id
     @GeneratedValue
@@ -41,8 +42,6 @@ public class File {
 
     private String contentType; // ContentType
 
-    @CreatedDate
-    private LocalDateTime regDate; // 등록 날짜
 
     @OneToOne(mappedBy = "file")
     private PostFile postFile;

@@ -4,8 +4,10 @@ import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.repository.CustomPostRepository;
 import com.kmpc.web.board.service.PostService;
+import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.security.UserDetailsImpl;
 
+import com.kmpc.web.util.CommonUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +15,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +32,7 @@ public class PostController {
 
     private final CustomPostRepository customPostRepository;
     private final PostService postService;
+    private final CommonUtil commonUtil;
 
     @GetMapping("/board")
     public String main(@AuthenticationPrincipal UserDetailsImpl principal, String searchVal, Pageable pageable,
@@ -53,40 +57,42 @@ public class PostController {
         return "pages/board/list";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/board/write")
-    public String write(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+    public String write(Model model) {
+        Member member = commonUtil.getMember();
         PostDto postDto = new PostDto();
-        postDto.setUsername(principal.getName());
+        postDto.setUsername(member.getMemberName());
         model.addAttribute("postDto", postDto);
         return "pages/board/write";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/board/write")
-    public String save(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto, BindingResult result,
+    public String save(@Valid PostDto postDto, BindingResult result,
             Model model) throws Exception {
+        Member member = commonUtil.getMember();
 
         if (result.hasErrors()) {
-            postDto.setUsername(principal.getName());
+            postDto.setUsername(member.getMemberName());
             return "pages/board/write";
         }
 
-        postService.savePost(principal, postDto);
+        postService.savePost(postDto);
         return "redirect:/";
     }
 
     @GetMapping("/board/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
-        PostDto postDto = new PostDto();
-        postDto.setId(postId);
-        postDto.setTitle(post.getTitle());
-        postDto.setContent(post.getContent());
+        PostDto postDto = post.toDto();
         model.addAttribute("postDto", postDto);
         model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
 
-        return "pages/board/update";
+        return "pages/board/detail";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
     public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto,
             BindingResult result) throws Exception {
@@ -95,7 +101,7 @@ public class PostController {
             return "pages/board/update";
         }
 
-        postService.savePost(principal, postDto);
+        postService.savePost(postDto);
         return "redirect:/";
     }
 

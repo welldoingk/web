@@ -44,6 +44,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         ,postFile.file.originFileName
                         ,postFile.file.size
                         ,postFile.file.extension
+                        ,postFile.file.uploadDir
                 ))
                 .from(postFile)
                 .leftJoin(postFile.file)
@@ -65,7 +66,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
     private List<PostDto> getPostMemberDtos(String searchVal, Pageable pageable) {
         List<PostDto> content = jpaQueryFactory
                 .select(new QPostDto(
-                        post.id, post.title, post.content, post.regDate, post.uptDate, post.viewCount,
+                        post.id, post.title, post.content, post.createAt, post.modifiedAt, post.viewCount,
                         member.memberName))
                 .from(post)
                 .leftJoin(post.member, member)

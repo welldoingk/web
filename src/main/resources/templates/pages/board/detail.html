@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        layout:decorate="~{common/layouts/default_layout}"
+        layout:fragment="Content"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const file =  /*[[${postFile}]]*/
+/*]]>*/
+</script>
+<section class="section bg-light">
+
+    <input name="id" th:value="${postDto.id}" type="hidden"/>
+    <article>
+        <div class="container" role="main">
+
+            <img class="image-box" alt="" th:src="${postFile[0].uploadDir}">
+            <div class="">
+                <label for="title">제목</label>
+                <p
+                        id="title"
+                        th:text="${postDto.title}"
+                        type="text"
+                ></p>
+            </div>
+            <br/>
+            <div class="mb-3">
+                <label for="memberName">작성자</label>
+                <p
+                        id="memberName"
+                        th:text="${postDto.username}"
+                ></p>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
+                    수정
+                </button>
+                <button
+                        class="btn btn-sm btn-primary"
+                        id="btnList"
+                        onclick="location.href='/board'"
+                        type="button"
+                >
+                    목록
+                </button>
+            </div>
+        </div>
+    </article>
+    </form>
+</section>
+<script th:inline="javascript">
+
+
+    const fileDOM = document.getElementById("formFileMultiple");
+    const preview = document.querySelector('.image-box');
+
+    // fileDOM.addEventListener('change', async () => {
+    //     const reader = new FileReader();
+    //     reader.onload = ({target}) => {
+    //         preview.src = target.result;
+    //     };
+    //     reader.readAsDataURL(fileDOM.files[0]);
+    //
+    //
+    // });
+    // preview.onload = function () {
+    //
+    //     EXIF.getData(preview, function () {
+    //         var allMetaData = EXIF.getAllTags(this);
+    //         var allMetaDataSpan = document.getElementById("makeAndModel");
+    //         allMetaDataSpan.innerHTML = JSON.stringify(allMetaData, null, "\t");
+    //         // var makeAndModel = document.getElementById("makeAndModel");
+    //         // makeAndModel.innerHTML = `${make} ${model}`;
+    //     });
+    // }
+
+
+</script>
+</html>

@@ -1,5 +1,6 @@
 package com.kmpc.web.file.entity;
 
+import com.kmpc.web.util.Timestamped;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class PostFile {
+public class PostFile extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -35,7 +35,7 @@
                 <div class="container" role="main">
                     <div class="form-group">
                         <label for="title">촬영산</label>
-                        <select class="form-control">
+                        <select class="form-control" id="title" name="title">
                             <option value="">-- 선택 --</option>
                             <option th:each="mt, index : ${codeList}"  th:value="${mt?.codeNo}" th:utext="${mt?.codeName}">
                         </select>

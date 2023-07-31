@@ -1,20 +1,22 @@
 package com.kmpc.web.util;
 
-import java.util.List;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
 import com.kmpc.web.board.entity.Board;
+import com.kmpc.web.board.entity.Post;
+import com.kmpc.web.board.entity.PostImage;
 import com.kmpc.web.board.repository.BoardRepository;
+import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.repository.PostRepository;
 import com.kmpc.web.common.entity.Code;
 import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.member.repository.MemberRepository;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -35,6 +37,8 @@ public class InitDB {
         private final CodeRepository codeRepository;
         private final MemberRepository memberRepository;
         private final BoardRepository boardRepository;
+        private final PostRepository postRepository;
+        private final PostImageRepository postImageRepository;
         private final PasswordEncoder passwordEncoder;
 
         public void userDBInit() {
@@ -100,6 +104,22 @@ public class InitDB {
                         .build();
                 // member 저장
                 memberRepository.save(member);
+            }
+
+            List<Post> postList = postRepository.findAll();
+            if (postList.size() == 0) {
+                Post post = Post.builder()
+                        .member(memberRepository.findByMemberId("1").get())
+                        .title("북한산")
+                        .content("")
+                        .build();
+                PostImage postImage = PostImage.builder()
+                        .post(post)
+                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                        .storeFilename("C06_1938.jpg")
+                        .build();
+                // member 저장
+                postRepository.save(post);
             }
         }
     }

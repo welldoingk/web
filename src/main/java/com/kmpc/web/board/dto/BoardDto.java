@@ -1,9 +1,7 @@
 package com.kmpc.web.board.dto;
 
 import com.kmpc.web.board.entity.Board;
-import com.kmpc.web.member.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import java.time.LocalDateTime;
 

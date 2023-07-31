@@ -1,19 +1,18 @@
 package com.kmpc.web.board.entity;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.kmpc.web.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Board extends Timestamped {
 
     @Id
@@ -33,8 +32,9 @@ public class Board extends Timestamped {
     }
 
     @Builder
-    public Board(String boardName) {
+    public Board(String boardName, String boardType) {
         this.boardName = boardName;
+        this.boardTpye = boardType;
         this.delYn = "N";
     }
 }

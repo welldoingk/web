@@ -23,8 +23,16 @@ public class S3Uploader {
 
     private final AmazonS3Client amazonS3Client;
 
+    private final  CommonUtil cmnUtil;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    @Value("${upload.path}")
+    private String uploadDir;
+
+    @Value("${upload.path2}")
+    private String uploadDir2;
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
@@ -59,7 +67,7 @@ public class S3Uploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws  IOException {
-        File convertFile = new File("/Users/taehyunkwon/temp/",file.getOriginalFilename());
+        File convertFile = new File( cmnUtil.isWin() ? uploadDir : uploadDir2 ,file.getOriginalFilename());
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());

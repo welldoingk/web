@@ -30,18 +30,13 @@ public class MemberService {
     /*회원 가입*/
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
-
-        /*아이디*/
-        String memberId = requestDto.getMemberId();
-        /*패스워드*/
-        String password = passwordEncoder.encode(requestDto.getPassword());
-        /*유저 권한*/
-        // UserRoleEnum role = UserRoleEnum.valueOf(requestDto.getRole());
-        UserRoleEnum role = UserRoleEnum.MEMBER;
-        String memberName = requestDto.getMemberName();
-        String nickname = requestDto.getNickname();
         
-        Member member = new Member(memberId, password, role, memberName,nickname);
+        Member member = Member.builder()
+                        .memberId(requestDto.getMemberId())
+                        .password(passwordEncoder.encode(requestDto.getPassword()))
+                        .memberName(requestDto.getMemberName())
+                        .nickname(requestDto.getNickname())
+                        .build();
         memberRepository.save(member);
 
     }

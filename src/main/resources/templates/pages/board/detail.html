@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    var aa = /*[[${postFile[0].imageUrl}]]*/;
 /*]]>*/
 </script>
 <section class="section bg-light">
@@ -17,7 +18,7 @@
     <article>
         <div class="container" role="main">
 
-            <img class="image-box" alt="" th:src="${postFile[0].uploadDir}">
+            <img class="image-box" th:alt="${postFile[0].imageUrl}" th:src="${postFile[0].imageUrl}">
             <div class="">
                 <label for="title">제목</label>
                 <p

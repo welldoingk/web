@@ -3,25 +3,30 @@ package com.kmpc.web.member.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.security.UserRoleEnum;
+import com.kmpc.web.util.Timestamped;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import static lombok.AccessLevel.PROTECTED;
+
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Member {
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = PROTECTED)
+public class Member extends Timestamped {
 
     @Id
     @Column(nullable = false, unique = true)
@@ -41,10 +46,11 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
-    public Member(String memberId, String password, UserRoleEnum role, String memberName, String nickname) {
+    @Builder
+    public Member(String memberId, String password, String memberName, String nickname) {
         this.memberId = memberId;
         this.password = password;
-        this.role = role;
+        this.role = UserRoleEnum.MEMBER;
         this.memberName = memberName;
         this.nickname = nickname;
     }

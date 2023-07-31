@@ -1,9 +1,6 @@
 package com.kmpc.web.file.entity;
 
-import java.time.LocalDateTime;
-
 import com.kmpc.web.util.Timestamped;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -21,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class File extends Timestamped {
+public class File extends Timestamped  {
 
     @Id
     @GeneratedValue

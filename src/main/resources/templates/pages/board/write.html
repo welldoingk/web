@@ -22,6 +22,11 @@
         }
     </style>
 </head>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var aa = /*[[${codeList}]]*/;
+/*]]>*/
+</script>
 <body>
 <section class="section bg-light">
     <div class="container" role="main">
@@ -29,15 +34,11 @@
             <article>
                 <div class="container" role="main">
                     <div class="form-group">
-                        <label for="title">제목</label>
-                        <input
-                                class="form-control"
-                                id="title"
-                                name="title"
-                                placeholder="제목을 입력해 주세요"
-                                th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'"
-                                type="text"
-                        />
+                        <label for="title">촬영산</label>
+                        <select class="form-control">
+                            <option value="">-- 선택 --</option>
+                            <option th:each="mt, index : ${codeList}"  th:value="${mt?.codeNo}" th:utext="${mt?.codeName}">
+                        </select>
                         <p th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
                             Incorrect date
                         </p>
@@ -103,6 +104,13 @@
                         >
                             목록
                         </button>
+                        <button
+                                class="btn btn-sm btn-primary"
+                                id="test"
+                                type="button"
+                        >
+                        test
+                        </button>
                     </div>
                 </div>
             </article>
@@ -114,6 +122,7 @@
 
 
     const fileDOM = document.getElementById("formFileMultiple");
+    const test = document.getElementById("test");
     const preview = document.querySelector('.image-box');
 
     fileDOM.addEventListener('change', async () => {
@@ -123,21 +132,82 @@
         };
         reader.readAsDataURL(fileDOM.files[0]);
 
-
     });
-    preview.onload = function () {
 
+    test.addEventListener("click", function() {
+        aa();
+    });
+
+    async function aa(){
         EXIF.getData(preview, function () {
             var make = EXIF.getTag(this, "Make");
             var model = EXIF.getTag(this, "Model");
             var metaInfo = document.getElementById("metaInfo");
             metaInfo.value = `${make} / ${model}`;
-            // metaInfo.innerHTML = JSON.stringify(allMetaData, null, "\t");
-            // var makeAndModel = document.getElementById("makeAndModel");
-            // makeAndModel.innerHTML = `${make} ${model}`;
+            console.log(`${make} / ${model}`)
         });
     }
 
+    var divimg = preview, prevSrc;
+    setInterval(function() {
+        if (divimg.src != prevSrc) {
+            prevSrc = divimg.src;
+            metaInfo.value = null;
+            onSrcChange();
+        }
+    }, 1000); // 1000ms = 1s
+
+    function onSrcChange() {
+        
+        aa();
+    }
+
+    
+    function getMetaDataParse(t) {
+        $('.map_wrap').hide();
+        EXIF.getData(t, function () {
+                var t, e, a, i, g, s, r, h, I, d, n, F, T, l, E;
+                EXIF.pretty(this)
+                    ?
+                    (
+								t = "",
+								e = EXIF.getTag(this, "Make"),
+								a = EXIF.getTag(this, "Model"),
+								i = EXIF.getTag(this, "ImageUniqueID"),
+                                g = EXIF.getTag(this, "ShutterSpeedValue"),
+                                s = EXIF.getTag(this, "Software"),
+                                r = EXIF.getTag(this, "ImageWidth"),
+                                h = EXIF.getTag(this, "ImageHeight"),
+                                I = EXIF.getTag(this, "DateTimeOriginal"),
+                                d = EXIF.getTag(this, "DateTimeDigitized"),
+                                n = EXIF.getTag(this, "DateTime"),
+                                (l = EXIF.getTag(this, "GPSLongitude")) ?
+                                    (
+                                        E = EXIF.getTag(this, "GPSLongitudeRef"),
+                                            T = EXIF.getTag(this, "GPSLatitude"),
+                                            t += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                                            t += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                                            l = (E = I.split(" "))[0].replace(":", "").replace(":", ""),
+                                            E = (E = E[1].split(":"))[0] + "" + E[1]
+                                    ) : t += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+								t += "* 촬영일자 : " + n + "<br>",
+								t += "* 촬영기종 : " + e + " " + a + "<br>",
+								t += "* 사진고유번호 : " + i + "<br>",
+								t += "* 셔터속도 : " + g + "<br>",
+								t += "* SW : " + s + "<br>",
+								t += "* 해상도 : " + r + " * " + h + "<br>",
+								t += "* 사진조작가능성 : " + (d == I && d == n && I == n ? "없음" : n < I ? "높음" : n < d ? "높음" : I < d ? "높음" : I ? "낮음" : "높음") + "<br>",
+								t += "", $("#text").html(t))
+                    :
+                    $("#text").html("추출할 항목이 전혀 없는 이미지입니다.")
+            }
+        );
+        var e = new FileReader;
+        e.readAsDataURL(t), e.onload = function () {
+            var t;
+            e.result ? (t = "<img id='imagsss' src='" + e.result + "' width='350px'/>", $("#imgdiv").html(t)) : $("#imgdiv").html("똑바로 올린거 맞냐?")
+        }
+    }
 
 </script>
 </html>

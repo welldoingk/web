@@ -13,11 +13,14 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Comment extends Timestamped {
 
     @Id

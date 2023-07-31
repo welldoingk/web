@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.repository.PostRepository;
+import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.file.service.FileService;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.member.repository.MemberRepository;

@@ -15,4 +15,13 @@ public class CommonUtil {
 
         return principal.getMember();
     }
+
+    public boolean isWin(){
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) 
+        {
+            return true;
+        }
+        return false;
+    }
 }

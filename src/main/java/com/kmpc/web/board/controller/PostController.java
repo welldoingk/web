@@ -3,7 +3,10 @@ package com.kmpc.web.board.controller;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.repository.CustomPostRepository;
+import com.kmpc.web.board.repository.PostImageRepository;
 import com.kmpc.web.board.service.PostService;
+import com.kmpc.web.common.entity.Code;
+import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.security.UserDetailsImpl;
 
@@ -31,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PostController {
 
     private final CustomPostRepository customPostRepository;
+    private final PostImageRepository postImageRepository;
+    private final CodeRepository codeRepository;
     private final PostService postService;
     private final CommonUtil commonUtil;
 
@@ -61,9 +66,14 @@ public class PostController {
     @GetMapping("/board/write")
     public String write(Model model) {
         Member member = commonUtil.getMember();
+        List<Code> codeList = codeRepository.findByClassCode("MT");
+
         PostDto postDto = new PostDto();
         postDto.setUsername(member.getMemberName());
+
         model.addAttribute("postDto", postDto);
+        model.addAttribute("codeList", codeList);
+
         return "pages/board/write";
     }
 
@@ -87,7 +97,8 @@ public class PostController {
         Post post = postService.selectPostDetail(postId);
         PostDto postDto = post.toDto();
         model.addAttribute("postDto", postDto);
-        model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
+        // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
+        model.addAttribute("postFile", postImageRepository.findByPost(post));
 
         return "pages/board/detail";
     }

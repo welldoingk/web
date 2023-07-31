@@ -7,7 +7,7 @@ jwt:
 
 upload:
   path: C:/temp_/file/
-  path2: ~/temp_/file/
+  path2: /Users/taehyunkwon/temp/
 
 cloud:
   aws:
@@ -45,8 +45,8 @@ spring:
   
   h2:
     console:
-#      enabled: true
-#      path: /h2-console
+     enabled: true
+     path: /h2-console
 
   jpa:
     hibernate:

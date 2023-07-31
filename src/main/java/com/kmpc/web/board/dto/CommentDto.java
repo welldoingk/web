@@ -5,14 +5,13 @@ import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * DTO for {@link com.kmpc.web.board.entity.Comment}
  */
 @Data
-public class CommentDto implements Serializable {
+public class CommentDto {
     Long id;
     String content;
     LocalDateTime createAt;

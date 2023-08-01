@@ -3,16 +3,18 @@ package com.kmpc.web.board.dto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
-
-import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class PostDto {
 
     private Long id; // 시퀀스
@@ -21,6 +23,10 @@ public class PostDto {
     private String title; // 제목
 
     private String content; // 내용
+
+    private Long boardId; // 조회수
+
+    private String gbVal; // 구분
 
     private LocalDateTime createAt;
 
@@ -32,14 +38,10 @@ public class PostDto {
 
     private List<MultipartFile> imageFiles;
 
-    public PostDto() {
-
-    }
-
     @QueryProjection
     @Builder
     public PostDto(Long id, String title, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Long viewCount,
-                   String username) {
+                   String username, Long boardId, String gbVal) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -47,6 +49,8 @@ public class PostDto {
         this.modifiedAt = modifiedAt;
         this.viewCount = viewCount;
         this.username = username;
+        this.boardId = boardId;
+        this.gbVal = gbVal;
     }
 
     public Post toEntity(Member member) {
@@ -54,6 +58,8 @@ public class PostDto {
                 .member(member)
                 .title(title)
                 .content(content)
+                .boardId(boardId)
+                .gbVal(gbVal)
                 .build();
     }
 

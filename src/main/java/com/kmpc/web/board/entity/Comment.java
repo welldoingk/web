@@ -5,10 +5,7 @@ import com.kmpc.web.board.dto.CommentDto;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.util.Timestamped;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,7 @@ public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="commnet_id")
     private Long id;
 
     @JoinColumn(name = "member_id", nullable = false)
@@ -47,6 +45,7 @@ public class Comment extends Timestamped {
     @Builder.Default
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
+
 
     public void update(CommentDto commentRequestDto) {
         this.content = commentRequestDto.getContent();

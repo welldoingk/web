@@ -4,6 +4,7 @@ import com.kmpc.web.board.entity.Comment;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,15 +12,13 @@ import java.time.LocalDateTime;
  * DTO for {@link com.kmpc.web.board.entity.Comment}
  */
 @Data
+@NoArgsConstructor
 public class CommentDto {
     Long id;
     String content;
     LocalDateTime createAt;
     LocalDateTime modifiedAt;
 
-    public CommentDto() {
-
-    }
 
     public CommentDto(String content) {
         this.content = content;
@@ -27,8 +26,8 @@ public class CommentDto {
 
     public Comment toEntity(Member member, Post post) {
         return Comment.builder()
-                .member(member)
                 .post(post)
+                .member(member)
                 .content(content)
                 .build();
     }

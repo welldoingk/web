@@ -24,9 +24,10 @@ public class Post extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id; // 번호
-    private String bbsNo; // 게시판 번호
+    private Long boardId; // 게시판 번호
     private String title; // 제목
     private String content; // 내용
+    private String gbVal; // 구분값
     @ColumnDefault("0")
     private Long viewCount; // 조회수
     private String delYn; // 삭제여부
@@ -63,16 +64,20 @@ public class Post extends Timestamped {
                 .title(title)
                 .content(content)
                 .viewCount(viewCount)
+                .boardId(boardId)
+                .gbVal(gbVal)
                 .username(member.getMemberName())
                 .build();
     }
 
     @Builder
-    public Post(String title, String content, Long viewCount, String delYn, Member member) {
+    public Post(String title, String content, Long viewCount, String delYn, Member member, Long boardId, String gbVal) {
         this.title = title;
         this.content = content;
         this.viewCount = 0L;
         this.delYn = "N";
         this.member = member;
+        this.boardId = boardId;
+        this.gbVal = gbVal;
     }
 }

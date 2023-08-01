@@ -16,14 +16,11 @@ import lombok.NoArgsConstructor;
 public class Board extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
-    private Long id; // 번호
+    private Long boardId; // 번호
 
-    private String boardName; // 게시판 번호
-    
-    private String boardTpye; // 게시판 타입
-    
+    private String boardName;
+
+
     private String delYn; // 삭제여부
 
     public Board delete(String delYn) {
@@ -32,9 +29,9 @@ public class Board extends Timestamped {
     }
 
     @Builder
-    public Board(String boardName, String boardType) {
+    public Board(String boardName, Long boardId) {
+        this.boardId = boardId;
         this.boardName = boardName;
-        this.boardTpye = boardType;
         this.delYn = "N";
     }
 }

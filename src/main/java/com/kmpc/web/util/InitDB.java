@@ -44,7 +44,7 @@ public class InitDB {
         public void userDBInit() {
 
             List<Code> codeList = codeRepository.findAll();
-            if (codeList.size() == 0) {
+            if (codeList.isEmpty()) {
                 Code code = Code.builder()
                         .classCode("MT")
                         .codeNo("1")
@@ -68,34 +68,73 @@ public class InitDB {
                         .build();
 
                 codeRepository.save(code);
+
+                code = Code.builder()
+                        .classCode("Notice")
+                        .codeNo("1")
+                        .codeName("Head")
+                        .build();
+
+                codeRepository.save(code);
+
+                code = Code.builder()
+                        .classCode("Notice")
+                        .codeNo("2")
+                        .codeName("산행")
+                        .build();
+
+                codeRepository.save(code);
+
+                code = Code.builder()
+                        .classCode("Notice")
+                        .codeNo("3")
+                        .codeName("중요")
+                        .build();
+
+                codeRepository.save(code);
+
+                code = Code.builder()
+                        .classCode("Notice")
+                        .codeNo("4")
+                        .codeName("일반")
+                        .build();
+
+                codeRepository.save(code);
             }
 
             List<Board> boardList = boardRepository.findAll();
-            if (boardList.size() == 0) {
+            if (boardList.isEmpty()) {
                 Board board = Board.builder()
+                        .boardId(1L)
                         .boardName("공지")
-                        .boardType("1")
                         .build();
 
                 boardRepository.save(board);
 
                 board = Board.builder()
+                        .boardId(2L)
                         .boardName("자유")
-                        .boardType("2")
                         .build();
 
                 boardRepository.save(board);
 
                 board = Board.builder()
+                        .boardId(3L)
                         .boardName("사진")
-                        .boardType("3")
+                        .build();
+
+                boardRepository.save(board);
+
+                board = Board.builder()
+                        .boardId(4L)
+                        .boardName("이벤트")
                         .build();
 
                 boardRepository.save(board);
             }
 
             List<Member> memberList = memberRepository.findAll();
-            if (memberList.size() == 0) {
+            if (memberList.isEmpty()) {
                 Member member = Member.builder()
                         .memberId("1")
                         .password(passwordEncoder.encode("1"))
@@ -107,13 +146,44 @@ public class InitDB {
             }
 
             List<Post> postList = postRepository.findAll();
-            if (postList.size() == 0) {
+            if (postList.isEmpty()) {
                 Post post = Post.builder()
                         .member(memberRepository.findByMemberId("1").get())
                         .title("북한산")
                         .content("")
+                        .boardId(3L)
                         .build();
                 PostImage postImage = PostImage.builder()
+                        .post(post)
+                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                        .storeFilename("C06_1938.jpg")
+                        .build();
+                // member 저장
+                postRepository.save(post);
+                postImageRepository.save(postImage);
+
+                post = Post.builder()
+                        .member(memberRepository.findByMemberId("1").get())
+                        .title("공지 테스트")
+                        .content("")
+                        .boardId(1L)
+                        .build();
+                postImage = PostImage.builder()
+                        .post(post)
+                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                        .storeFilename("C06_1938.jpg")
+                        .build();
+                // member 저장
+                postRepository.save(post);
+                postImageRepository.save(postImage);
+
+                post = Post.builder()
+                        .member(memberRepository.findByMemberId("1").get())
+                        .title("자유 테스트")
+                        .content("")
+                        .boardId(2L)
+                        .build();
+                postImage = PostImage.builder()
                         .post(post)
                         .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                         .storeFilename("C06_1938.jpg")

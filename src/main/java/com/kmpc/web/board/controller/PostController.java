@@ -42,7 +42,7 @@ public class PostController {
     @GetMapping("/board")
     public String main(@AuthenticationPrincipal UserDetailsImpl principal, String searchVal, Pageable pageable,
             Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable);
+        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, null);
         model.addAttribute("list", results);
         model.addAttribute("maxPage", 5);
         model.addAttribute("totalCount", results.getTotalElements());
@@ -51,9 +51,9 @@ public class PostController {
         return "pages/board/main";
     }
 
-    @GetMapping("/board/")
-    public String list(String searchVal, Pageable pageable, Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable);
+    @GetMapping("/board/{boardId}")
+    public String list(@PathVariable Long boardId, String searchVal, Pageable pageable, Model model) {
+        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, boardId);
         model.addAttribute("list", results);
         model.addAttribute("maxPage", 5);
         model.addAttribute("totalCount", results.getTotalElements());
@@ -63,22 +63,28 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/board/write")
-    public String write(Model model) {
+    @GetMapping("/board/write/{boardId}")
+    public String write(Model model, @PathVariable Long boardId) {
         Member member = commonUtil.getMember();
-        List<Code> codeList = codeRepository.findByClassCode("MT");
+
+        String classCode = boardId == 1 ? "Notice" :  (boardId == 3 ? "MT" : null);
+        List<Code> codeList = codeRepository.findByClassCode(classCode);
 
         PostDto postDto = new PostDto();
         postDto.setUsername(member.getMemberName());
+        postDto.setBoardId(boardId);
 
         model.addAttribute("postDto", postDto);
         model.addAttribute("codeList", codeList);
 
+        if (boardId == 3) {
+            return "pages/board/upload";
+        }
         return "pages/board/write";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/board/write")
+    @PostMapping("/api/board/write")
     public String save(@Valid PostDto postDto, BindingResult result,
             Model model) throws Exception {
         Member member = commonUtil.getMember();
@@ -88,11 +94,11 @@ public class PostController {
             return "pages/board/write";
         }
 
-        postService.savePost(postDto);
-        return "redirect:/";
+        Long l = postService.savePost(postDto);
+        return"`redirect:/board/detail/"+l;
     }
 
-    @GetMapping("/board/{postId}")
+    @GetMapping("/board/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
         PostDto postDto = post.toDto();
@@ -104,7 +110,7 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/update")
+    @PutMapping("/api/board/update")
     public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto,
             BindingResult result) throws Exception {
         // 유효성검사 걸릴시
@@ -116,7 +122,7 @@ public class PostController {
         return "redirect:/";
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/api/board/delete")
     public String delete(@RequestParam List<String> postIds) {
 
         for (int i = 0; i < postIds.size(); i++) {

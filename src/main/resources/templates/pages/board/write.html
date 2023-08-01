@@ -22,26 +22,32 @@
         }
     </style>
 </head>
-<script th:inline="javascript">
-/*<![CDATA[*/
-    var aa = /*[[${codeList}]]*/;
-/*]]>*/
-</script>
 <body>
 <section class="section bg-light">
     <div class="container" role="main">
-        <form enctype="multipart/form-data" method="post" th:action="@{/board/write}" th:object="${postDto}">
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">게시글 작성</a>
+            </div>
+        </nav>
+        <form enctype="multipart/form-data" method="post" th:action="@{/api/board/write}" th:object="${postDto}">
+            <input name="id" th:value="${postDto.id}" type="hidden"/>
+            <input name="boardId" th:value="${postDto.boardId}" type="hidden"/>
             <article>
                 <div class="container" role="main">
                     <div class="form-group">
-                        <label for="title">촬영산</label>
-                        <select class="form-control" id="title" name="title" th:if="${codeList}">
-                            <option value="">-- 선택 --</option>
-                            <option th:each="mt, index : ${codeList}"  th:value="${mt?.codeNo}" th:utext="${mt?.codeName}">
-                        </select>
+                        <label for="title">제목</label>
+                        <input
+                                class="form-control"
+                                id="title"
+                                name="title"
+                                placeholder="제목을 입력해 주세요"
+                                th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'"
+                                type="text"
+                        />
                         <p th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
                             Incorrect date
-                        </p>Z
+                        </p>
                     </div>
                     <div class="mb-3">
                         <label for="reg_id">작성자</label>
@@ -54,16 +60,16 @@
                                 type="text"
                         />
                     </div>
-                    <!--                    <div class="mb-3">-->
-                    <!--                        <label for="boardContent">내용</label>-->
-                    <!--                        <textarea-->
-                    <!--                                class="form-control"-->
-                    <!--                                id="boardContent"-->
-                    <!--                                name="content"-->
-                    <!--                                placeholder="내용을 입력해 주세요"-->
-                    <!--                                rows="1"-->
-                    <!--                        ></textarea>-->
-                    <!--                    </div>-->
+                    <div class="mb-3">
+                        <label for="boardContent">내용</label>
+                        <textarea
+                                class="form-control"
+                                id="boardContent"
+                                name="content"
+                                placeholder="내용을 입력해 주세요"
+                                rows="1"
+                        ></textarea>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label" for="formFileMultiple"
                         >파일업로드</label
@@ -72,17 +78,9 @@
                                 accept="image/*"
                                 class="form-control"
                                 id="formFileMultiple"
-                                name="imageFiles"
+                                name="multipartFile"
                                 type="file"
                         />
-                    </div>
-                    <div class="mb-3" id="text">
-                        <label class="form-label" for="metaInfo"
-                        >메타정보</label>
-                        <input class="form-control"
-                               id="metaInfo"
-                               readonly
-                               type="text"/>
                     </div>
                     <div class="mb-3">
                         <img class="image-box"></img>
@@ -104,13 +102,6 @@
                         >
                             목록
                         </button>
-                        <button
-                                class="btn btn-sm btn-primary"
-                                id="test"
-                                type="button"
-                        >
-                        test
-                        </button>
                     </div>
                 </div>
             </article>
@@ -122,7 +113,6 @@
 
 
     const fileDOM = document.getElementById("formFileMultiple");
-    const test = document.getElementById("test");
     const preview = document.querySelector('.image-box');
 
     fileDOM.addEventListener('change', async () => {
@@ -132,76 +122,21 @@
         };
         reader.readAsDataURL(fileDOM.files[0]);
 
-    });
 
-    test.addEventListener("click", function() {
-        getMetaDataParse(preview);
     });
+    preview.onload = function () {
 
-    async function aa(){
         EXIF.getData(preview, function () {
             var make = EXIF.getTag(this, "Make");
             var model = EXIF.getTag(this, "Model");
             var metaInfo = document.getElementById("metaInfo");
             metaInfo.value = `${make} / ${model}`;
-            console.log(`${make} / ${model}`)
+            // metaInfo.innerHTML = JSON.stringify(allMetaData, null, "\t");
+            // var makeAndModel = document.getElementById("makeAndModel");
+            // makeAndModel.innerHTML = `${make} ${model}`;
         });
     }
 
-    var divimg = preview, prevSrc;
-    setInterval(function() {
-        if (divimg.src != prevSrc) {
-            prevSrc = divimg.src;
-            metaInfo.value = null;
-            onSrcChange();
-        }
-    }, 100); // 1000ms = 1s
-
-    function onSrcChange() {
-
-        getMetaDataParse(preview);
-    }
-
-    
-    function getMetaDataParse(t) {
-        EXIF.getData(t, function () {
-                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized, DateTime, F, T, l, E;
-                EXIF.pretty(this)
-                    ?
-                    (
-								html = "",
-								make = EXIF.getTag(this, "Make"),
-								model = EXIF.getTag(this, "Model"),
-								uniqueID = EXIF.getTag(this, "ImageUniqueID"),
-                                shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
-                                sw = EXIF.getTag(this, "Software"),
-                                width = EXIF.getTag(this, "ImageWidth"),
-                                height = EXIF.getTag(this, "ImageHeight"),
-                                DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
-                                DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
-                                DateTime = EXIF.getTag(this, "DateTime"),
-                                (l = EXIF.getTag(this, "GPSLongitude")) ?
-                                    (
-                                        E = EXIF.getTag(this, "GPSLongitudeRef"),
-                                            T = EXIF.getTag(this, "GPSLatitude"),
-                                            html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
-                                            html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
-                                            l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
-                                            E = (E = E[1].split(":"))[0] + "" + E[1]
-                                    ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
-								html += "* 촬영일자 : " + DateTime + "<br>",
-								html += "* 촬영기종 : " + make + " " + model + "<br>",
-								// html += "* 사진고유번호 : " + uniqueID + "<br>",
-								html += "* 셔터속도 : " + shutterSpeed + "<br>",
-								html += "* SW : " + sw + "<br>",
-								// html += "* 해상도 : " + width + " * " + height + "<br>",
-								// html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
-								html += "", $("#text").html(html))
-                    :
-                    $("#text").html("메타데이터 없음.")
-            }
-        );
-    }
 
 </script>
 </html>

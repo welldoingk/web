@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.repository.PostRepository;
-import com.kmpc.web.common.repository.CodeRepository;
-import com.kmpc.web.file.service.FileService;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.member.repository.MemberRepository;
 
@@ -29,7 +27,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostImageRepository postImageRepository;
-    private final FileService fileService;
     private final CommonUtil memberUtil;
     private final S3Uploader s3Uploader;
 
@@ -49,7 +46,10 @@ public class PostService {
             post.update(postDto.getTitle(), postDto.getContent());
         }
 
-        List<String> postImages = uploadPostImages(postDto, post);
+
+        if(postDto.getImageFiles() != null) {
+            List<String> postImages = uploadPostImages(postDto, post);
+        }
 
 //        fileService.saveFile(postDto, post.getId());
 
@@ -60,7 +60,7 @@ public class PostService {
         return postDto.getImageFiles().stream()
                 .map(image -> {
                     try {
-                        return s3Uploader.upload(image, "post");
+                        return s3Uploader.upload(image, postDto.getBoardId() == 3 ? "MT" : "post");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

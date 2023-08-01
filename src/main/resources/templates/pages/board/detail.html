@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aa = /*[[${postFile[0].imageUrl}]]*/;
+    var aa = /*[[${postDto}]]*/;
     /*]]>*/
 </script>
 <style>
@@ -63,58 +63,127 @@
 <section class="section bg-light">
 
     <input name="id" th:value="${postDto.id}" type="hidden"/>
-    <article>
-        <div class="container" role="main">
-            <div class="">
-                <h2 class="posts-entry-title">산별상세 : <a href="#">지리산</a> 기준 : <a href="#">2023년</a></h2>
-            </div>
+    <div class="container">
 
-
-            <div class="d-flex justify-content-center">
-                <button class="carousel-control-prev col-2 align-middle">❮</button>
-                <img class="image-box col-10" th:alt="${postFile[0]?.imageUrl}" th:src="${postFile[0]?.imageUrl}">
-                <button class="carousel-control-next col-2 align-middle">❯</button>
-            </div>
-            <div class="mb-3" id="text">
-                <label class="form-label" for="metaInfo"
-                >메타정보</label>
-                <input class="form-control"
-                       id="metaInfo"
-                       readonly
-                       type="text"/>
-            </div>
-            <div class="">
-                <label for="title">제목</label>
-                <p
-                        id="title"
-                        th:text="${postDto.title}"
-                        type="text"
-                ></p>
-            </div>
-            <br/>
-            <div class="mb-3">
-                <label for="memberName">작성자</label>
-                <p
-                        id="memberName"
-                        th:text="${postDto.username}"
-                ></p>
-            </div>
-            <div>
-                <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
-                    수정
-                </button>
-                <button
-                        class="btn btn-sm btn-primary"
-                        id="btnList"
-                        onclick="location.href='/board'"
-                        type="button"
-                >
-                    목록
-                </button>
-            </div>
+        <div class="">
+            <label for="title">제목</label>
+            <p
+                    id="title"
+                    th:text="${postDto.title}"
+                    type="text"
+            ></p>
         </div>
-    </article>
-    </form>
+        <br/>
+        <div class="mb-3">
+            <label for="memberName">작성자</label>
+            <p
+                    id="memberName"
+                    th:text="${postDto.username}"
+            ></p>
+        </div>
+        <div class="mb-3">
+            <label for="boardContent">내용</label>
+            <p
+                    class="form-control"
+                    id="boardContent"
+                    th:text="${postDto.content}"
+            ></p>
+        </div>
+        <div>
+            <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
+                수정
+            </button>
+            <button
+                    class="btn btn-sm btn-primary"
+                    id="btnList"
+                    onclick="location.href='/board'"
+                    type="button"
+            >
+                목록
+            </button>
+        </div>
+        <h3 class="mb-5 heading"> Comments</h3>
+        <ul class="comment-list">
+              <li class="comment">
+                <div class="vcard">
+                  <img src="images/person_1.jpg" alt="Image placeholder">
+                </div>
+                <div class="comment-body">
+                  <h3>Jean Doe</h3>
+                  <div class="meta">January 9, 2018 at 2:21pm</div>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                  <p><a href="#" class="reply rounded">Reply</a></p>
+                </div>
+              </li>
+
+              <li class="comment">
+                <div class="vcard">
+                  <img src="images/person_2.jpg" alt="Image placeholder">
+                </div>
+                <div class="comment-body">
+                  <h3>Jean Doe</h3>
+                  <div class="meta">January 9, 2018 at 2:21pm</div>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                  <p><a href="#" class="reply rounded">Reply</a></p>
+                </div>
+
+                <ul class="children">
+                  <li class="comment">
+                    <div class="vcard">
+                      <img src="images/person_3.jpg" alt="Image placeholder">
+                    </div>
+                    <div class="comment-body">
+                      <h3>Jean Doe</h3>
+                      <div class="meta">January 9, 2018 at 2:21pm</div>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                      <p><a href="#" class="reply rounded">Reply</a></p>
+                    </div>
+
+
+                    <ul class="children">
+                      <li class="comment">
+                        <div class="vcard">
+                          <img src="images/person_4.jpg" alt="Image placeholder">
+                        </div>
+                        <div class="comment-body">
+                          <h3>Jean Doe</h3>
+                          <div class="meta">January 9, 2018 at 2:21pm</div>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                          <p><a href="#" class="reply rounded">Reply</a></p>
+                        </div>
+
+                        <ul class="children">
+                          <li class="comment">
+                            <div class="vcard">
+                              <img src="images/person_5.jpg" alt="Image placeholder">
+                            </div>
+                            <div class="comment-body">
+                              <h3>Jean Doe</h3>
+                              <div class="meta">January 9, 2018 at 2:21pm</div>
+                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                              <p><a href="#" class="reply rounded">Reply</a></p>
+                            </div>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="comment">
+                <div class="vcard">
+                  <img src="images/person_1.jpg" alt="Image placeholder">
+                </div>
+                <div class="comment-body">
+                  <h3>Jean Doe</h3>
+                  <div class="meta">January 9, 2018 at 2:21pm</div>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
+                  <p><a href="#" class="reply rounded">Reply</a></p>
+                </div>
+              </li>
+            </ul>
+    </div>
 </section>
 <script th:inline="javascript">
 
@@ -122,45 +191,56 @@
     const fileDOM = document.getElementById("formFileMultiple");
     const preview = document.querySelector('.image-box');
 
-    preview.addEventListener("load", function() {
+    preview.addEventListener("load", function () {
         getMetaDataParse(preview);
     });
 
 
     function getMetaDataParse(t) {
         EXIF.getData(t, function () {
-                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized, DateTime, F, T, l, E;
+                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized,
+                    DateTime, F, T, l, E;
                 EXIF.pretty(this)
                     ?
                     (
-								html = "",
-								make = EXIF.getTag(this, "Make"),
-								model = EXIF.getTag(this, "Model"),
-								uniqueID = EXIF.getTag(this, "ImageUniqueID"),
-                                shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
-                                sw = EXIF.getTag(this, "Software"),
-                                width = EXIF.getTag(this, "ImageWidth"),
-                                height = EXIF.getTag(this, "ImageHeight"),
-                                DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
-                                DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
-                                DateTime = EXIF.getTag(this, "DateTime"),
-                                (l = EXIF.getTag(this, "GPSLongitude")) ?
-                                    (
-                                        E = EXIF.getTag(this, "GPSLongitudeRef"),
-                                            T = EXIF.getTag(this, "GPSLatitude"),
-                                            html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
-                                            html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
-                                            l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
-                                            E = (E = E[1].split(":"))[0] + "" + E[1]
-                                    ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
-								html += "* 촬영일자 : " + DateTime + "<br>",
-								html += "* 촬영기종 : " + make + " " + model + "<br>",
-								// html += "* 사진고유번호 : " + uniqueID + "<br>",
-								html += "* 셔터속도 : " + shutterSpeed + "<br>",
-								html += "* SW : " + sw + "<br>",
-								// html += "* 해상도 : " + width + " * " + height + "<br>",
-								// html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
-								html += "", $("#text").html(html))
+                        html = "",
+                            make = EXIF.getTag(this, "Make"),
+                            model = EXIF.getTag(this, "Model"),
+                            uniqueID = EXIF.getTag(this, "ImageUniqueID"),
+                            shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
+                            sw = EXIF.getTag(this, "Software"),
+                            width = EXIF.getTag(this, "ImageWidth"),
+                            height = EXIF.getTag(this, "ImageHeight"),
+                            DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
+                            DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
+                            flash = EXIF.getTag(this, "Flash"),
+                            fNumber = EXIF.getTag(this, "FNumber"),
+                            subjectDistance = EXIF.getTag(this, "SubjectDistance"),
+                            ISOSpeedRatings = EXIF.getTag(this, "ISOSpeedRatings"),
+                            Copyright = EXIF.getTag(this, "Copyright"),
+                            ExposureProgram = EXIF.getTag(this, "ExposureProgram"),
+                            DateTime = EXIF.getTag(this, "DateTime"),
+                            // (l = EXIF.getTag(this, "GPSLongitude")) ?
+                            //     (
+                            //         E = EXIF.getTag(this, "GPSLongitudeRef"),
+                            //             T = EXIF.getTag(this, "GPSLatitude"),
+                            //             html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                            //             html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                            //             l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
+                            //             E = (E = E[1].split(":"))[0] + "" + E[1]
+                            //     ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+                            html += "<br>",
+                            html += "* 촬영일자 : " + DateTime + "<br>",
+                            html += "* 촬영기종 : " + make + " " + model + "<br>",
+                            // html += "* 사진고유번호 : " + uniqueID + "<br>",
+                            html += "* 셔터속도 : " + shutterSpeed + "<br>",
+                            // html += "* SW : " + sw + "<br>",
+                            html += "* " + flash + ", f\/" + fNumber + ", ISO" + ISOSpeedRatings + "<br>",
+                            html += "* ExposureProgram : " + ExposureProgram + "<br>",
+                            html += "* Copyright : " + Copyright + "<br>",
+                            // html += "* 해상도 : " + width + " * " + height + "<br>",
+                            // html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
+                            html += "", $("#text").html(html))
                     :
                     $("#text").html("메타데이터 없음.")
             }

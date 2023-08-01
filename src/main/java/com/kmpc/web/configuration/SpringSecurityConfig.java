@@ -42,7 +42,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         /* csrf 설정 해제. */
-//        http.csrf(CsrfConfigurer::disable);
+        http.csrf(CsrfConfigurer::disable);
 
         /* JWT 사용 위해 기존의 세션 방식 인증 해제 */
         http.sessionManagement(configurer -> configurer
@@ -52,6 +52,7 @@ public class SpringSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/**/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/board/write")).authenticated()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                 // .anyRequest().authenticated()
         );

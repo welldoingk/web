@@ -35,13 +35,13 @@
                 <div class="container" role="main">
                     <div class="form-group">
                         <label for="title">촬영산</label>
-                        <select class="form-control" id="title" name="title">
+                        <select class="form-control" id="title" name="title" th:if="${codeList}">
                             <option value="">-- 선택 --</option>
                             <option th:each="mt, index : ${codeList}"  th:value="${mt?.codeNo}" th:utext="${mt?.codeName}">
                         </select>
                         <p th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
                             Incorrect date
-                        </p>
+                        </p>Z
                     </div>
                     <div class="mb-3">
                         <label for="reg_id">작성자</label>
@@ -76,7 +76,7 @@
                                 type="file"
                         />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="text">
                         <label class="form-label" for="metaInfo"
                         >메타정보</label>
                         <input class="form-control"
@@ -135,7 +135,7 @@
     });
 
     test.addEventListener("click", function() {
-        aa();
+        getMetaDataParse(preview);
     });
 
     async function aa(){
@@ -155,58 +155,52 @@
             metaInfo.value = null;
             onSrcChange();
         }
-    }, 1000); // 1000ms = 1s
+    }, 100); // 1000ms = 1s
 
     function onSrcChange() {
-        
-        aa();
+
+        getMetaDataParse(preview);
     }
 
     
     function getMetaDataParse(t) {
-        $('.map_wrap').hide();
         EXIF.getData(t, function () {
-                var t, e, a, i, g, s, r, h, I, d, n, F, T, l, E;
+                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized, DateTime, F, T, l, E;
                 EXIF.pretty(this)
                     ?
                     (
-								t = "",
-								e = EXIF.getTag(this, "Make"),
-								a = EXIF.getTag(this, "Model"),
-								i = EXIF.getTag(this, "ImageUniqueID"),
-                                g = EXIF.getTag(this, "ShutterSpeedValue"),
-                                s = EXIF.getTag(this, "Software"),
-                                r = EXIF.getTag(this, "ImageWidth"),
-                                h = EXIF.getTag(this, "ImageHeight"),
-                                I = EXIF.getTag(this, "DateTimeOriginal"),
-                                d = EXIF.getTag(this, "DateTimeDigitized"),
-                                n = EXIF.getTag(this, "DateTime"),
+								html = "",
+								make = EXIF.getTag(this, "Make"),
+								model = EXIF.getTag(this, "Model"),
+								uniqueID = EXIF.getTag(this, "ImageUniqueID"),
+                                shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
+                                sw = EXIF.getTag(this, "Software"),
+                                width = EXIF.getTag(this, "ImageWidth"),
+                                height = EXIF.getTag(this, "ImageHeight"),
+                                DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
+                                DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
+                                DateTime = EXIF.getTag(this, "DateTime"),
                                 (l = EXIF.getTag(this, "GPSLongitude")) ?
                                     (
                                         E = EXIF.getTag(this, "GPSLongitudeRef"),
                                             T = EXIF.getTag(this, "GPSLatitude"),
-                                            t += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
-                                            t += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
-                                            l = (E = I.split(" "))[0].replace(":", "").replace(":", ""),
+                                            html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                                            html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                                            l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
                                             E = (E = E[1].split(":"))[0] + "" + E[1]
-                                    ) : t += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
-								t += "* 촬영일자 : " + n + "<br>",
-								t += "* 촬영기종 : " + e + " " + a + "<br>",
-								t += "* 사진고유번호 : " + i + "<br>",
-								t += "* 셔터속도 : " + g + "<br>",
-								t += "* SW : " + s + "<br>",
-								t += "* 해상도 : " + r + " * " + h + "<br>",
-								t += "* 사진조작가능성 : " + (d == I && d == n && I == n ? "없음" : n < I ? "높음" : n < d ? "높음" : I < d ? "높음" : I ? "낮음" : "높음") + "<br>",
-								t += "", $("#text").html(t))
+                                    ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+								html += "* 촬영일자 : " + DateTime + "<br>",
+								html += "* 촬영기종 : " + make + " " + model + "<br>",
+								// html += "* 사진고유번호 : " + uniqueID + "<br>",
+								html += "* 셔터속도 : " + shutterSpeed + "<br>",
+								html += "* SW : " + sw + "<br>",
+								// html += "* 해상도 : " + width + " * " + height + "<br>",
+								// html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
+								html += "", $("#text").html(html))
                     :
-                    $("#text").html("추출할 항목이 전혀 없는 이미지입니다.")
+                    $("#text").html("메타데이터 없음.")
             }
         );
-        var e = new FileReader;
-        e.readAsDataURL(t), e.onload = function () {
-            var t;
-            e.result ? (t = "<img id='imagsss' src='" + e.result + "' width='350px'/>", $("#imgdiv").html(t)) : $("#imgdiv").html("똑바로 올린거 맞냐?")
-        }
     }
 
 </script>

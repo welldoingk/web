@@ -120,6 +120,7 @@ public class InitDB {
                         .build();
                 // member 저장
                 postRepository.save(post);
+                postImageRepository.save(postImage);
             }
         }
     }

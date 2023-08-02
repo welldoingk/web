@@ -47,7 +47,7 @@ public class PostService {
         }
 
 
-        if(postDto.getImageFiles() != null) {
+        if(postDto.getPostFiles().isEmpty()) {
             List<String> postImages = uploadPostImages(postDto, post);
         }
 
@@ -57,7 +57,7 @@ public class PostService {
     }
 
      private List<String> uploadPostImages(PostDto postDto, Post post)  {
-        return postDto.getImageFiles().stream()
+        return postDto.getPostFiles().stream()
                 .map(image -> {
                     try {
                         return s3Uploader.upload(image, postDto.getBoardId() == 3 ? "MT" : "post");

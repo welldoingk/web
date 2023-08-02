@@ -21,6 +21,6 @@ public class MainController {
 
     @RequestMapping({"1"})
     public String index1(){
-        return "pages/MT/list";
+        return "mtList";
     }
 }

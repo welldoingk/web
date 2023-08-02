@@ -9,13 +9,9 @@ import com.kmpc.web.common.entity.Code;
 import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.security.UserDetailsImpl;
-
 import com.kmpc.web.util.CommonUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,15 +19,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/gallery")
 @Controller
 @RequiredArgsConstructor
-public class PostController {
+public class MtController {
 
     private final CustomPostRepository customPostRepository;
     private final PostImageRepository postImageRepository;
@@ -39,31 +35,54 @@ public class PostController {
     private final PostService postService;
     private final CommonUtil commonUtil;
 
-    @GetMapping("/board")
-    public String main(String searchVal, Pageable pageable,
-            Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, null);
+    @GetMapping("/mt")
+    public String mtList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
+        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        List<Code> codeList = codeRepository.findByClassCode("MT");
+
         model.addAttribute("list", results);
-        model.addAttribute("maxPage", 5);
-        model.addAttribute("totalCount", results.getTotalElements());
-        model.addAttribute("size", results.getPageable().getPageSize());
-        model.addAttribute("number", results.getPageable().getPageNumber());
-        return "pages/board/main";
+//        model.addAttribute("maxPage", 5);
+//        model.addAttribute("totalCount", results.getTotalElements());
+//        model.addAttribute("size", results.getPageable().getPageSize());
+//        model.addAttribute("number", results.getPageable().getPageNumber());
+        model.addAttribute("codeList", codeList);
+        model.addAttribute("map", map);
+        return "pages/MT/mtList";
     }
 
-    @GetMapping("/board/{boardId}")
-    public String list(@PathVariable Long boardId, String searchVal, Pageable pageable, Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, boardId);
+    @GetMapping("/recent")
+    public String recentList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
+        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        List<Code> codeList = codeRepository.findByClassCode("MT");
+
         model.addAttribute("list", results);
-        model.addAttribute("maxPage", 5);
-        model.addAttribute("totalCount", results.getTotalElements());
-        model.addAttribute("size", results.getPageable().getPageSize());
-        model.addAttribute("number", results.getPageable().getPageNumber());
-        return "pages/board/list";
+//        model.addAttribute("maxPage", 5);
+//        model.addAttribute("totalCount", results.getTotalElements());
+//        model.addAttribute("size", results.getPageable().getPageSize());
+//        model.addAttribute("number", results.getPageable().getPageNumber());
+        model.addAttribute("codeList", codeList);
+        model.addAttribute("map", map);
+        return "pages/MT/mtList";
+    }
+
+    @GetMapping("/member")
+    public String memberList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
+        String mtNo = map.get("mtNo");
+        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        List<Code> codeList = codeRepository.findByClassCode("MT");
+
+        model.addAttribute("list", results);
+//        model.addAttribute("maxPage", 5);
+//        model.addAttribute("totalCount", results.getTotalElements());
+//        model.addAttribute("size", results.getPageable().getPageSize());
+//        model.addAttribute("number", results.getPageable().getPageNumber());
+        model.addAttribute("codeList", codeList);
+        model.addAttribute("map", map);
+        return "pages/MT/mtList";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/board/write/{boardId}")
+    @GetMapping("/upload")
     public String write(Model model, @PathVariable Long boardId) {
         Member member = commonUtil.getMember();
 
@@ -77,14 +96,12 @@ public class PostController {
         model.addAttribute("postDto", postDto);
         model.addAttribute("codeList", codeList);
 
-        if (boardId == 3) {
-            return "pages/board/upload";
-        }
-        return "pages/board/write";
+
+        return "pages/MT/upload";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/api/board/write")
+    @PostMapping("/write")
     public String save(@Valid PostDto postDto, BindingResult result,
             Model model) throws Exception {
         Member member = commonUtil.getMember();
@@ -95,10 +112,10 @@ public class PostController {
         }
 
         Long l = postService.savePost(postDto);
-        return"`redirect:/board/detail/"+l;
+        return"`redirect:/mt/detail/"+l;
     }
 
-    @GetMapping("/board/detail/{postId}")
+    @GetMapping("/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
         PostDto postDto = post.toDto();
@@ -106,11 +123,11 @@ public class PostController {
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
         model.addAttribute("postFile", postImageRepository.findByPost(post));
 
-        return "pages/board/detail";
+        return "pages/MT/detail";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/api/board/update")
+    @PutMapping("/board/update")
     public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto,
             BindingResult result) throws Exception {
         // 유효성검사 걸릴시
@@ -122,7 +139,7 @@ public class PostController {
         return "redirect:/";
     }
 
-    @PostMapping("/api/board/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam List<String> postIds) {
 
         for (int i = 0; i < postIds.size(); i++) {

@@ -1,6 +1,7 @@
 package com.kmpc.web.board.dto;
 
 import com.kmpc.web.board.entity.Post;
+import com.kmpc.web.board.entity.PostImage;
 import com.kmpc.web.member.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,12 +37,13 @@ public class PostDto {
 
     private String username; // 사용자 이름
 
-    private List<MultipartFile> imageFiles;
+    private List<MultipartFile> postFiles;
+    private String imageUrl;
 
     @QueryProjection
     @Builder
     public PostDto(Long id, String title, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Long viewCount,
-                   String username, Long boardId, String gbVal) {
+                   String username, Long boardId, String gbVal, String imageUrl) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -51,6 +53,7 @@ public class PostDto {
         this.username = username;
         this.boardId = boardId;
         this.gbVal = gbVal;
+        this.imageUrl = imageUrl;
     }
 
     public Post toEntity(Member member) {

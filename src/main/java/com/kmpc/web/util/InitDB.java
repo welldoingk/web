@@ -147,20 +147,8 @@ public class InitDB {
 
             List<Post> postList = postRepository.findAll();
             if (postList.isEmpty()) {
-                Post post = Post.builder()
-                        .member(memberRepository.findByMemberId("1").get())
-                        .title("북한산")
-                        .content("")
-                        .boardId(3L)
-                        .build();
-                PostImage postImage = PostImage.builder()
-                        .post(post)
-                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                        .storeFilename("C06_1938.jpg")
-                        .build();
-                // member 저장
-                postRepository.save(post);
-                postImageRepository.save(postImage);
+                Post post;
+                PostImage postImage;
 
                 post = Post.builder()
                         .member(memberRepository.findByMemberId("1").get())
@@ -191,6 +179,56 @@ public class InitDB {
                 // member 저장
                 postRepository.save(post);
                 postImageRepository.save(postImage);
+
+                for (int i = 0; i < 10; i++) {
+
+                    post = Post.builder()
+                            .member(memberRepository.findByMemberId("1").get())
+                            .gbVal("1")
+                            .boardId(3L)
+                            .build();
+                    postImage = PostImage.builder()
+                            .post(post)
+                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .storeFilename("C06_1938.jpg")
+                            .build();
+                    // member 저장
+                    postRepository.save(post);
+                    postImageRepository.save(postImage);
+                }
+
+                for (int i = 0; i < 5; i++) {
+
+                    post = Post.builder()
+                            .member(memberRepository.findByMemberId("1").get())
+                            .gbVal("2")
+                            .boardId(3L)
+                            .build();
+                    postImage = PostImage.builder()
+                            .post(post)
+                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .storeFilename("C06_1938.jpg")
+                            .build();
+                    // member 저장
+                    postRepository.save(post);
+                    postImageRepository.save(postImage);
+                }
+                for (int i = 0; i < 7; i++) {
+
+                    post = Post.builder()
+                            .member(memberRepository.findByMemberId("1").get())
+                            .gbVal("3")
+                            .boardId(3L)
+                            .build();
+                    postImage = PostImage.builder()
+                            .post(post)
+                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .storeFilename("C06_1938.jpg")
+                            .build();
+                    // member 저장
+                    postRepository.save(post);
+                    postImageRepository.save(postImage);
+                }
             }
         }
     }

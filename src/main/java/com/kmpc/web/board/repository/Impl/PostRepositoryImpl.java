@@ -1,10 +1,12 @@
 package com.kmpc.web.board.repository.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.dto.QPostDto;
+import com.kmpc.web.board.entity.PostImage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import static com.kmpc.web.board.entity.QPost.post;
+import static com.kmpc.web.board.entity.QPostImage.postImage;
 import static com.kmpc.web.member.entity.QMember.member;
 
 
@@ -26,9 +29,16 @@ public class PostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<PostDto> selectPostList(String searchVal, Pageable pageable, Long BoardId) {
-        List<PostDto> content = getPostMemberDtos(searchVal, pageable, BoardId);
-        Long count = getCount(searchVal);
+    public Page<PostDto> selectPostList(String searchVal, Pageable pageable, Long boardId) {
+        List<PostDto> content = getPostMemberDtos(searchVal, pageable, boardId);
+        Long count = getCount(boardId);
+        return new PageImpl<>(content, pageable, count);
+    }
+
+    @Override
+    public Page<PostDto> selectGalleryList(Map<String,String> map, Pageable pageable, Long boardId) {
+        List<PostDto> content = getPostGalleryDtos(map, pageable, boardId);
+        Long count = getCount(boardId);
         return new PageImpl<>(content, pageable, count);
     }
 
@@ -51,7 +61,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
 //        return content;
 //    }
 
-    private Long getCount(String searchVal) {
+    private Long getCount(Long BoardId) {
         Long count = jpaQueryFactory
                 .select(post.count())
                 .from(post)
@@ -71,11 +81,38 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         post.viewCount,
                         member.memberName,
                         post.boardId,
-                        post.gbVal
+                        post.gbVal,
+                        postImage.imageUrl
                 ))
                 .from(post)
                 .leftJoin(post.member, member)
                 .where(containsSearch(searchVal))
+                .where(isEqToBoardId(boardId))
+                .orderBy(post.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return content;
+    }
+
+    private List<PostDto> getPostGalleryDtos(Map<String,String> map, Pageable pageable, Long boardId) {
+        List<PostDto> content = jpaQueryFactory
+                .select(new QPostDto(
+                        post.id,
+                        post.title,
+                        post.content,
+                        post.createAt,
+                        post.modifiedAt,
+                        post.viewCount,
+                        member.memberName,
+                        post.boardId,
+                        post.gbVal,
+                        postImage.imageUrl
+                ))
+                .from(post)
+                .leftJoin(post.member, member)
+                .leftJoin(post.postImages, postImage)
+                .where(isEqToGbVal(map.get("mtNo")))
                 .where(isEqToBoardId(boardId))
                 .orderBy(post.id.desc())
                 .offset(pageable.getOffset())
@@ -89,5 +126,11 @@ public class PostRepositoryImpl implements CustomPostRepository {
     }
     private BooleanExpression isEqToBoardId(Long boardId) {
         return boardId != null ? post.boardId.eq(boardId) : post.boardId.notIn(3L, 4L);
+    }
+    private BooleanExpression isEqToGbVal(String gbVal) {
+        return gbVal != null ? post.gbVal.eq(gbVal) : null;
+    }
+    private BooleanExpression isEqToMemberId(String memberId) {
+        return memberId != null ? post.gbVal.eq(memberId) : null;
     }
 }

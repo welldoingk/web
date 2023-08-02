@@ -36,7 +36,6 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    private String delYn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -46,6 +45,7 @@ public class Comment extends Timestamped {
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
     private List<Comment> children = new ArrayList<>();
 
+    private String delYn;
 
     public void update(CommentDto commentRequestDto) {
         this.content = commentRequestDto.getContent();

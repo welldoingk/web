@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
  */
 @Data
 public class PostImageDto implements Serializable {
-    LocalDateTime createAt;
-    LocalDateTime modifiedAt;
-    Long id;
-    String imageUrl;
-    String storeFilename;
+    private LocalDateTime createAt;
+    private LocalDateTime modifiedAt;
+    private Long id;
+    private String imageUrl;
+    private String storeFilename;
 
     @QueryProjection
     @Builder

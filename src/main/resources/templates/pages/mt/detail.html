@@ -66,7 +66,7 @@
     <article>
         <div class="container" role="main">
             <div class="">
-                <h2 class="posts-entry-title">산별상세 : <a href="#">지리산</a> 기준 : <a href="#" th:text="${#dates.format(postDto.createAt, 'yyyy')}"></a></h2>
+                <h2 class="posts-entry-title">산별상세 : <a th:href="'/gallery/mt?mtNo='+ ${code.codeNo}" th:text="${code.codeName}">산명칭</a> 기준 : <a href="#" th:text="${#temporals.format(postDto.createAt, 'yyyy')}"></a></h2>
             </div>
 
 
@@ -92,13 +92,6 @@
                 ></p>
             </div>
             <br/>
-            <div class="mb-3">
-                <label for="memberName">작성자</label>
-                <p
-                        id="memberName"
-                        th:text="${postDto.username}"
-                ></p>
-            </div>
             <div>
                 <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
                     수정

@@ -46,12 +46,8 @@ public class PostController {
     @GetMapping("/board")
     public String main(String searchVal, Pageable pageable,
             Model model) {
-        Page<PostDto> results = postCustomRepository.selectPostList(searchVal, pageable, null);
-        model.addAttribute("list", results);
-        model.addAttribute("maxPage", 5);
-        model.addAttribute("totalCount", results.getTotalElements());
-        model.addAttribute("size", results.getPageable().getPageSize());
-        model.addAttribute("number", results.getPageable().getPageNumber());
+        model.addAttribute("list1", postCustomRepository.selectPostList(searchVal, pageable, 1L));
+        model.addAttribute("list2", postCustomRepository.selectPostList(searchVal, pageable, 2L));
         return "pages/board/main";
     }
 
@@ -59,6 +55,7 @@ public class PostController {
     public String list(@PathVariable Long boardId, String searchVal, Pageable pageable, Model model) {
         Page<PostDto> results = postCustomRepository.selectPostList(searchVal, pageable, boardId);
         model.addAttribute("list", results);
+        model.addAttribute("boardId", boardId);
         model.addAttribute("maxPage", 5);
         model.addAttribute("totalCount", results.getTotalElements());
         model.addAttribute("size", results.getPageable().getPageSize());
@@ -99,8 +96,9 @@ public class PostController {
             return "pages/board/write";
         }
 
-        Long l = postService.savePost(postDto);
-        return"`redirect:/board/detail/"+l;
+        PostDto savedPost = postService.savePost(postDto);
+        model.addAttribute("postDto", savedPost);
+        return "pages/board/detail";
     }
 
     @GetMapping("/board/detail/{postId}")
@@ -118,17 +116,33 @@ public class PostController {
         return "pages/board/detail";
     }
 
+    @GetMapping("/board/update/{postId}")
+    public String updatePage(@PathVariable Long postId, Model model) {
+        Post post = postService.selectPostDetail(postId);
+        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
+        PostDto postDto = post.toDto();
+
+        model.addAttribute("postDto", postDto);
+        // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
+        model.addAttribute("postFile", postImages);
+        model.addAttribute("commentDto", commentDto);
+
+        return "pages/board/update";
+    }
+
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/api/board/update")
+    @PutMapping("/board/update")
     public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto,
-            BindingResult result) throws Exception {
+            BindingResult result, Model model) throws Exception {
         // 유효성검사 걸릴시
         if (result.hasErrors()) {
             return "pages/board/update";
         }
 
-        postService.savePost(postDto);
-        return "redirect:/";
+        PostDto savedPost = postService.savePost(postDto);
+        model.addAttribute("postDto", savedPost);
+        return "pages/board/update";
     }
 
     @PostMapping("/api/board/delete")

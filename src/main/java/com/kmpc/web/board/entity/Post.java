@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -78,6 +79,8 @@ public class Post extends Timestamped {
                 .viewCount(viewCount)
                 .boardId(boardId)
                 .gbVal(gbVal)
+                .createAt(getCreateAt())
+                .modifiedAt(getModifiedAt())
                 .username(member.getMemberName())
                 .build();
     }

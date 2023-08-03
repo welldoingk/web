@@ -18,13 +18,13 @@ public class MtPostDto {
 
     private Long id; // 시퀀스
 
-    @NotEmpty(message = "제목은 필수입니다.")
     private String title; // 제목
 
     private String content; // 내용
 
     private Long boardId; // 조회수
 
+    @NotEmpty(message = "촬영산 선택은 필수 입니다.")
     private String gbVal; // 구분
 
     private LocalDateTime createAt;
@@ -34,6 +34,8 @@ public class MtPostDto {
     private Long viewCount; // 조회수
 
     private String username; // 사용자 이름
+
+    private String memberId; // 사용자 이름
 
     private List<MultipartFile> postFiles;
     private String imageUrl;

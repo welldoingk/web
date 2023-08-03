@@ -32,9 +32,9 @@ public class PostService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public Long savePost(PostDto postDto) throws Exception{
+    public PostDto savePost(PostDto postDto) throws Exception{
         Post post = null;
-        Member member = memberUtil.getMember();
+        Member member = memberRepository.findByMemberId(postDto.getMemberId()).get();
         //insert
         if(postDto.getId() == null){
             post = postDto.toEntity(memberRepository.findById(member.getMemberId()).get());
@@ -48,17 +48,17 @@ public class PostService {
         }
 
 
-        if(postDto.getPostFiles().isEmpty()) {
+        if(postDto.getPostFiles() != null) {
             List<String> postImages = uploadPostImages(postDto, post);
         }
 
 //        fileService.saveFile(postDto, post.getId());
 
-        return post.getId();
+        return post.toDto();
     }
 
     @Transactional
-    public Long saveMtPost(MtPostDto postDto) throws Exception{
+    public MtPostDto saveMtPost(MtPostDto postDto) throws Exception{
         Post post = null;
         Member member = memberUtil.getMember();
         //insert
@@ -74,13 +74,13 @@ public class PostService {
         }
 
 
-        if(postDto.getPostFiles().isEmpty()) {
+        if(postDto.getPostFiles() !=null) {
             List<String> postImages = uploadPostImages(postDto, post);
         }
 
 //        fileService.saveFile(postDto, post.getId());
 
-        return post.getId();
+        return post.toMtDto();
     }
 
      private List<String> uploadPostImages(PostDto postDto, Post post)  {

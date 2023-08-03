@@ -60,76 +60,91 @@
 
 
 </style>
-<section class="section bg-light">
+<section class="section">
 
     <input name="id" th:value="${postDto.id}" type="hidden"/>
+    <input name="id" th:value="${postDto.boardId}" type="hidden"/>
     <div class="container">
-
-        <div class="">
-            <label for="title">제목</label>
-            <p
-                    id="title"
-                    th:text="${postDto.title}"
-                    type="text"
-            ></p>
-        </div>
-        <br/>
-        <div class="mb-3">
-            <label for="memberName">작성자</label>
-            <p
-                    id="memberName"
-                    th:text="${postDto.username}"
-            ></p>
-        </div>
-        <div class="mb-3">
-            <label for="boardContent">내용</label>
-            <p
-                    class="form-control"
-                    id="boardContent"
-                    th:text="${postDto.content}"
-            ></p>
-        </div>
-        <div>
-            <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
-                수정
-            </button>
-            <button
-                    class="btn btn-sm btn-primary"
-                    id="btnList"
-                    onclick="location.href='/board'"
-                    type="button"
-            >
-                목록
-            </button>
-        </div>
-        <h3 class="mb-5 heading"> Comments</h3>
-        <ul class="comment-list">
-
-            <li class="comment" th:each="comment, index :${commentDto}">
-                <div class="vcard">
-                    <img src="images/person_2.jpg" alt="Image placeholder">
+        <nav class="navbar bg-body-tertiary">
+            <p class="navbar-brand" th:text="${postDto.boardId} == 1 ? '공지사항 상세' : '자유게시판 상세'" >커뮤니케이션</p>
+        </nav>
+        <div class="row blog-entries element-animate">
+            <div class="post-content-body">
+                <div class="">
+                    <label for="title">제목</label>
+                    <p
+                            class="form-control"
+                            id="title"
+                            th:text="${postDto.title}"
+                            type="text"
+                    ></p>
                 </div>
-                <div class="comment-body">
-                    <h3 th:text="${comment.nickname}"></h3>
-                    <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
-                    <p th:text="${comment.content}">내용</p>
-                    <p><a href="#" class="reply rounded">Reply</a></p>
+                <div class="" th:if="${postDto.boardId} == 1">
+                    <label for="title">구분</label>
+                    <p
+                            class="form-control"
+                            id="gbVal"
+                            th:text="${postDto.gbVal} == 1 ? '@Head' : (${postDto.gbVal} == 2 ? '@산행' : (${postDto.gbVal} == 3 ? '@중요' : '@일반'))"
+                            type="text"
+                    ></p>
                 </div>
-                <ul class="children" th:each="children, index :${comment.children}">
-                    <li class="comment">
-                        <div class="vcard">
-                            <img src="images/person_3.jpg" alt="Image placeholder">
-                        </div>
+                <div class="mb-3">
+                    <label for="memberName">작성자</label>
+                    <p
+                            class="form-control"
+                            id="memberName"
+                            th:text="${postDto.username}"
+                    ></p>
+                </div>
+                <div class="mb-3">
+                    <label for="boardContent">내용</label>
+                    <p
+                            class="form-control"
+                            id="boardContent"
+                            th:text="${postDto.content}"
+                    ></p>
+                </div>
+                <div>
+                    <a class="btn btn-sm btn-primary"
+                       id="btnSave"
+                       th:href="@{/board/update/{postId}(postId=${postDto.id})}"
+                    >
+                        수정
+                    </a>
+                    <a
+                            class="btn btn-sm btn-primary"
+                            id="btnList"
+                            th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
+                    >
+                        목록
+                    </a>
+                </div>
+            </div>
+            <div class="comment-wrap">
+                <br>
+                <h3 class="heading"> Comments</h3>
+                <ul class="comment-list">
+                    <li class="comment" th:each="comment, index : ${commentDto}">
                         <div class="comment-body">
-                            <h3 th:text="${children.nickname}"></h3>
+                            <h5 th:text="${comment.nickname}"></h5>
                             <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
-                            <p th:text="${children.content}">내용</p>
+                            <p th:text="${comment.content}">내용</p>
                             <p><a href="#" class="reply rounded">Reply</a></p>
                         </div>
+                        <ul class="children" th:each="children, index :${comment.children}">
+                            <li class="comment">
+                                <div class="comment-body">
+                                    <h5 th:text="${children.nickname}"></h5>
+                                    <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
+                                    <p th:text="${children.content}">내용</p>
+                                    <p><a href="#" class="reply rounded">Reply</a></p>
+                                </div>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </section>
 <script th:inline="javascript">

@@ -10227,8 +10227,9 @@ textarea {
         width: 50px;
         border-radius: 50%; }
     .comment-list li .comment-body {
-      float: right;
-      width: calc(100% - 80px); }
+      /*float: right;*/
+      /*width: calc(100% - 80px); */
+    }
       .comment-list li .comment-body h3, .comment-list li .comment-body .h3 {
         font-size: 20px;
         color: #000; }

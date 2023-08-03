@@ -8,14 +8,15 @@
 >
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
-<section class="section bg-light">
+<section class="section">
     <form
             enctype="multipart/form-data"
-            th:action="@{/update}"
+            th:action="@{/board/update}"
             th:method="put"
             th:object="${postDto}"
     >
         <input name="id" th:value="*{id}" type="hidden"/>
+        <input name="memberId" th:value="${#authentication.getPrincipal().username}" type="hidden"/>
         <article>
             <div class="container" role="main">
                 <div class="form-group">
@@ -42,7 +43,7 @@
                             name="memberName"
                             readonly
                             type="text"
-                            value="관리자"
+                            th:value="${#authentication.getPrincipal().name}"
                     />
                 </div>
                 <br/>
@@ -58,52 +59,54 @@
                     ></textarea>
                 </div>
                 <br/>
-                <div class="mb-3">
-                    <label for="content">첨부파일</label>
-                    <p th:each="postFile, index : ${postFile}">
-                        <a
-                                th:href="@{/fileDownload/{postId}(postId=${postFile.fileId})}"
-                                th:text="${postFile.originFileName}"
-                        >파일이름1.png</a
-                        >
-                        <span>
-                            <button
-                                    class="btn btn-outline-danger"
-                                    th:fileId="${postFile.postFileId}"
-                                    th:onclick="postDelete(this.getAttribute('fileId'))"
-                                    type="button"
-                            >
-                            삭제
-                            </button>
-                        </span>
-                    </p>
-                    <br/>
-                    <div class="mb-3">
-                        <label class="form-label" for="formFileMultiple"
-                        >파일업로드</label
-                        >
-                        <input
-                                class="form-control"
-                                id="formFileMultiple"
-                                multiple
-                                name="multipartFile"
-                                type="file"
-                        />
-                    </div>
-                </div>
+<!--                <div class="mb-3">-->
+<!--                    <label for="content">첨부파일</label>-->
+<!--                    <p th:each="postFile, index : ${postFile}">-->
+<!--                        <a-->
+<!--                                th:href="@{/fileDownload/{postId}(postId=${postFile.fileId})}"-->
+<!--                                th:text="${postFile.originFileName}"-->
+<!--                        >파일이름1.png</a-->
+<!--                        >-->
+<!--                        <span>-->
+<!--                            <button-->
+<!--                                    class="btn btn-outline-danger"-->
+<!--                                    th:fileId="${postFile.postFileId}"-->
+<!--                                    th:onclick="postDelete(this.getAttribute('fileId'))"-->
+<!--                                    type="button"-->
+<!--                            >-->
+<!--                            삭제-->
+<!--                            </button>-->
+<!--                        </span>-->
+<!--                    </p>-->
+<!--                    <br/>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label" for="formFileMultiple"-->
+<!--                        >파일업로드</label-->
+<!--                        >-->
+<!--                        <input-->
+<!--                                class="form-control"-->
+<!--                                id="formFileMultiple"-->
+<!--                                multiple-->
+<!--                                name="multipartFile"-->
+<!--                                type="file"-->
+<!--                        />-->
+<!--                    </div>-->
+<!--                </div>-->
                 <br/>
                 <div>
-                    <button class="btn btn-sm btn-primary" id="btnSave" type="submit">
+                    <button class="btn btn-sm btn-primary"
+                       id="btnSave"
+                       type="submit"
+                    >
                         수정
                     </button>
-                    <button
+                    <a
                             class="btn btn-sm btn-primary"
                             id="btnList"
-                            onclick="location.href='/board'"
-                            type="button"
+                            th:href="@{/board/detail/{postId}(postId=${postDto.id})}"
                     >
-                        목록
-                    </button>
+                        취소
+                    </a>
                 </div>
             </div>
         </article>

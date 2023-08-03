@@ -6,16 +6,16 @@ import com.kmpc.web.board.repository.PostCustomRepository;
 import com.kmpc.web.board.repository.PostImageRepository;
 import com.kmpc.web.board.service.PostService;
 import com.kmpc.web.common.entity.Code;
+import com.kmpc.web.common.entity.CodeId;
 import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.member.entity.Member;
-import com.kmpc.web.security.UserDetailsImpl;
+import com.kmpc.web.member.repository.MemberRepository;
 import com.kmpc.web.util.CommonUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,17 +23,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RequestMapping("/gallery")
 @Controller
 @RequiredArgsConstructor
-public class MtController {
+public class GalleryController {
 
     private final PostCustomRepository postCustomRepository;
     private final PostImageRepository postImageRepository;
     private final CodeRepository codeRepository;
     private final PostService postService;
     private final CommonUtil commonUtil;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/mt")
     public String mtList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
@@ -55,6 +57,10 @@ public class MtController {
         Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L);
         List<Code> codeList = codeRepository.findByClassCode("MT");
 
+        codeList.stream().forEach(a -> {
+            if(Objects.equals(a.getCodeNo(), map.get("mtNo"))) map.put("mtName", a.getCodeName());
+        });
+        ;
         model.addAttribute("list", results);
 //        model.addAttribute("maxPage", 5);
 //        model.addAttribute("totalCount", results.getTotalElements());
@@ -83,17 +89,17 @@ public class MtController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/upload")
-    public String write(Model model, @PathVariable Long boardId) {
+    public String uploadPage(Model model) {
         Member member = commonUtil.getMember();
 
-        String classCode = boardId == 1 ? "Notice" :  (boardId == 3 ? "MT" : null);
+        String classCode = "MT";
         List<Code> codeList = codeRepository.findByClassCode(classCode);
 
-        MtPostDto postDto = new MtPostDto();
-        postDto.setUsername(member.getMemberName());
-        postDto.setBoardId(boardId);
+        MtPostDto mtPostDto = new MtPostDto();
+        mtPostDto.setUsername(member.getMemberName());
+        mtPostDto.setBoardId(3L);
 
-        model.addAttribute("postDto", postDto);
+        model.addAttribute("mtPostDto", mtPostDto);
         model.addAttribute("codeList", codeList);
 
 
@@ -101,25 +107,25 @@ public class MtController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/write")
-    public String save(@Valid MtPostDto postDto, BindingResult result,
-            Model model) throws Exception {
-        Member member = commonUtil.getMember();
-
+    @PostMapping("/upload")
+    public String save(@Valid MtPostDto mtPostDto, BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
-            postDto.setUsername(member.getMemberName());
-            return "pages/board/write";
+            List<Code> codeList = codeRepository.findByClassCode("MT");
+            model.addAttribute("codeList", codeList);
+            return "pages/mt/upload";
         }
 
-        Long l = postService.saveMtPost(postDto);
-        return"`redirect:/mt/detail/"+l;
+        MtPostDto saveMtPost = postService.saveMtPost(mtPostDto);
+        return "redirect:/gallery/detail/"+saveMtPost.getId();
     }
 
     @GetMapping("/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
+        Code mt = codeRepository.findById(new CodeId("MT", post.getGbVal())).get();
         MtPostDto postDto = post.toMtDto();
         model.addAttribute("postDto", postDto);
+        model.addAttribute("code", mt);
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
         model.addAttribute("postFile", postImageRepository.findByPost(post));
 

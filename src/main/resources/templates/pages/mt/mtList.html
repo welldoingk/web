@@ -31,7 +31,7 @@
                             <input class="form-check-input" type="radio" th:value="${mt.codeNo}" id="radio" name="radio"
                                    th:checked="${map.mtNo eq mt.codeNo}">
                             <label class="form-check-label" for="radio" th:text="${mt.codeName}">
-                                설악산
+                                산명칭
                             </label>
                         </div>
 
@@ -40,14 +40,14 @@
             </div>
             <div class="col-xl-10 col-xs-10">
                 <div class="row mb-6">
-                    <div class="col-sm-6">
-                        <h2 class="posts-entry-title">지리산</h2>
+                    <div class="col-4 col-md" >
+                        <input class="form-control" type="date">
                     </div>
 
                 </div>
                 <div class="row align-items-stretch retro-layout">
                     <div class="col-md-2" th:each="data, index : ${list}">
-                        <a th:href="@{/mt/detail/{postId}(postId=${data.id})}" class="h-entry mb-30 v-height gradient">
+                        <a th:href="@{/gallery/detail/{postId}(postId=${data.id})}" class="h-entry mb-30 v-height gradient">
                             <div class="featured-img"
                                  th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>
                             <div class="text">

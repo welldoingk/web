@@ -23,9 +23,9 @@
     </style>
 </head>
 <script th:inline="javascript">
-/*<![CDATA[*/
+    /*<![CDATA[*/
     var aa = /*[[${codeList}]]*/;
-/*]]>*/
+    /*]]>*/
 </script>
 <body>
 <section class="section bg-light">
@@ -35,18 +35,21 @@
                 <a class="navbar-brand" href="#">업로드</a>
             </div>
         </nav>
-        <form enctype="multipart/form-data" method="post" th:action="@{/board/write}" th:object="${postDto}">
+        <form enctype="multipart/form-data" method="post" th:action="@{/gallery/upload}" th:object="${mtPostDto}">
+            <input name="memberId" th:value="${#authentication.getPrincipal().username}" type="hidden"/>
+            <input name="boardId" th:value="${mtPostDto.boardId}" type="hidden"/>
             <article>
                 <div class="container" role="main">
                     <div class="form-group">
-                        <label for="title">촬영산</label>
-                        <select class="form-control" id="title" name="title" th:if="${codeList}">
+                        <label for="gbVal">촬영산</label>
+                        <select class="form-control" id="gbVal" name="gbVal" th:if="${codeList}">
                             <option value="">-- 선택 --</option>
-                            <option th:each="mt, index : ${codeList}"  th:value="${mt?.codeNo}" th:utext="${mt?.codeName}">
+                            <option th:each="mt, index : ${codeList}" th:value="${mt?.codeNo}"
+                                    th:utext="${mt?.codeName}">
                         </select>
-                        <p th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+                        <p th:errors="*{gbVal}" th:if="${#fields.hasErrors('gbVal')}">
                             Incorrect date
-                        </p>Z
+                        </p>
                     </div>
                     <div class="mb-3">
                         <label for="reg_id">작성자</label>
@@ -55,7 +58,7 @@
                                 id="reg_id"
                                 name="regId"
                                 readonly
-                                th:value="${postDto.username}"
+                                th:value="${#authentication.getPrincipal().name}"
                                 type="text"
                         />
                     </div>
@@ -70,14 +73,14 @@
                     <!--                        ></textarea>-->
                     <!--                    </div>-->
                     <div class="mb-3">
-                        <label class="form-label" for="formFileMultiple"
+                        <label class="form-label" for="postFiles"
                         >파일업로드</label
                         >
                         <input
                                 accept="image/*"
                                 class="form-control"
-                                id="formFileMultiple"
-                                name="imageFiles"
+                                id="postFiles"
+                                name="postFiles"
                                 type="file"
                         />
                     </div>
@@ -101,21 +104,13 @@
                         >
                             저장
                         </button>
-                        <button
+                        <a
                                 class="btn btn-sm btn-primary"
                                 id="btnList"
-                                onclick="location.href='/'"
-                                type="button"
+                                href="/gallery/recent"
                         >
                             목록
-                        </button>
-                        <button
-                                class="btn btn-sm btn-primary"
-                                id="test"
-                                type="button"
-                        >
-                        test
-                        </button>
+                        </a>
                     </div>
                 </div>
             </article>
@@ -126,7 +121,7 @@
 <script th:inline="javascript">
 
 
-    const fileDOM = document.getElementById("formFileMultiple");
+    const fileDOM = document.getElementById("postFiles");
     const test = document.getElementById("test");
     const preview = document.querySelector('.image-box');
 
@@ -136,38 +131,12 @@
             preview.src = target.result;
         };
         reader.readAsDataURL(fileDOM.files[0]);
-
     });
 
-    test.addEventListener("click", function() {
+    preview.addEventListener("load", function () {
         getMetaDataParse(preview);
     });
 
-    async function aa(){
-        EXIF.getData(preview, function () {
-            var make = EXIF.getTag(this, "Make");
-            var model = EXIF.getTag(this, "Model");
-            var metaInfo = document.getElementById("metaInfo");
-            metaInfo.value = `${make} / ${model}`;
-            console.log(`${make} / ${model}`)
-        });
-    }
-
-    var divimg = preview, prevSrc;
-    setInterval(function() {
-        if (divimg.src != prevSrc) {
-            prevSrc = divimg.src;
-            metaInfo.value = null;
-            onSrcChange();
-        }
-    }, 100); // 1000ms = 1s
-
-    function onSrcChange() {
-
-        getMetaDataParse(preview);
-    }
-
-    
     function getMetaDataParse(t) {
         EXIF.getData(t, function () {
                 var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized, DateTime, F, T, l, E;
@@ -184,21 +153,31 @@
                                 height = EXIF.getTag(this, "ImageHeight"),
                                 DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
                                 DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
+                                flash = EXIF.getTag(this, "Flash"),
+                                fNumber = EXIF.getTag(this, "FNumber"),
+                                subjectDistance = EXIF.getTag(this, "SubjectDistance"),
+                                ISOSpeedRatings = EXIF.getTag(this, "ISOSpeedRatings"),
+                                Copyright = EXIF.getTag(this, "Copyright"),
+                                ExposureProgram = EXIF.getTag(this, "ExposureProgram"),
                                 DateTime = EXIF.getTag(this, "DateTime"),
-                                (l = EXIF.getTag(this, "GPSLongitude")) ?
-                                    (
-                                        E = EXIF.getTag(this, "GPSLongitudeRef"),
-                                            T = EXIF.getTag(this, "GPSLatitude"),
-                                            html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
-                                            html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
-                                            l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
-                                            E = (E = E[1].split(":"))[0] + "" + E[1]
-                                    ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+                                // (l = EXIF.getTag(this, "GPSLongitude")) ?
+                                //     (
+                                //         E = EXIF.getTag(this, "GPSLongitudeRef"),
+                                //             T = EXIF.getTag(this, "GPSLatitude"),
+                                //             html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                                //             html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                                //             l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
+                                //             E = (E = E[1].split(":"))[0] + "" + E[1]
+                                //     ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+								html += "<br>",
 								html += "* 촬영일자 : " + DateTime + "<br>",
 								html += "* 촬영기종 : " + make + " " + model + "<br>",
 								// html += "* 사진고유번호 : " + uniqueID + "<br>",
 								html += "* 셔터속도 : " + shutterSpeed + "<br>",
-								html += "* SW : " + sw + "<br>",
+								// html += "* SW : " + sw + "<br>",
+								html += "* " + flash + ", f\/" + fNumber + ", ISO" + ISOSpeedRatings + "<br>",
+								html += "* ExposureProgram : " + ExposureProgram + "<br>",
+								html += "* Copyright : " + Copyright + "<br>",
 								// html += "* 해상도 : " + width + " * " + height + "<br>",
 								// html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
 								html += "", $("#text").html(html))
@@ -207,6 +186,5 @@
             }
         );
     }
-
 </script>
 </html>

@@ -14,9 +14,7 @@
     <section class="section bg-light">
       <div class="container">
         <nav class="navbar bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">커뮤니케이션</a>
-            </div>
+                <p class="navbar-brand">커뮤니케이션</p>
         </nav>
         <div class="row">
           <div class="col-sm-6 mb-3 mb-sm-0">
@@ -25,8 +23,6 @@
                 <h5 class="card-title">공지사항</h5>
                 <table class="table table-hover">
                   <colgroup>
-                    <col width="2%" />
-                    <col width="5%" />
                     <col width="20%" />
                     <col width="5%" />
                     <col width="5%" />
@@ -34,12 +30,6 @@
                   </colgroup>
                   <thead>
                     <tr>
-                      <th>
-                        <label class="checkbox-inline">
-                          <input type="checkbox" id="allCheckBox" class="chk" />
-                        </label>
-                      </th>
-                      <th>번호</th>
                       <th>제목</th>
                       <th>작성자</th>
                       <th>날짜</th>
@@ -48,21 +38,7 @@
                   </thead>
 
                   <tbody>
-                    <tr th:each="list, index : ${list}">
-                      <td>
-                        <label class="checkbox-inline">
-                          <input
-                            type="checkbox"
-                            class="chk"
-                            name="cchk"
-                            value=""
-                          />
-                        </label>
-                      </td>
-
-                      <td
-                        th:text="${totalCount - (size * number) - index.index}"
-                      ></td>
+                    <tr th:each="list, index : ${list1}">
                       <td>
                         <a
                           th:text="${list.title}"
@@ -78,7 +54,7 @@
                   </tbody>
                 </table>
               </div>
-              <button class="btn" id="write">글쓰기</button>
+              <a class="btn" href="/board/write/1">글쓰기</a>
             </div>
           </div>
           <div class="col-sm-6">
@@ -87,8 +63,6 @@
                 <h5 class="card-title">자유 게시판</h5>
                 <table class="table table-hover">
                   <colgroup>
-                    <col width="2%" />
-                    <col width="5%" />
                     <col width="20%" />
                     <col width="5%" />
                     <col width="5%" />
@@ -96,12 +70,6 @@
                   </colgroup>
                   <thead>
                     <tr>
-                      <th>
-                        <label class="checkbox-inline">
-                          <input type="checkbox" id="allCheckBox" class="chk" />
-                        </label>
-                      </th>
-                      <th>번호</th>
                       <th>제목</th>
                       <th>작성자</th>
                       <th>날짜</th>
@@ -110,22 +78,13 @@
                   </thead>
 
                   <tbody>
-                    <tr th:each="list, index : ${list}">
+                    <tr th:each="list, index : ${list2}">
                       <td>
-                        <label class="checkbox-inline">
-                          <input
-                            type="checkbox"
-                            class="chk"
-                            name="cchk"
-                            value=""
-                          />
-                        </label>
+                        <a
+                          th:text="${list.title}"
+                          th:href="@{/board/detail/{postId}(postId=${list.id})}"
+                        ></a>
                       </td>
-
-                      <td
-                        th:text="${totalCount - (size * number) - index.index}"
-                      ></td>
-                      <td><a th:text="${list.title}" href=""></a></td>
                       <td th:text="${list.username}"></td>
                       <td
                         th:text="${#temporals.format(list.createAt, 'yy-MM-dd')}"
@@ -135,7 +94,7 @@
                   </tbody>
                 </table>
               </div>
-              <button class="btn">글쓰기</button>
+              <a class="btn" href="/board/write/2">글쓰기</a>
             </div>
           </div>
         </div>

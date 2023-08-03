@@ -66,6 +66,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         Long count = jpaQueryFactory
                 .select(post.count())
                 .from(post)
+                .where(isEqToBoardId(BoardId))
                 // .leftJoin(board.member, member) //검색조건 최적화
                 .fetchOne();
         return count;

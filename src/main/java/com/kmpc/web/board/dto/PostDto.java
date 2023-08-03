@@ -37,6 +37,8 @@ public class PostDto {
 
     private String username; // 사용자 이름
 
+    private String memberId; // 사용자 이름
+
     private List<MultipartFile> postFiles;
 
     @QueryProjection

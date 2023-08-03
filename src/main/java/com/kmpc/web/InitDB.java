@@ -1,9 +1,11 @@
 package com.kmpc.web;
 
 import com.kmpc.web.board.entity.Board;
+import com.kmpc.web.board.entity.Comment;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.entity.PostImage;
 import com.kmpc.web.board.repository.BoardRepository;
+import com.kmpc.web.board.repository.CommentRepository;
 import com.kmpc.web.board.repository.PostImageRepository;
 import com.kmpc.web.board.repository.PostRepository;
 import com.kmpc.web.common.entity.Code;
@@ -39,6 +41,7 @@ public class InitDB {
         private final BoardRepository boardRepository;
         private final PostRepository postRepository;
         private final PostImageRepository postImageRepository;
+        private final CommentRepository commentRepository;
         private final PasswordEncoder passwordEncoder;
 
         public void userDBInit() {
@@ -165,6 +168,20 @@ public class InitDB {
                 postRepository.save(post);
                 postImageRepository.save(postImage);
 
+                Comment comment1 = Comment.builder()
+                        .content("contentcontentcontent")
+                        .post(post)
+                        .member(memberRepository.findByMemberId("1").get())
+                        .build();
+                commentRepository.save(comment1);
+                Comment comment2 = Comment.builder()
+                        .content("contentcontentcontent")
+                        .post(post)
+                        .parent(comment1)
+                        .member(memberRepository.findByMemberId("1").get())
+                        .build();
+                commentRepository.save(comment2);
+
                 post = Post.builder()
                         .member(memberRepository.findByMemberId("1").get())
                         .title("자유 테스트")
@@ -230,6 +247,7 @@ public class InitDB {
                     postImageRepository.save(postImage);
                 }
             }
+
         }
     }
 }

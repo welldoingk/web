@@ -1,16 +1,21 @@
 package com.kmpc.web.board.service;
 
 import com.kmpc.web.board.dto.CommentDto;
+import com.kmpc.web.board.dto.CommentRequestDto;
 import com.kmpc.web.board.entity.Comment;
 import com.kmpc.web.board.entity.Post;
+import com.kmpc.web.board.repository.CommentCustomRepository;
 import com.kmpc.web.board.repository.CommentRepository;
 import com.kmpc.web.board.repository.PostRepository;
+import com.kmpc.web.member.repository.MemberRepository;
 import com.kmpc.web.util.CommonUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +25,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final CommonUtil commonUtil;
+    private final MemberRepository memberRepository;
+    private final CommentCustomRepository commentCustomRepository;
+
+    public List<CommentDto> findCommentsByPostId(Long postId) {
+        Post post = postRepository.findById(postId).get();
+        return commentCustomRepository.getAllCommentsByPost(post);
+    }
 
     @Transactional
-    public Long createComment(CommentDto requestDto, HttpServletRequest request) {
+    public CommentDto save(CommentRequestDto requestDto) {
 
 
         Post post = postRepository.findById(requestDto.getPostId()).get();
@@ -33,7 +45,7 @@ public class CommentService {
             parent = commentRepository.findById(requestDto.getParentId()).get();
         }
         Comment comment = Comment.builder()
-                .member(commonUtil.getMember())
+                .member(memberRepository.findByMemberId(requestDto.getMemberId()).get())
                 .post(post)
                 .content(requestDto.getContent())
                 .build();
@@ -44,21 +56,22 @@ public class CommentService {
         commentRepository.save(comment);
 
         CommentDto commentDto = null;
-        if (parent != null) {
-            commentDto = CommentDto.builder()
-                    .id(comment.getId())
-                    .memberName(comment.getMember().getMemberName())
-                    .content(comment.getContent())
-                    .parentId(comment.getParent().getId())
-                    .build();
-        } else {
-            commentDto = commentDto.builder()
-                    .id(comment.getId())
-                    .memberName(comment.getMember().getMemberName())
-                    .content(comment.getContent())
-                    .build();
-        }
 
-        return commentDto.getId();
+//        if (parent != null) {
+//            commentDto = CommentDto.builder()
+//                    .id(comment.getId())
+//                    .nickname(comment.getMember().getMemberName())
+//                    .content(comment.getContent())
+//                    .parentId(comment.getParent().getId())
+//                    .build();
+//        } else {
+//            commentDto = CommentDto.builder()
+//                    .id(comment.getId())
+//                    .nickname(comment.getMember().getMemberName())
+//                    .content(comment.getContent())
+//                    .build();
+//        }
+
+        return commentDto;
     }
 }

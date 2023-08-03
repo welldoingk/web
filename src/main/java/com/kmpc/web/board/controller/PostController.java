@@ -1,9 +1,12 @@
 package com.kmpc.web.board.controller;
 
+import com.kmpc.web.board.dto.CommentDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
-import com.kmpc.web.board.repository.CustomPostRepository;
+import com.kmpc.web.board.entity.PostImage;
+import com.kmpc.web.board.repository.PostCustomRepository;
 import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.service.CommentService;
 import com.kmpc.web.board.service.PostService;
 import com.kmpc.web.common.entity.Code;
 import com.kmpc.web.common.repository.CodeRepository;
@@ -33,16 +36,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final CustomPostRepository customPostRepository;
+    private final PostCustomRepository postCustomRepository;
     private final PostImageRepository postImageRepository;
     private final CodeRepository codeRepository;
     private final PostService postService;
+    private final CommentService commentService;
     private final CommonUtil commonUtil;
 
     @GetMapping("/board")
     public String main(String searchVal, Pageable pageable,
             Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, null);
+        Page<PostDto> results = postCustomRepository.selectPostList(searchVal, pageable, null);
         model.addAttribute("list", results);
         model.addAttribute("maxPage", 5);
         model.addAttribute("totalCount", results.getTotalElements());
@@ -53,7 +57,7 @@ public class PostController {
 
     @GetMapping("/board/{boardId}")
     public String list(@PathVariable Long boardId, String searchVal, Pageable pageable, Model model) {
-        Page<PostDto> results = customPostRepository.selectPostList(searchVal, pageable, boardId);
+        Page<PostDto> results = postCustomRepository.selectPostList(searchVal, pageable, boardId);
         model.addAttribute("list", results);
         model.addAttribute("maxPage", 5);
         model.addAttribute("totalCount", results.getTotalElements());
@@ -69,6 +73,7 @@ public class PostController {
 
         String classCode = boardId == 1 ? "Notice" :  (boardId == 3 ? "MT" : null);
         List<Code> codeList = codeRepository.findByClassCode(classCode);
+
 
         PostDto postDto = new PostDto();
         postDto.setUsername(member.getMemberName());
@@ -101,10 +106,14 @@ public class PostController {
     @GetMapping("/board/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
+        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
         PostDto postDto = post.toDto();
+
         model.addAttribute("postDto", postDto);
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
-        model.addAttribute("postFile", postImageRepository.findByPost(post));
+        model.addAttribute("postFile", postImages);
+        model.addAttribute("commentDto", commentDto);
 
         return "pages/board/detail";
     }

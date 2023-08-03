@@ -1,5 +1,6 @@
 package com.kmpc.web.board.service;
 
+import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.entity.PostImage;
 import com.kmpc.web.board.repository.PostImageRepository;
 import com.kmpc.web.util.CommonUtil;
@@ -56,7 +57,47 @@ public class PostService {
         return post.getId();
     }
 
+    @Transactional
+    public Long saveMtPost(MtPostDto postDto) throws Exception{
+        Post post = null;
+        Member member = memberUtil.getMember();
+        //insert
+        if(postDto.getId() == null){
+            post = postDto.toEntity(memberRepository.findById(member.getMemberId()).get());
+            postRepository.save(post);
+        }
+
+        //update
+        else{
+            post = postRepository.findById(postDto.getId()).get();
+            post.update(postDto.getTitle(), postDto.getContent());
+        }
+
+
+        if(postDto.getPostFiles().isEmpty()) {
+            List<String> postImages = uploadPostImages(postDto, post);
+        }
+
+//        fileService.saveFile(postDto, post.getId());
+
+        return post.getId();
+    }
+
      private List<String> uploadPostImages(PostDto postDto, Post post)  {
+        return postDto.getPostFiles().stream()
+                .map(image -> {
+                    try {
+                        return s3Uploader.upload(image, postDto.getBoardId() == 3 ? "MT" : "post");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .map(url -> createPostImage(post, url))
+                .map(PostImage::getImageUrl)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> uploadPostImages(MtPostDto postDto, Post post)  {
         return postDto.getPostFiles().stream()
                 .map(image -> {
                     try {

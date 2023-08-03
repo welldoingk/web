@@ -1,4 +1,4 @@
-package com.kmpc.web.util;
+package com.kmpc.web;
 
 import com.kmpc.web.board.entity.Board;
 import com.kmpc.web.board.entity.Post;
@@ -11,10 +11,10 @@ import com.kmpc.web.common.repository.CodeRepository;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.member.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -59,6 +60,19 @@ public class Comment extends Timestamped {
     public boolean validateMember(Member member) {
         return !this.member.equals(member);
     }
+
+//    public CommentDto toDto() {
+//        return CommentDto.builder()
+//                .id(id)
+//                .content(content)
+//                .nickname(member.getNickname())
+////                .children(children.toListDto())
+//                .postId(post.getId())
+//                .build();
+//    }
+//
+//
+
 
     @Builder
     public Comment(String content,String delYn, Member member, Post post) {

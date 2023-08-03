@@ -1,8 +1,8 @@
 package com.kmpc.web.board.controller;
 
-import com.kmpc.web.board.dto.PostDto;
+import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.entity.Post;
-import com.kmpc.web.board.repository.CustomPostRepository;
+import com.kmpc.web.board.repository.PostCustomRepository;
 import com.kmpc.web.board.repository.PostImageRepository;
 import com.kmpc.web.board.service.PostService;
 import com.kmpc.web.common.entity.Code;
@@ -29,7 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MtController {
 
-    private final CustomPostRepository customPostRepository;
+    private final PostCustomRepository postCustomRepository;
     private final PostImageRepository postImageRepository;
     private final CodeRepository codeRepository;
     private final PostService postService;
@@ -37,7 +37,7 @@ public class MtController {
 
     @GetMapping("/mt")
     public String mtList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
-        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L);
         List<Code> codeList = codeRepository.findByClassCode("MT");
 
         model.addAttribute("list", results);
@@ -47,12 +47,12 @@ public class MtController {
 //        model.addAttribute("number", results.getPageable().getPageNumber());
         model.addAttribute("codeList", codeList);
         model.addAttribute("map", map);
-        return "pages/MT/mtList";
+        return "pages/mt/mtList";
     }
 
     @GetMapping("/recent")
     public String recentList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
-        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L);
         List<Code> codeList = codeRepository.findByClassCode("MT");
 
         model.addAttribute("list", results);
@@ -62,13 +62,13 @@ public class MtController {
 //        model.addAttribute("number", results.getPageable().getPageNumber());
         model.addAttribute("codeList", codeList);
         model.addAttribute("map", map);
-        return "pages/MT/mtList";
+        return "pages/mt/mtList";
     }
 
     @GetMapping("/member")
     public String memberList(@RequestParam Map<String,String> map, Pageable pageable, Model model) {
         String mtNo = map.get("mtNo");
-        Page<PostDto> results = customPostRepository.selectGalleryList(map, pageable, 3L);
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L);
         List<Code> codeList = codeRepository.findByClassCode("MT");
 
         model.addAttribute("list", results);
@@ -78,7 +78,7 @@ public class MtController {
 //        model.addAttribute("number", results.getPageable().getPageNumber());
         model.addAttribute("codeList", codeList);
         model.addAttribute("map", map);
-        return "pages/MT/mtList";
+        return "pages/mt/mtList";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -89,7 +89,7 @@ public class MtController {
         String classCode = boardId == 1 ? "Notice" :  (boardId == 3 ? "MT" : null);
         List<Code> codeList = codeRepository.findByClassCode(classCode);
 
-        PostDto postDto = new PostDto();
+        MtPostDto postDto = new MtPostDto();
         postDto.setUsername(member.getMemberName());
         postDto.setBoardId(boardId);
 
@@ -97,12 +97,12 @@ public class MtController {
         model.addAttribute("codeList", codeList);
 
 
-        return "pages/MT/upload";
+        return "pages/mt/upload";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
-    public String save(@Valid PostDto postDto, BindingResult result,
+    public String save(@Valid MtPostDto postDto, BindingResult result,
             Model model) throws Exception {
         Member member = commonUtil.getMember();
 
@@ -111,43 +111,43 @@ public class MtController {
             return "pages/board/write";
         }
 
-        Long l = postService.savePost(postDto);
+        Long l = postService.saveMtPost(postDto);
         return"`redirect:/mt/detail/"+l;
     }
 
     @GetMapping("/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
-        PostDto postDto = post.toDto();
+        MtPostDto postDto = post.toMtDto();
         model.addAttribute("postDto", postDto);
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
         model.addAttribute("postFile", postImageRepository.findByPost(post));
 
-        return "pages/MT/detail";
+        return "pages/mt/detail";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PutMapping("/board/update")
-    public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid PostDto postDto,
-            BindingResult result) throws Exception {
-        // 유효성검사 걸릴시
-        if (result.hasErrors()) {
-            return "pages/board/update";
-        }
-
-        postService.savePost(postDto);
-        return "redirect:/";
-    }
-
-    @PostMapping("/delete")
-    public String delete(@RequestParam List<String> postIds) {
-
-        for (int i = 0; i < postIds.size(); i++) {
-            Long id = Long.valueOf(postIds.get(i));
-            postService.deleteBoard(id);
-        }
-
-        return "redirect:/";
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @PutMapping("/board/update")
+//    public String update(@AuthenticationPrincipal UserDetailsImpl principal, @Valid MtPostDto postDto,
+//            BindingResult result) throws Exception {
+//        // 유효성검사 걸릴시
+//        if (result.hasErrors()) {
+//            return "pages/board/update";
+//        }
+//
+//        postService.savePost(postDto);
+//        return "redirect:/";
+//    }
+//
+//    @PostMapping("/delete")
+//    public String delete(@RequestParam List<String> postIds) {
+//
+//        for (int i = 0; i < postIds.size(); i++) {
+//            Long id = Long.valueOf(postIds.get(i));
+//            postService.deleteBoard(id);
+//        }
+//
+//        return "redirect:/";
+//    }
 
 }

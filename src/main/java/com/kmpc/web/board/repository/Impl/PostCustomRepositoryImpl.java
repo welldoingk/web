@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.dto.PostDto;
+import com.kmpc.web.board.dto.QMtPostDto;
 import com.kmpc.web.board.dto.QPostDto;
-import com.kmpc.web.board.entity.PostImage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.kmpc.web.board.repository.CustomPostRepository;
+import com.kmpc.web.board.repository.PostCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -25,7 +26,7 @@ import static com.kmpc.web.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepositoryImpl implements CustomPostRepository {
+public class PostCustomRepositoryImpl implements PostCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -36,8 +37,8 @@ public class PostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public Page<PostDto> selectGalleryList(Map<String,String> map, Pageable pageable, Long boardId) {
-        List<PostDto> content = getPostGalleryDtos(map, pageable, boardId);
+    public Page<MtPostDto> selectGalleryList(Map<String,String> map, Pageable pageable, Long boardId) {
+        List<MtPostDto> content = getPostGalleryDtos(map, pageable, boardId);
         Long count = getCount(boardId);
         return new PageImpl<>(content, pageable, count);
     }
@@ -81,8 +82,7 @@ public class PostRepositoryImpl implements CustomPostRepository {
                         post.viewCount,
                         member.memberName,
                         post.boardId,
-                        post.gbVal,
-                        postImage.imageUrl
+                        post.gbVal
                 ))
                 .from(post)
                 .leftJoin(post.member, member)
@@ -95,9 +95,9 @@ public class PostRepositoryImpl implements CustomPostRepository {
         return content;
     }
 
-    private List<PostDto> getPostGalleryDtos(Map<String,String> map, Pageable pageable, Long boardId) {
-        List<PostDto> content = jpaQueryFactory
-                .select(new QPostDto(
+    private List<MtPostDto> getPostGalleryDtos(Map<String,String> map, Pageable pageable, Long boardId) {
+        List<MtPostDto> content = jpaQueryFactory
+                .select(new QMtPostDto(
                         post.id,
                         post.title,
                         post.content,

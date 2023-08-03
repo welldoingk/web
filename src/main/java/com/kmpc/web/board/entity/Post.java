@@ -1,5 +1,6 @@
 package com.kmpc.web.board.entity;
 
+import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.member.entity.Member;
 import com.kmpc.web.util.Timestamped;
@@ -60,6 +61,17 @@ public class Post extends Timestamped {
 
     public PostDto toDto() {
         return PostDto.builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .viewCount(viewCount)
+                .boardId(boardId)
+                .gbVal(gbVal)
+                .username(member.getMemberName())
+                .build();
+    }
+    public MtPostDto toMtDto() {
+        return MtPostDto.builder()
                 .id(id)
                 .title(title)
                 .content(content)

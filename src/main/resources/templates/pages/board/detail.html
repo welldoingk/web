@@ -104,85 +104,32 @@
         </div>
         <h3 class="mb-5 heading"> Comments</h3>
         <ul class="comment-list">
-              <li class="comment">
+
+            <li class="comment" th:each="comment, index :${commentDto}">
                 <div class="vcard">
-                  <img src="images/person_1.jpg" alt="Image placeholder">
+                    <img src="images/person_2.jpg" alt="Image placeholder">
                 </div>
                 <div class="comment-body">
-                  <h3>Jean Doe</h3>
-                  <div class="meta">January 9, 2018 at 2:21pm</div>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                  <p><a href="#" class="reply rounded">Reply</a></p>
+                    <h3 th:text="${comment.nickname}"></h3>
+                    <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
+                    <p th:text="${comment.content}">내용</p>
+                    <p><a href="#" class="reply rounded">Reply</a></p>
                 </div>
-              </li>
-
-              <li class="comment">
-                <div class="vcard">
-                  <img src="images/person_2.jpg" alt="Image placeholder">
-                </div>
-                <div class="comment-body">
-                  <h3>Jean Doe</h3>
-                  <div class="meta">January 9, 2018 at 2:21pm</div>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                  <p><a href="#" class="reply rounded">Reply</a></p>
-                </div>
-
-                <ul class="children">
-                  <li class="comment">
-                    <div class="vcard">
-                      <img src="images/person_3.jpg" alt="Image placeholder">
-                    </div>
-                    <div class="comment-body">
-                      <h3>Jean Doe</h3>
-                      <div class="meta">January 9, 2018 at 2:21pm</div>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                      <p><a href="#" class="reply rounded">Reply</a></p>
-                    </div>
-
-
-                    <ul class="children">
-                      <li class="comment">
+                <ul class="children" th:each="children, index :${comment.children}">
+                    <li class="comment">
                         <div class="vcard">
-                          <img src="images/person_4.jpg" alt="Image placeholder">
+                            <img src="images/person_3.jpg" alt="Image placeholder">
                         </div>
                         <div class="comment-body">
-                          <h3>Jean Doe</h3>
-                          <div class="meta">January 9, 2018 at 2:21pm</div>
-                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                          <p><a href="#" class="reply rounded">Reply</a></p>
+                            <h3 th:text="${children.nickname}"></h3>
+                            <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
+                            <p th:text="${children.content}">내용</p>
+                            <p><a href="#" class="reply rounded">Reply</a></p>
                         </div>
-
-                        <ul class="children">
-                          <li class="comment">
-                            <div class="vcard">
-                              <img src="images/person_5.jpg" alt="Image placeholder">
-                            </div>
-                            <div class="comment-body">
-                              <h3>Jean Doe</h3>
-                              <div class="meta">January 9, 2018 at 2:21pm</div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                              <p><a href="#" class="reply rounded">Reply</a></p>
-                            </div>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </li>
+                    </li>
                 </ul>
-              </li>
-
-              <li class="comment">
-                <div class="vcard">
-                  <img src="images/person_1.jpg" alt="Image placeholder">
-                </div>
-                <div class="comment-body">
-                  <h3>Jean Doe</h3>
-                  <div class="meta">January 9, 2018 at 2:21pm</div>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit necessitatibus, nihil?</p>
-                  <p><a href="#" class="reply rounded">Reply</a></p>
-                </div>
-              </li>
-            </ul>
+            </li>
+        </ul>
     </div>
 </section>
 <script th:inline="javascript">

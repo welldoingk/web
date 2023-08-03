@@ -13,24 +13,28 @@ https://aamoos.tistory.com/704
 aws
 https://velog.io/@sa833591/AWS-EC2-Spring-Boot-Nginx
 
+댓글
+https://github.com/SongHeeJae/trading_parking_ticket/blob/master/src/main/java/com/kuke/parkingticket/config/security/SecurityConfig.java
+
 S3
 https://velog.io/@do-hoon/%EA%B2%8C%EC%8B%9C%EA%B8%80-%EC%83%9D%EC%84%B1-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9CSpringBoot-JPA-AWS-S3
 
 메타데이더
-https://mitw.tistory.com/40
-EXIF.getTag(this, "Make"),
-EXIF.getTag(this, "Model"),
-EXIF.getTag(this, "ImageUniqueID"),
-EXIF.getTag(this, "ShutterSpeedValue"),
-EXIF.getTag(this, "Software"),
-EXIF.getTag(this, "ImageWidth"),
-EXIF.getTag(this, "ImageHeight"),
-EXIF.getTag(this, "DateTimeOriginal"),
-EXIF.getTag(this, "DateTimeDigitized"),
-EXIF.getTag(this, "DateTime"),
-EXIF.getTag(this, "GPSLongitude"),
-EXIF.getTag(this, "GPSLongitudeRef"),
-EXIF.getTag(this, "GPSLatitude"),
-EXIF.getTag(this, "GPSLatitudeRef")
+
+    https://mitw.tistory.com/40
+    EXIF.getTag(this, "Make"),
+    EXIF.getTag(this, "Model"),
+    EXIF.getTag(this, "ImageUniqueID"),
+    EXIF.getTag(this, "ShutterSpeedValue"),
+    EXIF.getTag(this, "Software"),
+    EXIF.getTag(this, "ImageWidth"),
+    EXIF.getTag(this, "ImageHeight"),
+    EXIF.getTag(this, "DateTimeOriginal"),
+    EXIF.getTag(this, "DateTimeDigitized"),
+    EXIF.getTag(this, "DateTime"),
+    EXIF.getTag(this, "GPSLongitude"),
+    EXIF.getTag(this, "GPSLongitudeRef"),
+    EXIF.getTag(this, "GPSLatitude"),
+    EXIF.getTag(this, "GPSLatitudeRef")
 
 hyJbcER81KFjvc92o9tLI4uUPqxSZl4lSFULr6T8

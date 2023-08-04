@@ -5,7 +5,7 @@
         layout:fragment="Content"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         xmlns:th="http://www.thymeleaf.org"
->
+        xmlns:sec="http://www.w3.org/1999/xhtml">
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -65,78 +65,147 @@
     <input name="id" th:value="${postDto.id}" type="hidden"/>
     <input name="id" th:value="${postDto.boardId}" type="hidden"/>
     <div class="container">
-        <nav class="navbar bg-body-tertiary">
-            <p class="navbar-brand" th:text="${postDto.boardId} == 1 ? '공지사항 상세' : '자유게시판 상세'" >커뮤니케이션</p>
-        </nav>
+        <!--        <nav class="navbar bg-body-tertiary">-->
+        <!--            <p class="navbar-brand" th:text="${postDto.boardId} == 1 ? '공지사항 상세' : '자유게시판 상세'">커뮤니케이션</p>-->
+        <!--        </nav>-->
         <div class="row blog-entries element-animate">
+
+            <div class="d-flex justify-content-start">
+                <h4
+                        id="title"
+                        th:text="${postDto.title}"
+                        type="text">
+                </h4>
+                <span class="align-self-center" th:text="${postDto.createAt}"></span>
+            </div>
+            <div class="d-flex bd-highlight mb-3">
+                <div class="me-auto bd-highlight">
+                    <div class="d-flex justify-content-start">
+                        <div class="pe-2">
+                            <p
+                                    id="memberName"
+                                    th:text="'작성자 :' +${postDto.username} + ' |'"
+                            ></p>
+                        </div>
+                        <div class="pe-2" th:if="${postDto.boardId} == 1">
+                            <p
+                                    id="gbVal"
+                                    th:text="${postDto.gbVal} == 1 ? '#Head' : (${postDto.gbVal} == 2 ? '#산행' : (${postDto.gbVal} == 3 ? '#중요' : '#일반'))"
+                                    type="text"
+                            ></p>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="p-2 bd-highlight"
+                   id="btnDel"
+                   th:onclick="|fn_del(${postDto.id})|"
+                   sec:authorize="isAuthenticated()"
+                >
+                    삭제
+                </a>
+                <a class="p-2 bd-highlight"
+                   id="btnUpdate"
+                   th:href="@{/board/update/{postId}(postId=${postDto.id})}"
+                   sec:authorize="isAuthenticated()"
+                >
+                    수정
+                </a>
+                <a class="p-2 bd-highlight"
+                   id="btnList"
+                   th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
+                >
+                    목록
+                </a>
+            </div>
+            <hr class="mb-30"/>
             <div class="post-content-body">
-                <div class="">
-                    <label for="title">제목</label>
-                    <p
-                            class="form-control"
-                            id="title"
-                            th:text="${postDto.title}"
-                            type="text"
-                    ></p>
-                </div>
-                <div class="" th:if="${postDto.boardId} == 1">
-                    <label for="title">구분</label>
-                    <p
-                            class="form-control"
-                            id="gbVal"
-                            th:text="${postDto.gbVal} == 1 ? '@Head' : (${postDto.gbVal} == 2 ? '@산행' : (${postDto.gbVal} == 3 ? '@중요' : '@일반'))"
-                            type="text"
-                    ></p>
-                </div>
                 <div class="mb-3">
-                    <label for="memberName">작성자</label>
                     <p
-                            class="form-control"
-                            id="memberName"
-                            th:text="${postDto.username}"
-                    ></p>
-                </div>
-                <div class="mb-3">
-                    <label for="boardContent">내용</label>
-                    <p
-                            class="form-control"
                             id="boardContent"
                             th:text="${postDto.content}"
                     ></p>
                 </div>
-                <div>
-                    <a class="btn btn-sm btn-primary"
-                       id="btnSave"
-                       th:href="@{/board/update/{postId}(postId=${postDto.id})}"
-                    >
-                        수정
-                    </a>
-                    <a
-                            class="btn btn-sm btn-primary"
-                            id="btnList"
-                            th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
-                    >
-                        목록
-                    </a>
+            </div>
+            <div class="pt-1">
+
+            </div>
+
+
+            <div class="comment-form-wrap bg-light p-3" sec:authorize="isAuthenticated()">
+                <h3 class="mb-5 heading">댓글</h3>
+                <div class="form-group input-group">
+                    <label for="content"></label><input name="content" id="content" type="text" class="form-control ">
+                    <input type="button" id="commentSubmit" value="작성" class="btn btn-primary">
                 </div>
             </div>
-            <div class="comment-wrap">
-                <br>
-                <h3 class="heading"> Comments</h3>
+
+            <div class="comment-wrap pt-3" id="comment">
                 <ul class="comment-list">
-                    <li class="comment" th:each="comment, index : ${commentDto}">
+                    <li class="comment" th:each="comment, index :${commentDto}">
                         <div class="comment-body">
+                            <hr>
                             <h5 th:text="${comment.nickname}"></h5>
-                            <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
-                            <p th:text="${comment.content}">내용</p>
-                            <p><a href="#" class="reply rounded">Reply</a></p>
+                            <div class="meta" th:text="${#temporals.format(comment.createAt, 'yyyy-mm-dd')}"></div>
+                            <p th:text="${comment.content}"></p>
+                            <p>
+                                <a
+                                        th:if="${comment.memberId != null}"
+                                        data-bs-toggle="collapse"
+                                        sec:authorize="isAuthenticated()"
+                                        th:attr="data-bs-target=|#r${comment.id}"
+                                        class="actionBtn rounded">답글</a>
+                                <a
+                                        th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}"
+                                        data-bs-toggle="collapse"
+                                        sec:authorize="isAuthenticated()"
+                                        th:attr="data-bs-target=|#u${comment.id}"
+                                        class="actionBtn rounded">수정</a>
+                                <a
+                                        th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}"
+                                        sec:authorize="isAuthenticated()"
+                                        href="#"
+                                        class="actionBtn rounded">삭제</a>
+                            </p>
                         </div>
-                        <ul class="children" th:each="children, index :${comment.children}">
+                        <div class="collapse" th:id="r + ${comment.id}">
+                            <form sec:authorize="isAuthenticated()"
+                                  th:action="@{|/post/comments/${comment.id}/reply|}"
+                                  method="post"
+                                  th:object="${commentDto}">
+                                <div class="input-group">
+                                    <input name="content" id="replyContent" type="text" class="form-control"
+                                           placeholder="답글 입력해주세요">
+                                    <label for="replyContent">답글</label>
+                                    <input name="parentId" id="parentId" type="hidden" th:value="${comment.id}"
+                                           class="form-control">
+                                    <button type="submit" value="작성" class="btn btn-primary">답글작성</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="collapse" th:id="u + ${comment.id}">
+                            <form sec:authorize="isAuthenticated()"
+                                  th:action="@{|/post/comments/${comment.id}/update|}"
+                                  method="post"
+                                  th:object="${commentDto}">
+                                <div class="input-group">
+                                    <input name="content" id="updateContent" type="text" class="form-control"
+                                           placeholder="수정 댓글을 입력해주세요">
+                                    <label for="updateContent">수정</label>
+                                    <input name="commentId" id="commentId" type="hidden" th:value="${comment.id}"
+                                           class="form-control">
+
+                                    <button type="submit" value="작성" class="btn btn-primary">수정</button>
+                                </div>
+                            </form>
+                        </div>
+                        <ul class="children" th:each="children, index : ${comment.children}">
                             <li class="comment">
                                 <div class="comment-body">
+                                    <hr>
                                     <h5 th:text="${children.nickname}"></h5>
-                                    <div class="meta" th:text="${comment.createAt}">January 9, 2018 at 2:21pm</div>
-                                    <p th:text="${children.content}">내용</p>
+                                    <div class="meta" th:text="${children.createAt}"></div>
+                                    <p th:text="${children.content}"></p>
                                     <p><a href="#" class="reply rounded">Reply</a></p>
                                 </div>
                             </li>
@@ -149,64 +218,132 @@
 </section>
 <script th:inline="javascript">
 
+    // window.onload = () => {
+    //     findAllComment();
+    // }
 
-    const fileDOM = document.getElementById("formFileMultiple");
-    const preview = document.querySelector('.image-box');
+    document.getElementById("commentSubmit").addEventListener("click", () => {
+        saveComment(null)
+    })
 
-    preview.addEventListener("load", function () {
-        getMetaDataParse(preview);
-    });
+    function fn_del() {
+        if (confirm("정말 삭제하시겠습니까?") == true) {
+            const postId = [[ ${postDto.id}]];
 
-
-    function getMetaDataParse(t) {
-        EXIF.getData(t, function () {
-                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized,
-                    DateTime, F, T, l, E;
-                EXIF.pretty(this)
-                    ?
-                    (
-                        html = "",
-                            make = EXIF.getTag(this, "Make"),
-                            model = EXIF.getTag(this, "Model"),
-                            uniqueID = EXIF.getTag(this, "ImageUniqueID"),
-                            shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
-                            sw = EXIF.getTag(this, "Software"),
-                            width = EXIF.getTag(this, "ImageWidth"),
-                            height = EXIF.getTag(this, "ImageHeight"),
-                            DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
-                            DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
-                            flash = EXIF.getTag(this, "Flash"),
-                            fNumber = EXIF.getTag(this, "FNumber"),
-                            subjectDistance = EXIF.getTag(this, "SubjectDistance"),
-                            ISOSpeedRatings = EXIF.getTag(this, "ISOSpeedRatings"),
-                            Copyright = EXIF.getTag(this, "Copyright"),
-                            ExposureProgram = EXIF.getTag(this, "ExposureProgram"),
-                            DateTime = EXIF.getTag(this, "DateTime"),
-                            // (l = EXIF.getTag(this, "GPSLongitude")) ?
-                            //     (
-                            //         E = EXIF.getTag(this, "GPSLongitudeRef"),
-                            //             T = EXIF.getTag(this, "GPSLatitude"),
-                            //             html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
-                            //             html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
-                            //             l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
-                            //             E = (E = E[1].split(":"))[0] + "" + E[1]
-                            //     ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
-                            html += "<br>",
-                            html += "* 촬영일자 : " + DateTime + "<br>",
-                            html += "* 촬영기종 : " + make + " " + model + "<br>",
-                            // html += "* 사진고유번호 : " + uniqueID + "<br>",
-                            html += "* 셔터속도 : " + shutterSpeed + "<br>",
-                            // html += "* SW : " + sw + "<br>",
-                            html += "* " + flash + ", f\/" + fNumber + ", ISO" + ISOSpeedRatings + "<br>",
-                            html += "* ExposureProgram : " + ExposureProgram + "<br>",
-                            html += "* Copyright : " + Copyright + "<br>",
-                            // html += "* 해상도 : " + width + " * " + height + "<br>",
-                            // html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
-                            html += "", $("#text").html(html))
-                    :
-                    $("#text").html("메타데이터 없음.")
+            var params = {
+                postIds: [postId]
             }
-        );
+            $.ajax({
+                url: `/api/board/delete`,
+                type: 'post',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(params),
+                async: false,
+                success: function(data) {
+
+                }
+            })
+        }
     }
+
+    // 전체 댓글 조회
+    function findAllComment() {
+
+        const postId = [[ ${postDto.id}]];
+
+        $.ajax({
+            url: `/posts/${postId}/comments`,
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            success: function (response) {
+
+                // 1. 조회된 데이터가 없는 경우
+                if (!response.length) {
+                    document.querySelector('.comment-list').innerHTML = `
+                                                                            <li class="comment">
+                                                                            <div class="comment-body">
+                                                                                <h5>등록된 댓글이 없습니다.</h5>
+                                                                            </div>
+                                                                            </li>
+                                                                        `;
+                    return false;
+                }
+
+                // 2. 렌더링 할 HTML을 저장할 변수
+                let commentHtml = '';
+
+                // 3. 댓글 HTML 추가
+                response.forEach(commentDto => {
+                    commentHtml += `
+                        <li class="comment">
+                        <div class="comment-body">
+                            <h5>${commentDto.nickname}</h5>
+                            <div class="meta">${commentDto.createAt}</div>
+                            <p>${commentDto.content}</p>
+                            <p><a href="#" class="reply rounded">Reply</a></p>
+                        </div>
+                        `;
+                    if (commentDto.children != null) {
+                        commentHtml +=
+                            `<ul class="children">`;
+                        commentDto.children.forEach(commentDto => {
+                            commentHtml +=
+                                `
+                                <li class="comment">
+                                    <div class="comment-body">
+                                        <h5>${commentDto.nickname}</h5>
+                                        <div class="meta">${commentDto.createAt}</div>
+                                        <p>${commentDto.content}</p>
+                                        <p><a href="#" class="reply rounded">Reply</a></p>
+                                    </div>
+                                </li>
+                                `;
+                        })
+                        commentHtml +=
+                            `</ul>`;
+                    }
+                    commentHtml += `</li>`;
+                })
+
+                // 4. class가 "cm_list"인 요소를 찾아 HTML을 렌더링
+                document.querySelector('.comment-list').innerHTML = commentHtml;
+            },
+            error: function (request, status, error) {
+                console.log(error)
+            }
+        })
+    }
+
+    // 댓글 저장
+    function saveComment(parentId) {
+
+        const content = document.getElementById('content');
+        // isValid(content, '댓글');
+
+        const postId = [[ ${postDto.id}]];
+        const params = {
+            postId: postId,
+            content: content.value,
+            parentId: parentId
+        }
+
+        $.ajax({
+            url: `/api/saveComment`,
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(params),
+            async: false,
+            success: function (response) {
+                $('#comment').replaceWith(response);
+                content.value = '';
+                alert('저장되었습니다.');
+            },
+            error: function (request, status, error) {
+                console.log(error)
+            }
+        })
+    }
+
 </script>
 </html>

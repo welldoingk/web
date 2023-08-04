@@ -53,25 +53,8 @@ public class CommentService {
         if (null != parent) {
             comment.updateParent(parent);
         }
-        commentRepository.save(comment);
+        Comment save = commentRepository.save(comment);
 
-        CommentDto commentDto = null;
-
-//        if (parent != null) {
-//            commentDto = CommentDto.builder()
-//                    .id(comment.getId())
-//                    .nickname(comment.getMember().getMemberName())
-//                    .content(comment.getContent())
-//                    .parentId(comment.getParent().getId())
-//                    .build();
-//        } else {
-//            commentDto = CommentDto.builder()
-//                    .id(comment.getId())
-//                    .nickname(comment.getMember().getMemberName())
-//                    .content(comment.getContent())
-//                    .build();
-//        }
-
-        return commentDto;
+        return CommentDto.convertCommentToDto(save);
     }
 }

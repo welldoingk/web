@@ -44,15 +44,16 @@ public class CommentDto {
         this.modifiedAt = modifiedAt;
     }
 
-    public CommentDto(Long id, String content, String memberId, String nickname) {
+    public CommentDto(Long id, String content, String memberId, String nickname, LocalDateTime createAt) {
         this.id = id;
         this.content = content;
         this.memberId = memberId;
         this.nickname = nickname;
+        this.createAt = createAt;
     }
 
     public static CommentDto convertCommentToDto(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), comment.getMember().getNickname());
+        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), comment.getMember().getNickname(), comment.getCreateAt());
     }
 
     public Comment toEntity(Member member, Post post) {

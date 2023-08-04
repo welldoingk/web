@@ -68,6 +68,8 @@ public class Post extends Timestamped {
                 .viewCount(viewCount)
                 .boardId(boardId)
                 .gbVal(gbVal)
+                .createAt(getCreateAt())
+                .createAt(getModifiedAt())
                 .username(member.getMemberName())
                 .build();
     }

@@ -142,7 +142,7 @@ public class PostController {
 
         PostDto savedPost = postService.savePost(postDto);
         model.addAttribute("postDto", savedPost);
-        return "pages/board/update";
+        return "pages/board/detail";
     }
 
     @PostMapping("/api/board/delete")

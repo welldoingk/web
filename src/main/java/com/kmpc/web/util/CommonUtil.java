@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommonUtil {
 
-    public Member getMember(){
+    public static Member getMember(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 

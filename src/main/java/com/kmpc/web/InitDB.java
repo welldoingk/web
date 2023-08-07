@@ -197,7 +197,7 @@ public class InitDB {
                 postRepository.save(post);
                 postImageRepository.save(postImage);
 
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 100; i++) {
 
                     post = Post.builder()
                             .member(memberRepository.findByMemberId("1").get())
@@ -214,7 +214,7 @@ public class InitDB {
                     postImageRepository.save(postImage);
                 }
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 15; i++) {
 
                     post = Post.builder()
                             .member(memberRepository.findByMemberId("1").get())
@@ -230,7 +230,7 @@ public class InitDB {
                     postRepository.save(post);
                     postImageRepository.save(postImage);
                 }
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 23; i++) {
 
                     post = Post.builder()
                             .member(memberRepository.findByMemberId("1").get())

@@ -34,21 +34,38 @@ public class CommentService {
     }
 
     @Transactional
+    public CommentDto delete(CommentRequestDto requestDto){
+        Comment comment = commentRepository.findById(requestDto.getCommentId()).get();
+        comment.delete("Y");
+
+        return CommentDto.convertCommentToDto(comment);
+    }
+
+    @Transactional
     public CommentDto save(CommentRequestDto requestDto) {
-
-
         Post post = postRepository.findById(requestDto.getPostId()).get();
 
         Comment parent = null;
+        Comment comment = null;
         if (requestDto.getParentId() != null) {
             // 자식댓글인 경우
             parent = commentRepository.findById(requestDto.getParentId()).get();
         }
-        Comment comment = Comment.builder()
-                .member(memberRepository.findByMemberId(requestDto.getMemberId()).get())
-                .post(post)
-                .content(requestDto.getContent())
-                .build();
+        if (requestDto.getCommentId() != null) {
+            comment = Comment.builder()
+                    .id(requestDto.getCommentId())
+                    .member(memberRepository.findByMemberId(requestDto.getMemberId()).get())
+                    .post(post)
+                    .content(requestDto.getContent())
+                    .build();
+
+        }else {
+            comment = Comment.builder()
+                    .member(memberRepository.findByMemberId(requestDto.getMemberId()).get())
+                    .post(post)
+                    .content(requestDto.getContent())
+                    .build();
+        }
 
         if (null != parent) {
             comment.updateParent(parent);

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layouts/default_layout}"
       layout:fragment="Content"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
 >
 <head>
     <title>Sigma - Free Bootstrap 4.0 Template</title>
@@ -17,17 +17,17 @@
             <div class="col-sm-6">
                 <h2 class="posts-entry-title">최근사진</h2>
             </div>
-            <div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+            <div class="col-sm-6 text-sm-end"><a class="read-more" href="category.html">View All</a></div>
         </div>
         <div class="row align-items-stretch retro-layout">
             <div class="col-md-2">
-                <a href="single.html" class="h-entry mb-30 v-height gradient">
+                <a class="h-entry mb-30 v-height gradient" href="single.html">
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-01.jpg');"></div>
                     <div class="text">
                         <span class="date">Apr. 14th, 2022</span>
                     </div>
                 </a>
-                <a href="single.html" class="h-entry v-height gradient">
+                <a class="h-entry v-height gradient" href="single.html">
 
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-02.jpg');"></div>
                     <div class="text">
@@ -37,14 +37,14 @@
                 </a>
             </div>
             <div class="col-md-2">
-                <a href="single.html" class="h-entry mb-30 v-height gradient">
+                <a class="h-entry mb-30 v-height gradient" href="single.html">
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-03.jpg');"></div>
                     <div class="text">
                         <span class="date">Apr. 14th, 2022</span>
                     </div>
 
                 </a>
-                <a href="single.html" class="h-entry v-height gradient">
+                <a class="h-entry v-height gradient" href="single.html">
 
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-04.jpg');"></div>
                     <div class="text">
@@ -52,7 +52,7 @@
                     </div>
 
                 </a>
-                <a href="single.html" class="h-entry mb-30 v-height gradient">
+                <a class="h-entry mb-30 v-height gradient" href="single.html">
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-05.jpg');"></div>
                     <div class="text">
                         <span class="date">Apr. 14th, 2022</span>
@@ -61,7 +61,7 @@
             </div>
             <div class="col-md-3">
 
-                <a href="single.html" class="h-entry v-height gradient">
+                <a class="h-entry v-height gradient" href="single.html">
 
                     <div class="featured-img" style="background-image: url('/images/tm-sigma-06.jpg');"></div>
 
@@ -73,5 +73,65 @@
         </div>
     </div>
 </section>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </body>
+<script th:inline="javascript">
+    function setCookie(name, value, expiredays) {
+        var today = new Date();
+        today.setDate(today.getDate() + expiredays);
+        document.cookie = name + '=' + escape(value) + '; expires=' + today.toGMTString();
+    }
+
+    function getCookie(name) {
+        var cookie = document.cookie;
+        if (document.cookie != "") {
+            var cookie_array = cookie.split("; ");
+            for (var index in cookie_array) {
+                var cookie_name = cookie_array[index].split("=");
+                if (cookie_name[0] == "mycookie") {
+                    return cookie_name[1];
+                }
+            }
+        }
+        return;
+    }
+    //
+    // $().ready(function(){
+	// 	const myModal = new bootstrap.Modal('#myModal', {});
+	// 	myModal.show();
+	// })
+
+    // document.getElementById("modal-today-close").addEventListener("click", ()=>{
+    //     $("#myModal").modal("hide");
+    //     // setCookie("mycookie", 'popupEnd', 1);
+    // });
+
+    var checkCookie = getCookie("mycookie");
+
+    if (checkCookie == 'popupEnd') {
+        $("#myModal").modal("hide");
+    } else {
+        $('#myModal').modal("show");
+    }
+</script>
 </html>

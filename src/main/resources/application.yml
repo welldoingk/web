@@ -37,8 +37,8 @@ spring:
 #    username: kmpc
 #    password: kmpc
   datasource:
-    url: jdbc:h2:~/test
-#    url: jdbc:h2:tcp://localhost/~/test
+#    url: jdbc:h2:~/test
+    url: jdbc:h2:tcp://localhost/~/test
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -82,6 +82,10 @@ spring:
   #     host: localhost
   #     port: 6379
 
+  data:
+    web:
+      pageable:
+        default-page-size: 24
   web:
     resources:
       static-locations: file:src/main/resources/static/

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>Sigma - Free Bootstrap 4.0 Template</title>
+</head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aa = /*[[${list}]]*/;
+    /*]]>*/
+</script>
+<body>
+<br>
+<section id="section bg-light">
+
+    <div class="container">
+
+        <div class="row align-items-stretch retro-layout justify-content-md-center">
+
+            <div class="col-xl-2 col-xs-2">
+                <div class="card">
+                    <div class="card-title">
+                        회원별 작품
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check" th:each="member, index : ${memberList}">
+                            <input class="form-check-input" type="radio" th:value="${member.memberId}" id="radio" name="radio"
+                                   th:checked="${map.memberId eq member.memberId}">
+                            <label class="form-check-label" for="radio" th:text="${member.memberName}">
+                                회원
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-10 col-xs-10">
+                <div class="row mb-6">
+                    <div class="col-4 col-md" >
+                        <input class="form-control" type="date">
+                    </div>
+
+                </div>
+                <div class="row align-items-stretch retro-layout">
+                    <div class="col-md-2" th:each="data, index : ${list}">
+                        <a th:href="@{/gallery/detail/{postId}(postId=${data.id})}" class="h-entry mb-30 v-height gradient">
+                            <div class="featured-img"
+                                 th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>
+                            <div class="text">
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    const radios = document.querySelectorAll("input[name='radio']");
+    radios.forEach((radio) => {
+		radio.addEventListener("change", (e) => {
+			const current = e.currentTarget;
+			if(current.checked){
+				const form = document.createElement("form");
+                form.setAttribute("method", "get"); //Post 메소드 적용
+                form.setAttribute("action", "/gallery/mt");
+
+                var input = document.createElement("input");
+                input.setAttribute("type", "hidden");
+                input.setAttribute("name", "mtNo");
+                input.setAttribute("value", current.value);
+                form.appendChild(input);
+                console.log(form);
+                document.body.appendChild(form);
+                form.submit();
+			}
+		});
+	});
+
+
+    // let lastId = 0;
+    // const TABLE_ELE = document.querySelector("table");
+    //
+    // const drawList = (DATA) => {
+    //     let listHtml = "";
+    //     DATA.forEach((item, index) => {
+    //         const {id, data1, data2, data3, data4, data5, data6, data7} = item;
+    //         const TR_ELE = document.createElement('tr');
+    //         listHtml = `<td>${data1}</td>
+    //                 <td>${data2}</td>
+    //                 <td>${data3}</td>
+    //                 <td>${data4}</td>
+    //                 <td>${data5}</td>
+    //                 <td>${data6}</td>
+    //                 <td>${data7}</td>`;
+    //
+    //         if (index === DATA.length - 1) lastId = id; // 마지막건 ID 저장
+    //
+    //         TR_ELE.innerHtml = listHtml;
+    //         TABLE_ELE.appendChild(TR_ELE);
+    //     });
+    // };
+    //
+    // const getList = () => {
+    //     fetch(URL, {
+    //         method: "GET",
+    //         body: {
+    //             lastId
+    //         }
+    //     })
+    //         .then((res) => res.json())
+    //         .then((resJson) => {
+    //             drawList(resJson);
+    //         });
+    // };
+    //
+    // window.addEventListener("scroll", function () {
+    //     const SCROLLED_HEIGHT = window.scrollY;
+    //     const WINDOW_HEIGHT = window.innerHeight;
+    //     const DOC_TOTAL_HEIGHT = document.body.offsetHeight;
+    //     const IS_BOTTOM = WINDOW_HEIGHT + SCROLLED_HEIGHT === DOC_TOTAL_HEIGHT;
+    //
+    //     if (IS_BOTTOM) {
+    //         getList();
+    //     }
+    // });
+
+    /*]]>*/
+
+</script>
+</html>

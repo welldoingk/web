@@ -50,7 +50,7 @@ public class Member extends Timestamped {
     public Member(String memberId, String password, String memberName, String nickname) {
         this.memberId = memberId;
         this.password = password;
-        this.role = UserRoleEnum.MEMBER;
+        this.role = UserRoleEnum.VIP_MEMBER;
         this.memberName = memberName;
         this.nickname = nickname;
     }

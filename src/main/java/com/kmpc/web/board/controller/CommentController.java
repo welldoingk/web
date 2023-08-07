@@ -23,11 +23,17 @@ public class CommentController {
         return commentService.findCommentsByPostId(postId);
     }
 
-    @PostMapping("/api/saveComment")
-    public String  saveComment(@RequestBody final CommentRequestDto params, Model model) {
+    @ResponseBody
+    @PostMapping("/api/comment/save")
+    public CommentDto  save(@RequestBody final CommentRequestDto params, Model model) {
         CommentDto save = commentService.save(params);
-        model.addAttribute("commentDto", commentService.findCommentsByPostId(params.getPostId()));
-        return "pages/board/detail::#comment";
+        return save;
     }
 
+    @ResponseBody
+    @PostMapping("/api/comment/delete")
+    public CommentDto  delete(@RequestBody final CommentRequestDto params, Model model) {
+        CommentDto delete = commentService.delete(params);
+        return delete;
+    }
 }

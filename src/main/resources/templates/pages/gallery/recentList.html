@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>Sigma - Free Bootstrap 4.0 Template</title>
+</head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aa = /*[[${list}]]*/;
+    /*]]>*/
+</script>
+<body>
+<br>
+<section id="section bg-light">
+
+    <div class="container">
+
+        <div class="row align-items-stretch retro-layout justify-content-md-center">
+
+            <div class="col">
+                <div class="row mb-6">
+                    <div class="col-sm-6">
+                        <h2 class="posts-entry-title">최근 사진</h2>
+                    </div>
+
+                </div>
+                <div class="row align-items-stretch retro-layout" id="list">
+                    <div class="col-md-2" th:each="data, index : ${list}">
+                        <a class="h-entry mb-30 v-height gradient"
+                           th:href="@{/gallery/detail/{postId}(postId=${data.id})}">
+                            <div class="featured-img"
+                                 th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>
+                            <div class="text">
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+</body>
+<script th:inline="javascript">
+    const list = document.getElementById("list");
+    let lastId = 0;
+    let page = 1;
+    let isFetching = false;
+
+
+    const drawList = (DATA) => {
+        let listHtml = "";
+        DATA.content.forEach((item, index) => {
+            listHtml = `<div class="col-md-2">
+                        <a class="h-entry mb-30 v-height gradient"
+                           href="/gallery/detail/${item.id}">
+                            <div class="featured-img"
+                                 style="background-image: url(${item.imageUrl});"></div>
+                            <div class="text">
+                            </div>
+                        </a>
+                    </div>`;
+
+            if (index === DATA.length - 1) lastId = id; // 마지막건 ID 저장
+
+            list.innerHTML +=listHtml;
+        });
+        page = page + 1;
+        isFetching = false; // callback이 끝났으니 isFetching 리셋
+    };
+
+    function getList() {
+        isFetching = true; // 아직 callback이 끝나지 않았어요!
+
+        var params = {
+            page: page
+        }
+        $.ajax({
+            url: `/gallery/recentAjax`,
+            type: 'get',
+            contentType: 'application/json; charset=utf-8',
+            data: params,
+            async: false,
+            success: function (data) {
+                drawList(data);
+            }
+        });
+
+    }
+
+    window.addEventListener("scroll", function () {
+        const SCROLLED_HEIGHT = window.scrollY;
+        const WINDOW_HEIGHT = window.innerHeight;
+        const DOC_TOTAL_HEIGHT = document.body.offsetHeight;
+        const IS_END = (WINDOW_HEIGHT + SCROLLED_HEIGHT > DOC_TOTAL_HEIGHT - 500);
+
+        if (IS_END && !isFetching) { // isFetching이 false일 때 조건 추가
+            getList();
+        }
+    });
+</script>
+
+</html>

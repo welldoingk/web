@@ -145,7 +145,7 @@ public class PostController {
         return "pages/board/detail";
     }
 
-    @PostMapping("/api/board/delete")
+    @PostMapping("/api/post/delete")
     public String delete(@RequestParam List<String> postIds) {
 
         for (int i = 0; i < postIds.size(); i++) {

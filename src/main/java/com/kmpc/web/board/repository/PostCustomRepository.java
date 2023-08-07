@@ -9,6 +9,6 @@ import java.util.Map;
 
 public interface PostCustomRepository {
     Page<PostDto> selectPostList(String searchVal, Pageable pageable, Long boardId);
-    Page<MtPostDto> selectGalleryList(Map<String,String> map, Pageable pageable, Long boardId);
+    Page<MtPostDto> selectGalleryList(Map<String,String> map, Pageable pageable, Long boardId, String member);
 //    List<PostFileDto> selectPostFileDetail(Long postId);
 }

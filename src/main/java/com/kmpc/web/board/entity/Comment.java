@@ -48,11 +48,10 @@ public class Comment extends Timestamped {
 
     private String delYn;
 
-    public void update(CommentDto commentRequestDto) {
-        this.content = commentRequestDto.getContent();
+    public void delete(String delYn) {
+        this.delYn = delYn;
     }
 
-    // 부모 댓글 수정
     public void updateParent(Comment parent) {
         this.parent = parent;
     }

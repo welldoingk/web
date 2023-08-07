@@ -3,7 +3,6 @@ package com.kmpc.web.board.dto;
 import com.kmpc.web.board.entity.Comment;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.member.entity.Member;
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,7 @@ public class CommentDto {
     Long postId;
     String memberId;
     String nickname;
+    String delYn;
     List<CommentDto> children = new ArrayList<>();
     LocalDateTime createAt;
     LocalDateTime modifiedAt;
@@ -44,16 +44,17 @@ public class CommentDto {
         this.modifiedAt = modifiedAt;
     }
 
-    public CommentDto(Long id, String content, String memberId, String nickname, LocalDateTime createAt) {
+    public CommentDto(Long id, String content, String memberId, String nickname, LocalDateTime createAt, String delYn) {
         this.id = id;
         this.content = content;
         this.memberId = memberId;
         this.nickname = nickname;
         this.createAt = createAt;
+        this.delYn = delYn;
     }
 
     public static CommentDto convertCommentToDto(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), comment.getMember().getNickname(), comment.getCreateAt());
+        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), comment.getMember().getNickname(), comment.getCreateAt(), comment.getDelYn());
     }
 
     public Comment toEntity(Member member, Post post) {

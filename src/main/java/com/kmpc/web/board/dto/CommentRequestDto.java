@@ -13,8 +13,9 @@ public class CommentRequestDto {
     private Long postId;
     private String memberId;
     private Long parentId;
+    private Long commentId;
 
-    public String getMemberId() {
-        return CommonUtil.getMember().getMemberId();
-    }
+//    public String getMemberId() {
+//        return CommonUtil.getMember().getMemberId();
+//    }
 }

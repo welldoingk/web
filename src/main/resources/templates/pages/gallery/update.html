@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        layout:decorate="~{common/layouts/default_layout}"
+        layout:fragment="Content"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+<head layout:fragment="css">
+    <style>
+        .fieldError {
+            border-color: #bd2130;
+        }
+
+        .form-group p {
+            color: red;
+        }
+
+        .image-box {
+            width: 100%;
+        }
+    </style>
+</head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aa = /*[[${codeList}]]*/;
+    /*]]>*/
+</script>
+<body>
+<section class="section bg-light">
+    <div class="container" role="main">
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">업로드</a>
+            </div>
+        </nav>
+        <form enctype="multipart/form-data" method="post" th:action="@{/gallery/update}" th:object="${mtPostDto}">
+            <input name="memberId" th:value="${#authentication.getPrincipal().username}" type="hidden"/>
+            <input name="boardId" th:value="${mtPostDto.boardId}" type="hidden"/>
+            <input name="postId" th:value="${mtPostDto.id}" type="hidden"/>
+            <article>
+                <div class="container" role="main">
+                    <div class="form-group">
+                        <label for="gbVal">촬영산</label>
+                        <select class="form-control" id="gbVal" name="gbVal" th:if="${codeList}">
+                            <option value="">-- 선택 --</option>
+                            <option th:each="mt, index : ${codeList}" th:value="${mt?.codeNo}"
+                                    th:utext="${mt?.codeName}"
+                                    th:selected="${mt.codeNo eq mtPostDto.gbVal}">
+                        </select>
+                        <p th:errors="*{gbVal}" th:if="${#fields.hasErrors('gbVal')}">
+                            Incorrect date
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg_id">작성자</label>
+                        <input
+                                class="form-control"
+                                id="reg_id"
+                                name="regId"
+                                readonly
+                                th:value="${#authentication.getPrincipal().name}"
+                                type="text"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="postFiles"
+                        >파일업로드</label
+                        >
+                        <input
+                                accept="image/*"
+                                class="form-control"
+                                id="postFiles"
+                                name="postFiles"
+                                type="file"
+                        />
+                    </div>
+                    <div class="mb-3" id="text">
+                        <label class="form-label" for="metaInfo"
+                        >메타정보</label>
+                        <input class="form-control"
+                               id="metaInfo"
+                               readonly
+                               type="text"/>
+                    </div>
+                    <div class="mb-3">
+                        <img class="image-box"></img>
+                    </div>
+                    <br/>
+                    <div>
+                        <button
+                                class="btn btn-sm btn-primary"
+                                id="btnSave"
+                                type="submit"
+                        >
+                            저장
+                        </button>
+                        <a
+                                class="btn btn-sm btn-primary"
+                                id="btnList"
+                                href="/gallery/recent"
+                        >
+                            목록
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </form>
+    </div>
+</section>
+</body>
+<script th:inline="javascript">
+
+
+    const fileDOM = document.getElementById("postFiles");
+    const test = document.getElementById("test");
+    const preview = document.querySelector('.image-box');
+
+    fileDOM.addEventListener('change', async () => {
+        const reader = new FileReader();
+        reader.onload = ({target}) => {
+            preview.src = target.result;
+        };
+        reader.readAsDataURL(fileDOM.files[0]);
+    });
+
+    preview.addEventListener("load", function () {
+        getMetaDataParse(preview);
+    });
+
+    function getMetaDataParse(t) {
+        EXIF.getData(t, function () {
+                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized, DateTime, F, T, l, E;
+                EXIF.pretty(this)
+                    ?
+                    (
+								html = "",
+								make = EXIF.getTag(this, "Make"),
+								model = EXIF.getTag(this, "Model"),
+								uniqueID = EXIF.getTag(this, "ImageUniqueID"),
+                                shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
+                                sw = EXIF.getTag(this, "Software"),
+                                width = EXIF.getTag(this, "ImageWidth"),
+                                height = EXIF.getTag(this, "ImageHeight"),
+                                DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
+                                DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
+                                flash = EXIF.getTag(this, "Flash"),
+                                fNumber = EXIF.getTag(this, "FNumber"),
+                                subjectDistance = EXIF.getTag(this, "SubjectDistance"),
+                                ISOSpeedRatings = EXIF.getTag(this, "ISOSpeedRatings"),
+                                Copyright = EXIF.getTag(this, "Copyright"),
+                                ExposureProgram = EXIF.getTag(this, "ExposureProgram"),
+                                DateTime = EXIF.getTag(this, "DateTime"),
+                                // (l = EXIF.getTag(this, "GPSLongitude")) ?
+                                //     (
+                                //         E = EXIF.getTag(this, "GPSLongitudeRef"),
+                                //             T = EXIF.getTag(this, "GPSLatitude"),
+                                //             html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                                //             html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                                //             l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
+                                //             E = (E = E[1].split(":"))[0] + "" + E[1]
+                                //     ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+								html += "<br>",
+								html += "* 촬영일자 : " + DateTime + "<br>",
+								html += "* 촬영기종 : " + make + " " + model + "<br>",
+								// html += "* 사진고유번호 : " + uniqueID + "<br>",
+								html += "* 셔터속도 : " + shutterSpeed + "<br>",
+								// html += "* SW : " + sw + "<br>",
+								html += "* " + flash + ", f\/" + fNumber + ", ISO" + ISOSpeedRatings + "<br>",
+								html += "* ExposureProgram : " + ExposureProgram + "<br>",
+								html += "* Copyright : " + Copyright + "<br>",
+								// html += "* 해상도 : " + width + " * " + height + "<br>",
+								// html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
+								html += "", $("#text").html(html))
+                    :
+                    $("#text").html("메타데이터 없음.")
+            }
+        );
+    }
+</script>
+</html>

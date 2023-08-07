@@ -4,8 +4,8 @@
         layout:decorate="~{common/layouts/default_layout}"
         layout:fragment="Content"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        xmlns:sec="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org">
+        xmlns:th="http://www.thymeleaf.org"
+>
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -63,78 +63,60 @@
 <section class="section">
 
     <input name="id" th:value="${postDto.id}" type="hidden"/>
-    <input name="id" th:value="${postDto.boardId}" type="hidden"/>
     <input id="memberId"
            name="memberId"
            sec:authorize="isAuthenticated()"
            th:value="${#authentication.getPrincipal().username}"
            type="hidden"
     >
-    <div class="container">
-        <!--        <nav class="navbar bg-body-tertiary">-->
-        <!--            <p class="navbar-brand" th:text="${postDto.boardId} == 1 ? '공지사항 상세' : '자유게시판 상세'">커뮤니케이션</p>-->
-        <!--        </nav>-->
+    <div class="container" role="main">
         <div class="row blog-entries element-animate">
 
-            <div class="d-flex justify-content-start">
-                <h4
-                        id="title"
-                        th:text="${postDto.title}"
-                        type="text">
-                </h4>
-                <span class="align-self-center" th:text="${postDto.createAt}"></span>
-            </div>
             <div class="d-flex bd-highlight mb-3">
-                <div class="me-auto bd-highlight">
-                    <div class="d-flex justify-content-start">
-                        <div class="pe-2">
-                            <p
-                                    id="memberName"
-                                    th:text="'작성자 :' + ${postDto.username} + ' |'"
-                            ></p>
-                        </div>
-                        <div class="pe-2" th:if="${postDto.boardId} == 1">
-                            <p
-                                    id="gbVal"
-                                    th:text="${postDto.gbVal} == 1 ? '#Head' : (${postDto.gbVal} == 2 ? '#산행' : (${postDto.gbVal} == 3 ? '#중요' : '#일반'))"
-                                    type="text"
-                            ></p>
-                        </div>
-                    </div>
-                </div>
+                <h2 class="me-auto bd-highlight posts-entry-title">산별상세 :
+                    <a th:href="'/gallery/mt?mtNo='+ ${code.codeNo}"
+                       th:text="${code.codeName}">산명칭</a> 기준 :
+                    <a href="#"
+                       th:text="${#temporals.format(postDto.createAt, 'yyyy')}"></a>
+                </h2>
 
-                <a class="p-2 bd-highlight"
-                   id="btnDel"
-                   sec:authorize="isAuthenticated()"
-                >
-                    삭제
-                </a>
-                <a class="p-2 bd-highlight"
-                   id="btnUpdate"
-                   sec:authorize="isAuthenticated()"
-                   th:href="@{/board/update/{postId}(postId=${postDto.id})}"
-                >
-                    수정
-                </a>
-                <a class="p-2 bd-highlight"
-                   id="btnList"
-                   th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
-                >
-                    목록
-                </a>
-            </div>
-            <hr class="mb-30"/>
-            <div class="post-content-body">
-                <div class="mb-3">
-                    <p id="boardContent"
-                       th:text="${postDto.content}"
-                    ></p>
+                <div class="">
+                    <a class="p-2 bd-highlight"
+                       id="btnDel"
+                       sec:authorize="isAuthenticated()"
+                    >
+                        삭제
+                    </a>
+                    <a class="p-2 bd-highlight"
+                       id="btnUpdate"
+                       sec:authorize="isAuthenticated()"
+                       th:href="@{/gallery/update/{postId}(postId=${postDto.id})}"
+                    >
+                        수정
+                    </a>
+                    <a class="p-2 bd-highlight"
+                       id="btnList"
+                       th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
+                    >
+                        목록
+                    </a>
                 </div>
             </div>
-            <div class="pt-1">
 
+
+            <div class="d-flex justify-content-center">
+                <button class="carousel-control-prev col-2 align-middle" th:text=" ${prevPost} ? '❮' : '' "></button>
+                <img class="image-box col-10" th:alt="${postFile[0]?.imageUrl}" th:src="${postFile[0]?.imageUrl}">
+                <button class="carousel-control-next col-2 align-middle" th:text=" ${nextPost} ? '❯' : '' "></button>
             </div>
-
+            <div class="mb-3" id="text">
+                <label class="form-label" for="metaInfo"
+                >메타정보</label>
+                <input class="form-control"
+                       id="metaInfo"
+                       readonly
+                       type="text"/>
+            </div>
 
             <div class="comment-form-wrap bg-light p-3" sec:authorize="isAuthenticated()">
                 <h3 class="mb-5 heading">댓글</h3>
@@ -162,15 +144,15 @@
                                    data-bs-toggle="collapse"
                                    sec:authorize="isAuthenticated()"
                                    th:attr="data-bs-target=|#r${comment.id}"
-                                   th:if="${comment.memberId != null}">답글</a>
+                                   th:if="${comment.memberId != null and comment.delYn != 'Y'}">답글</a>
                                 <a class="actionBtn rounded"
                                    data-bs-toggle="collapse"
                                    sec:authorize="isAuthenticated()"
                                    th:attr="data-bs-target=|#u${comment.id}"
-                                   th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">수정</a>
+                                   th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName()) and comment.delYn != 'Y'}">수정</a>
                                 <a class="actionBtn rounded delBtn"
                                    sec:authorize="isAuthenticated()"
-                                   th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">삭제</a>
+                                   th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName()) and comment.delYn != 'Y'}">삭제</a>
                             </p>
                         </div>
                         <div class="collapse" data-bs-parent="#comment" sec:authorize="isAuthenticated()"
@@ -213,18 +195,34 @@
                                     <h5 th:text="${children.nickname}"></h5>
                                     <div class="meta"
                                          th:text="${#temporals.format(children.createAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                                    <p th:if="${comment.delYn} != 'Y'" th:text="${children.content}"></p>
+                                    <p th:if="${children.delYn} != 'Y'" th:text="${children.content}"></p>
                                     <p th:if="${children.delYn} == 'Y'" th:text="'삭제된 댓글입니다.'"></p>
                                     <p>
                                         <a class="actionBtn rounded"
                                            data-bs-toggle="collapse"
                                            sec:authorize="isAuthenticated()"
-                                           th:attr="data-bs-target=|#u${comment.id}"
+                                           th:attr="data-bs-target=|#ru${comment.id}"
                                            th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">수정</a>
                                         <a class="actionBtn rounded delBtn"
                                            sec:authorize="isAuthenticated()"
                                            th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">삭제</a>
                                     </p>
+                                </div>
+                                <div class="collapse" data-bs-parent="#comment" sec:authorize="isAuthenticated()"
+                                     th:id="ru + ${comment.id}">
+                                    <div class="input-group update">
+                                        <label for="updateContent" style="display: none">수정</label>
+                                        <input class="form-control content" name="content"
+                                               placeholder="수정 댓글을 입력해주세요"
+                                               type="text">
+                                        <input class="form-control commentId" name="commentId"
+                                               th:value="${comment.id}"
+                                               type="hidden">
+                                        <button class="btn btn-primary updateBtn"
+                                                type="button"
+                                                value="작성">수정
+                                        </button>
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -234,6 +232,80 @@
         </div>
     </div>
 </section>
+
+<script th:inline="javascript">
+
+
+    const fileDOM = document.getElementById("formFileMultiple");
+    const preview = document.querySelector('.image-box');
+    const prevPost = document.querySelector('.carousel-control-prev');
+    const nextPost = document.querySelector('.carousel-control-next');
+
+    prevPost.addEventListener("click", () => {
+        location.href = `/gallery/detail/[[${prevPost?.id}]]`
+    });
+
+    nextPost.addEventListener("click", () => {
+        if ([[${nextPost?.id}]] != null) {
+            location.href = `/gallery/detail/[[${nextPost?.id}]]`
+        }
+    });
+    preview.addEventListener("load", function () {
+        getMetaDataParse(preview);
+    });
+
+
+    function getMetaDataParse(t) {
+        EXIF.getData(t, function () {
+                var html, make, model, uniqueID, shutterSpeed, sw, width, height, DateTimeOriginal, DateTimeDigitized,
+                    DateTime, F, T, l, E;
+                EXIF.pretty(this)
+                    ?
+                    (
+                        html = "",
+                            make = EXIF.getTag(this, "Make"),
+                            model = EXIF.getTag(this, "Model"),
+                            uniqueID = EXIF.getTag(this, "ImageUniqueID"),
+                            shutterSpeed = EXIF.getTag(this, "ShutterSpeedValue"),
+                            sw = EXIF.getTag(this, "Software"),
+                            width = EXIF.getTag(this, "ImageWidth"),
+                            height = EXIF.getTag(this, "ImageHeight"),
+                            DateTimeOriginal = EXIF.getTag(this, "DateTimeOriginal"),
+                            DateTimeDigitized = EXIF.getTag(this, "DateTimeDigitized"),
+                            flash = EXIF.getTag(this, "Flash"),
+                            fNumber = EXIF.getTag(this, "FNumber"),
+                            subjectDistance = EXIF.getTag(this, "SubjectDistance"),
+                            ISOSpeedRatings = EXIF.getTag(this, "ISOSpeedRatings"),
+                            Copyright = EXIF.getTag(this, "Copyright"),
+                            ExposureProgram = EXIF.getTag(this, "ExposureProgram"),
+                            DateTime = EXIF.getTag(this, "DateTime"),
+                            // (l = EXIF.getTag(this, "GPSLongitude")) ?
+                            //     (
+                            //         E = EXIF.getTag(this, "GPSLongitudeRef"),
+                            //             T = EXIF.getTag(this, "GPSLatitude"),
+                            //             html += "* 위도 : " + (F = "S" == EXIF.getTag(this, "GPSLatitudeRef") ? -1 * T[0] + (-60 * T[1] + -1 * T[2]) / 3600 : T[0] + (60 * T[1] + T[2]) / 3600) + "<br>",
+                            //             html += "* 경도 : " + (T = "W" == E ? -1 * l[0] + (-60 * l[1] + -1 * l[2]) / 3600 : l[0] + (60 * l[1] + l[2]) / 3600) + "<br>",
+                            //             l = (E = DateTimeOriginal.split(" "))[0].replace(":", "").replace(":", ""),
+                            //             E = (E = E[1].split(":"))[0] + "" + E[1]
+                            //     ) : html += "<span style='color:red'>위,경도를 추출할 수 없는 이미지 입니다.</span><br>",
+                            html += "<br>",
+                            html += "* 촬영일자 : " + DateTime + "<br>",
+                            html += "* 촬영기종 : " + make + " " + model + "<br>",
+                            // html += "* 사진고유번호 : " + uniqueID + "<br>",
+                            html += "* 셔터속도 : " + shutterSpeed + "<br>",
+                            // html += "* SW : " + sw + "<br>",
+                            html += "* " + flash + ", f\/" + fNumber + ", ISO" + ISOSpeedRatings + "<br>",
+                            html += "* ExposureProgram : " + ExposureProgram + "<br>",
+                            html += "* Copyright : " + Copyright + "<br>",
+                            // html += "* 해상도 : " + width + " * " + height + "<br>",
+                            // html += "* 사진조작가능성 : " + (DateTimeDigitized == DateTimeOriginal && DateTimeDigitized == DateTime && DateTimeOriginal == DateTime ? "없음" : DateTime < DateTimeOriginal ? "높음" : DateTime < DateTimeDigitized ? "높음" : DateTimeOriginal < DateTimeDigitized ? "높음" : DateTimeOriginal ? "낮음" : "높음") + "<br>",
+                            html += "", $("#text").html(html))
+                    :
+                    $("#text").html("메타데이터 없음.")
+            }
+        );
+    }
+</script>
 <script th:inline="javascript">
 
     document.getElementById("commentSubmit").addEventListener("click", (e) => {

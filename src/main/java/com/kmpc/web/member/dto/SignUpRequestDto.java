@@ -11,4 +11,6 @@ public class SignUpRequestDto {
     private String role;
     private String memberName;
     private String nickname;
+    private String local;
+    private String birthYear;
 }

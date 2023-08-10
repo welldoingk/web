@@ -14,14 +14,42 @@
 <section class="section bg-d5">
     <h3 class="text-center">회원가입</h3>
     <div class="signup-wrapper">
-        <div class="signup form-wrapper" style="height: 520px; padding-top:40px">
-            <form th:action="@{/api/signup}" th:object="${SignUpRequestDto}" method="post">
-                <input type="text" name="memberId" placeholder="아이디" class="form-field"/>
-                <input type="email" name="email" placeholder="이메일" class="form-field"/>
-                <input type="test" name="memberName" placeholder="이름" class="form-field"/>
-                <input type="test" name="nickname" placeholder="별명" class="form-field"/>
-                <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
-                <input type="password" placeholder="비밀번호2" class="form-field"/>
+        <div class="signup form-wrapper" style="height: 820px; padding-top:40px">
+            <form id="signupForm" class="needs-validation" th:action="@{/api/signup}" th:object="${SignUpRequestDto}" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" id="memberId" name="memberId" placeholder="아이디" class="form-field"/>
+                    <div class="invalid-feedback">
+                    반드시 입력해야 합니다.
+                 </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" id="email" name="email" placeholder="이메일" class="form-field"/>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="memberName" name="memberName" placeholder="이름" class="form-field"/>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="nickname" name="nickname" placeholder="별명" class="form-field"/>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="local" name="local" placeholder="지역" class="form-field"/>
+                    <div class="invalid-feedback">
+                    반드시 입력해야 합니다.
+                 </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="birthYear" name="birthYear" placeholder="생년" class="form-field"/>
+                    <div class="invalid-feedback">
+                    반드시 입력해야 합니다.
+                 </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" placeholder="비밀번호2" class="form-field"/>
+
+                </div>
                 <button class="button primary">회원가입</button>
                 <button class="button secondary" id="signin">로그인</button>
             </form>
@@ -32,8 +60,49 @@
 <script th:inline="javascript">
     const signin = document.getElementById("signin");
 
-    signin.addEventListener("click", function() {
-        location.href = "/login"  
+    signin.addEventListener("click", function () {
+        location.href = "/login"
     })
+
+    let isYearValid = false;
+    let isLocalValid = false;
+
+    document.querySelector("#local").addEventListener("change", function () {
+        //select 에 선택 혹은 입력한 문자열을 읽어와서
+        let localVal = this.value;
+        //길이가 0보다 큰지 확인해서
+        isLocalValid = localVal.length > 1;
+        if (isLocalValid) {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+        } else {
+            this.classList.remove("is-valid");
+            this.classList.add("is-invalid");
+        }
+
+    });
+
+    document.querySelector("#birthYear").addEventListener("change", function () {
+        //select 에 선택 혹은 입력한 문자열을 읽어와서
+        let birthYearVal = this.value;
+        //길이가 0보다 큰지 확인해서
+        isYearValid = birthYearVal.length > 3;
+        if (isLocalValid) {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+        } else {
+            this.classList.remove("is-valid");
+            this.classList.add("is-invalid");
+        }
+
+    });
+
+    document.querySelector("#signupForm").addEventListener("submit", function (e) {
+        //만일 폼이 유효하지 않는다면 전송을 막아주기
+        if (!isYearValid || !isLocalValid) {
+            //이벤트 객체의 함수를 이용해서 폼 전송 막아주기
+            e.preventDefault();
+        }
+    });
 </script>
 </html>

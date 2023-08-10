@@ -13,6 +13,15 @@
     var aa = /*[[${list}]]*/;
     /*]]>*/
 </script>
+<style>
+    .galleryText {
+        font-size: 12px;
+        color: #ffffff;
+
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
 <body>
 <br>
 <section id="section bg-light">
@@ -21,15 +30,16 @@
 
         <div class="row align-items-stretch retro-layout justify-content-md-center">
 
-            <div class="col-xl-2 col-xs-2">
-                <div class="card">
-                    <div class="card-title">
+            <div class="col-xl-2 col-xs-2 mt-5">
+                <div class="">
+                    <div class="">
                         회원별 작품
                     </div>
                     <div class="card-body">
                         <div class="form-check" th:each="member, index : ${memberList}">
-                            <input class="form-check-input" type="radio" th:value="${member.memberId}" id="radio" name="radio"
-                                   th:checked="${map.memberId eq member.memberId}">
+                            <input class="form-check-input" type="radio" th:value="${member.memberId}" id="radio"
+                                   name="radio"
+                                   th:checked="${param.memberId == null && (map.memberId eq member.memberId) || param.memberId != null && (#strings.toString(member.memberId) eq #strings.toString(param.memberId))}">
                             <label class="form-check-label" for="radio" th:text="${member.memberName}">
                                 회원
                             </label>
@@ -40,22 +50,28 @@
             </div>
             <div class="col-xl-10 col-xs-10">
                 <div class="row mb-6">
-                    <div class="col-4 col-md" >
-                        <input class="form-control" type="date">
+                    <div class="col-4 col-md input-group">
+                    <label for="datePick">기준년월 : </label>
+                        <span class="input-group-text"><i class="bi bi-calendar-week"></i></span>
+                        <input id="datePick" class="" type="text"
+                               th:value="${#calendars.format(#calendars.createNow(), 'yyyy.MM')}">
                     </div>
+                </div>
+                <br>
+                <div class="row align-items-stretch retro-layout" id="list">
+                    <!--                    <div class="col-md-2" th:each="data, index : ${list}">-->
+                    <!--                        <a th:href="@{/gallery/detail/c/{postId}(postId=${data.id})}"-->
+                    <!--                           class="h-entry mb-30 v-height gradient">-->
+                    <!--                            <div class="featured-img"-->
+                    <!--                                 th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>-->
+                    <!--                            <div class="text">-->
+                    <!--                            </div>-->
+                    <!--                        </a>-->
+                    <!--                    </div>-->
 
                 </div>
-                <div class="row align-items-stretch retro-layout">
-                    <div class="col-md-2" th:each="data, index : ${list}">
-                        <a th:href="@{/gallery/detail/{postId}(postId=${data.id})}" class="h-entry mb-30 v-height gradient">
-                            <div class="featured-img"
-                                 th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>
-                            <div class="text">
-                            </div>
-                        </a>
-                    </div>
+                <div id="endList"></div>
 
-                </div>
             </div>
 
         </div>
@@ -66,74 +82,116 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
 
+    let isFetching = false
+    const list = document.getElementById("list");
+    const endList = document.getElementById("endList");
+    const options = {
+        root: null, // 뷰포트를 기준으로 타켓의 가시성 검사
+        rootMargin: '0px 0px 0px 0px', // 확장 또는 축소 X
+        threshold: 0, // 타켓의 가시성 0%일 때 옵저버 실행
+    };
+
+    let page = 0;
+    let dataLength;
+
+    const datePick = document.getElementById("datePick");
+    var fp = flatpickr(datePick, {
+        "locale": "ko",
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: true, //defaults to false
+                dateFormat: "Y-m", //defaults to "F Y"
+            })
+        ]
+    });
+    datePick.addEventListener("change", () => {
+        page = 0
+        list.innerHTML = '';
+        init();
+    });
+
+
     const radios = document.querySelectorAll("input[name='radio']");
+
     radios.forEach((radio) => {
-		radio.addEventListener("change", (e) => {
-			const current = e.currentTarget;
-			if(current.checked){
-				const form = document.createElement("form");
-                form.setAttribute("method", "get"); //Post 메소드 적용
-                form.setAttribute("action", "/gallery/mt");
+        radio.addEventListener("change", (e) => {
+            page = 0
+            list.innerHTML = '';
+            init();
+            console.log("radio")
+        });
+    });
 
-                var input = document.createElement("input");
-                input.setAttribute("type", "hidden");
-                input.setAttribute("name", "mtNo");
-                input.setAttribute("value", current.value);
-                form.appendChild(input);
-                console.log(form);
-                document.body.appendChild(form);
-                form.submit();
-			}
-		});
-	});
+    const drawList = (DATA) => {
+        let listHtml = "";
+        DATA.forEach((item, index) => {
+            const format = moment(item.createAt).format('YYYY.MM.DD');
+            listHtml = `<div class="col-md-3">
+                        <a class="h-entry mb-30 v-height gradient"
+                           href="/gallery/member/detail/${item.id}">
+                            <div class="featured-img"
+                                 style="background-image: url(${item.fileUrl});"></div>
+                            <div class="galleryText text">
+                                ${format + '/' + item.username}
+                            </div>
+                        </a>
+                    </div>`;
+
+            list.innerHTML += listHtml;
+        });
+        dataLength = DATA.length;
+        page++
+        isFetching = false; // callback이 끝났으니 isFetching 리셋
+    };
+
+    function getList() {
+        isFetching = true; // 아직 callback이 끝나지 않았어요!
+        console.log("page" + page)
+        var params = {
+            page: page,
+            startDate: datePick.value,
+            memberId: Array.from(radios).find(radio => radio.checked).value
+        }
+        $.ajax({
+            url: `/gallery/memberAjax`,
+            type: 'get',
+            contentType: 'application/json; charset=utf-8',
+            data: params,
+            async: false,
+            success: function (data) {
+                drawList(data.content);
+            }
+        });
+
+    }
+
+    const onIntersect = (entries, observer) => {
+        entries.forEach(async (entry) => {
+            if (entry.isIntersecting) {
+                console.log('무한 스크롤 실행');
+                console.log('page: ' + page);
+                if (!isFetching) getList();
+
+                console.log(dataLength + 'dataLength')
+                if (dataLength < 1) {
+                    observer.unobserve(endList); // 특정 대상(요소)에 대한 관찰 중단
+                    return;
+                }
+
+            }
+        });
+    };
 
 
-    // let lastId = 0;
-    // const TABLE_ELE = document.querySelector("table");
-    //
-    // const drawList = (DATA) => {
-    //     let listHtml = "";
-    //     DATA.forEach((item, index) => {
-    //         const {id, data1, data2, data3, data4, data5, data6, data7} = item;
-    //         const TR_ELE = document.createElement('tr');
-    //         listHtml = `<td>${data1}</td>
-    //                 <td>${data2}</td>
-    //                 <td>${data3}</td>
-    //                 <td>${data4}</td>
-    //                 <td>${data5}</td>
-    //                 <td>${data6}</td>
-    //                 <td>${data7}</td>`;
-    //
-    //         if (index === DATA.length - 1) lastId = id; // 마지막건 ID 저장
-    //
-    //         TR_ELE.innerHtml = listHtml;
-    //         TABLE_ELE.appendChild(TR_ELE);
-    //     });
-    // };
-    //
-    // const getList = () => {
-    //     fetch(URL, {
-    //         method: "GET",
-    //         body: {
-    //             lastId
-    //         }
-    //     })
-    //         .then((res) => res.json())
-    //         .then((resJson) => {
-    //             drawList(resJson);
-    //         });
-    // };
-    //
-    // window.addEventListener("scroll", function () {
-    //     const SCROLLED_HEIGHT = window.scrollY;
-    //     const WINDOW_HEIGHT = window.innerHeight;
-    //     const DOC_TOTAL_HEIGHT = document.body.offsetHeight;
-    //     const IS_BOTTOM = WINDOW_HEIGHT + SCROLLED_HEIGHT === DOC_TOTAL_HEIGHT;
-    //
-    //     if (IS_BOTTOM) {
-    //         getList();
-    //     }
-    // });
+    function init() {
+        const observer = new IntersectionObserver(onIntersect, options); // 관찰자 초기화
+        observer.observe(endList); // 관찰할 대상(요소) 등록
+    }
+
+    window.onload = () => {
+        init();
+        getList();
+    }
 
     /*]]>*/
 

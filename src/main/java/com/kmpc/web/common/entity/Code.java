@@ -1,13 +1,10 @@
 package com.kmpc.web.common.entity;
 
+import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.kmpc.web.util.Timestamped;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +21,16 @@ public class Code extends Timestamped {
     private String codeNo;
     private String codeName;
 
+    private String remark;
+
+    private String orders;
+
 
     @Builder
-    public Code(String classCode, String codeNo, String codeName){
+    public Code(String classCode, String codeNo, String codeName, String orders){
         this.classCode = classCode;
         this.codeNo = codeNo;
         this.codeName = codeName;
+        this.orders = orders;
     }
 }

@@ -73,9 +73,15 @@
         <div class="row blog-entries element-animate">
 
             <div class="d-flex bd-highlight mb-3">
-                <h2 class="me-auto bd-highlight posts-entry-title">산별상세 :
+                <h2 class="me-auto bd-highlight posts-entry-title" th:if="${type} == 'mt'">산별상세 :
                     <a th:href="'/gallery/mt?mtNo='+ ${code.codeNo}"
                        th:text="${code.codeName}">산명칭</a> 기준 :
+                    <a href="#"
+                       th:text="${#temporals.format(postDto.createAt, 'yyyy')}"></a>
+                </h2>
+                <h2 class="me-auto bd-highlight posts-entry-title" th:if="${type} == 'member'">회원별 상세 :
+                    <a th:href="'/gallery/member?memberId='+ ${postDto.memberId}"
+                       th:text="${postDto.username}">산명칭</a> 기준 :
                     <a href="#"
                        th:text="${#temporals.format(postDto.createAt, 'yyyy')}"></a>
                 </h2>
@@ -96,7 +102,7 @@
                     </a>
                     <a class="p-2 bd-highlight"
                        id="btnList"
-                       th:href="@{/board/{boardId}(boardId=${postDto.boardId})}"
+                       th:href="'/gallery/'+${type}"
                     >
                         목록
                     </a>
@@ -105,9 +111,9 @@
 
 
             <div class="d-flex justify-content-center">
-                <button class="carousel-control-prev col-2 align-middle" th:text=" ${prevPost} ? '❮' : '' "></button>
-                <img class="image-box col-10" th:alt="${postFile[0]?.imageUrl}" th:src="${postFile[0]?.imageUrl}">
-                <button class="carousel-control-next col-2 align-middle" th:text=" ${nextPost} ? '❯' : '' "></button>
+                <button class="carousel-control-next col-2 align-middle" th:text=" ${nextPost} ? '❮' : '' "></button>
+                <img class="image-box col-10" th:alt="${postFile[0]?.getFileUrl}" th:src="${postFile[0]?.getFileUrl} + '?yn'">
+                <button class="carousel-control-prev col-2 align-middle" th:text=" ${prevPost} ? '❯' : '' "></button>
             </div>
             <div class="mb-3" id="text">
                 <label class="form-label" for="metaInfo"
@@ -240,14 +246,15 @@
     const preview = document.querySelector('.image-box');
     const prevPost = document.querySelector('.carousel-control-prev');
     const nextPost = document.querySelector('.carousel-control-next');
+    const type = [[${type}]];
 
     prevPost.addEventListener("click", () => {
-        location.href = `/gallery/detail/[[${prevPost?.id}]]`
+        location.href = `/gallery/${type}/detail/[[${prevPost?.id}]]`
     });
 
     nextPost.addEventListener("click", () => {
         if ([[${nextPost?.id}]] != null) {
-            location.href = `/gallery/detail/[[${nextPost?.id}]]`
+            location.href = `/gallery/${type}/detail/[[${nextPost?.id}]]`
         }
     });
     preview.addEventListener("load", function () {

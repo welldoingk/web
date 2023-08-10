@@ -19,6 +19,13 @@ https://github.com/SongHeeJae/trading_parking_ticket/blob/master/src/main/java/c
 S3
 https://velog.io/@do-hoon/%EA%B2%8C%EC%8B%9C%EA%B8%80-%EC%83%9D%EC%84%B1-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9CSpringBoot-JPA-AWS-S3
 
+
+
+nohup java -jar web-0.0.1-SNAPSHOT.jar —spring.profiles.active=prod /dev/null 2>&1
+
+aws
+https://incomeplus.tistory.com/284
+
 메타데이더
 
     https://mitw.tistory.com/40

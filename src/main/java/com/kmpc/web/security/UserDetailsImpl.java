@@ -18,10 +18,10 @@ public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String name;
 
-    public UserDetailsImpl(Member member, String password, String username, String name) {
+    public UserDetailsImpl(Member member, String password, String memberId, String name) {
         this.member = member;
         this.password = password;
-        this.username = username;
+        this.username = memberId;
         this.name = name;
     }
 
@@ -53,6 +53,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getNickName() {
+        return this.member.getMemberName() +'/'+ this.member.getLocal()+'/'+this.member.getBirthYear().substring(2,3);
     }
 
     @Override

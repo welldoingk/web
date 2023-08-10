@@ -54,7 +54,8 @@ public class CommentDto {
     }
 
     public static CommentDto convertCommentToDto(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), comment.getMember().getNickname(), comment.getCreateAt(), comment.getDelYn());
+        String  nick = comment.getMember().getMemberName() +'/'+ comment.getMember().getLocal()+'/'+comment.getMember().getBirthYear().substring(2);
+        return new CommentDto(comment.getId(), comment.getContent(), comment.getMember().getMemberId(), nick, comment.getCreateAt(), comment.getDelYn());
     }
 
     public Comment toEntity(Member member, Post post) {

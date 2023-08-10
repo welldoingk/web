@@ -39,6 +39,10 @@ public class Member extends Timestamped {
 
     private String nickname;
 
+    private String local;
+
+    private String birthYear;
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
@@ -47,12 +51,14 @@ public class Member extends Timestamped {
     private List<Post> posts = new ArrayList<>();
 
     @Builder
-    public Member(String memberId, String password, String memberName, String nickname) {
+    public Member(String memberId, String password, String memberName, String nickname, String local, String birthYear) {
         this.memberId = memberId;
         this.password = password;
         this.role = UserRoleEnum.VIP_MEMBER;
         this.memberName = memberName;
         this.nickname = nickname;
+        this.local = local;
+        this.birthYear = birthYear;
     }
 
 }

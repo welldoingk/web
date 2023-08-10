@@ -1,6 +1,8 @@
 package com.kmpc.web.jwt;
 
 
+import com.kmpc.web.security.UserDetailsServiceImpl;
+import com.kmpc.web.security.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -14,9 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import com.kmpc.web.security.UserDetailsServiceImpl;
-import com.kmpc.web.security.UserRoleEnum;
 
 import java.security.Key;
 import java.util.Base64;

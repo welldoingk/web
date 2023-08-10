@@ -15,14 +15,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class PostImage extends Timestamped {
+public class PostFile extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "post_image_id")
+    @Column(name = "post_file_id")
     private Long id;
 
-    private String imageUrl;
+    private String fileUrl;
 
     private String storeFilename;
 
@@ -31,8 +31,8 @@ public class PostImage extends Timestamped {
     private Post post;
 
     @Builder
-    public PostImage(String imageUrl, String storeFilename, Post post) {
-        this.imageUrl = imageUrl;
+    public PostFile(String fileUrl, String storeFilename, Post post) {
+        this.fileUrl = fileUrl;
         this.storeFilename = storeFilename;
         this.post = post;
     }

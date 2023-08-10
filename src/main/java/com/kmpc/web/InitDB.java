@@ -3,10 +3,10 @@ package com.kmpc.web;
 import com.kmpc.web.board.entity.Board;
 import com.kmpc.web.board.entity.Comment;
 import com.kmpc.web.board.entity.Post;
-import com.kmpc.web.board.entity.PostImage;
+import com.kmpc.web.board.entity.PostFile;
 import com.kmpc.web.board.repository.BoardRepository;
 import com.kmpc.web.board.repository.CommentRepository;
-import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.repository.PostFileRepository;
 import com.kmpc.web.board.repository.PostRepository;
 import com.kmpc.web.common.entity.Code;
 import com.kmpc.web.common.repository.CodeRepository;
@@ -40,7 +40,7 @@ public class InitDB {
         private final MemberRepository memberRepository;
         private final BoardRepository boardRepository;
         private final PostRepository postRepository;
-        private final PostImageRepository postImageRepository;
+        private final PostFileRepository postFileRepository;
         private final CommentRepository commentRepository;
         private final PasswordEncoder passwordEncoder;
 
@@ -143,6 +143,8 @@ public class InitDB {
                         .password(passwordEncoder.encode("1"))
                         .memberName("테스트")
                         .nickname("테스트")
+                        .local("안양")
+                        .birthYear("1996")
                         .build();
                 // member 저장
                 memberRepository.save(member);
@@ -151,7 +153,7 @@ public class InitDB {
             List<Post> postList = postRepository.findAll();
             if (postList.isEmpty()) {
                 Post post;
-                PostImage postImage;
+                PostFile postFile;
 
                 post = Post.builder()
                         .member(memberRepository.findByMemberId("1").get())
@@ -159,14 +161,14 @@ public class InitDB {
                         .content("")
                         .boardId(1L)
                         .build();
-                postImage = PostImage.builder()
+                postFile = PostFile.builder()
                         .post(post)
-                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                         .storeFilename("C06_1938.jpg")
                         .build();
                 // member 저장
                 postRepository.save(post);
-                postImageRepository.save(postImage);
+                postFileRepository.save(postFile);
 
                 Comment comment1 = Comment.builder()
                         .content("contentcontentcontent")
@@ -188,14 +190,14 @@ public class InitDB {
                         .content("")
                         .boardId(2L)
                         .build();
-                postImage = PostImage.builder()
+                postFile = PostFile.builder()
                         .post(post)
-                        .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                         .storeFilename("C06_1938.jpg")
                         .build();
                 // member 저장
                 postRepository.save(post);
-                postImageRepository.save(postImage);
+                postFileRepository.save(postFile);
 
                 for (int i = 0; i < 100; i++) {
 
@@ -204,14 +206,14 @@ public class InitDB {
                             .gbVal("1")
                             .boardId(3L)
                             .build();
-                    postImage = PostImage.builder()
+                    postFile = PostFile.builder()
                             .post(post)
-                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                             .storeFilename("C06_1938.jpg")
                             .build();
                     // member 저장
                     postRepository.save(post);
-                    postImageRepository.save(postImage);
+                    postFileRepository.save(postFile);
                 }
 
                 for (int i = 0; i < 15; i++) {
@@ -221,14 +223,14 @@ public class InitDB {
                             .gbVal("2")
                             .boardId(3L)
                             .build();
-                    postImage = PostImage.builder()
+                    postFile = PostFile.builder()
                             .post(post)
-                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                             .storeFilename("C06_1938.jpg")
                             .build();
                     // member 저장
                     postRepository.save(post);
-                    postImageRepository.save(postImage);
+                    postFileRepository.save(postFile);
                 }
                 for (int i = 0; i < 23; i++) {
 
@@ -237,14 +239,14 @@ public class InitDB {
                             .gbVal("3")
                             .boardId(3L)
                             .build();
-                    postImage = PostImage.builder()
+                    postFile = PostFile.builder()
                             .post(post)
-                            .imageUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
                             .storeFilename("C06_1938.jpg")
                             .build();
                     // member 저장
                     postRepository.save(post);
-                    postImageRepository.save(postImage);
+                    postFileRepository.save(postFile);
                 }
             }
 

@@ -33,6 +33,7 @@
         <form enctype="multipart/form-data" method="post" th:action="@{/api/board/write}" th:object="${postDto}">
             <input name="id" th:value="${postDto.id}" type="hidden"/>
             <input name="boardId" th:value="${postDto.boardId}" type="hidden"/>
+            <input name="memberId" th:value="${#authentication.getPrincipal().username}" type="hidden"/>
             <article>
                 <div class="container" role="main">
                     <div class="form-group">
@@ -75,10 +76,10 @@
                         >파일업로드</label
                         >
                         <input
-                                accept="image/*"
+                                accept="*"
                                 class="form-control"
                                 id="formFileMultiple"
-                                name="multipartFile"
+                                name="postFiles"
                                 type="file"
                         />
                     </div>
@@ -112,30 +113,30 @@
 <script th:inline="javascript">
 
 
-    const fileDOM = document.getElementById("formFileMultiple");
-    const preview = document.querySelector('.image-box');
-
-    fileDOM.addEventListener('change', async () => {
-        const reader = new FileReader();
-        reader.onload = ({target}) => {
-            preview.src = target.result;
-        };
-        reader.readAsDataURL(fileDOM.files[0]);
-
-
-    });
-    preview.onload = function () {
-
-        EXIF.getData(preview, function () {
-            var make = EXIF.getTag(this, "Make");
-            var model = EXIF.getTag(this, "Model");
-            var metaInfo = document.getElementById("metaInfo");
-            metaInfo.value = `${make} / ${model}`;
-            // metaInfo.innerHTML = JSON.stringify(allMetaData, null, "\t");
-            // var makeAndModel = document.getElementById("makeAndModel");
-            // makeAndModel.innerHTML = `${make} ${model}`;
-        });
-    }
+//    const fileDOM = document.getElementById("formFileMultiple");
+//    const preview = document.querySelector('.image-box');
+//
+//    fileDOM.addEventListener('change', async () => {
+//        const reader = new FileReader();
+//        reader.onload = ({target}) => {
+//            preview.src = target.result;
+//        };
+//        reader.readAsDataURL(fileDOM.files[0]);
+//
+//
+//    });
+//    preview.onload = function () {
+//
+//        EXIF.getData(preview, function () {
+//            var make = EXIF.getTag(this, "Make");
+//            var model = EXIF.getTag(this, "Model");
+//            var metaInfo = document.getElementById("metaInfo");
+//            metaInfo.value = `${make} / ${model}`;
+//            // metaInfo.innerHTML = JSON.stringify(allMetaData, null, "\t");
+//            // var makeAndModel = document.getElementById("makeAndModel");
+//            // makeAndModel.innerHTML = `${make} ${model}`;
+//        });
+//    }
 
 
 </script>

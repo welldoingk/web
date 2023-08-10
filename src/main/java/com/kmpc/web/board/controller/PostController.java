@@ -3,9 +3,9 @@ package com.kmpc.web.board.controller;
 import com.kmpc.web.board.dto.CommentDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
-import com.kmpc.web.board.entity.PostImage;
+import com.kmpc.web.board.entity.PostFile;
 import com.kmpc.web.board.repository.PostCustomRepository;
-import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.repository.PostFileRepository;
 import com.kmpc.web.board.service.CommentService;
 import com.kmpc.web.board.service.PostService;
 import com.kmpc.web.common.entity.Code;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PostController {
 
     private final PostCustomRepository postCustomRepository;
-    private final PostImageRepository postImageRepository;
+    private final PostFileRepository postFileRepository;
     private final CodeRepository codeRepository;
     private final PostService postService;
     private final CommentService commentService;
@@ -98,19 +98,19 @@ public class PostController {
 
         PostDto savedPost = postService.savePost(postDto);
         model.addAttribute("postDto", savedPost);
-        return "pages/board/detail";
+        return "redirect:/board/detail/" + savedPost.getId();
     }
 
     @GetMapping("/board/detail/{postId}")
     public String detail(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
-        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<PostFile> postFiles = postFileRepository.findByPost(post);
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
         PostDto postDto = post.toDto();
 
         model.addAttribute("postDto", postDto);
-        // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
-        model.addAttribute("postFile", postImages);
+         model.addAttribute("postFile", postCustomRepository.selectPostFileDetail(postId));
+        model.addAttribute("postFile", postFiles);
         model.addAttribute("commentDto", commentDto);
 
         return "pages/board/detail";
@@ -119,13 +119,13 @@ public class PostController {
     @GetMapping("/board/update/{postId}")
     public String updatePage(@PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
-        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<PostFile> postFiles = postFileRepository.findByPost(post);
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
         PostDto postDto = post.toDto();
 
         model.addAttribute("postDto", postDto);
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
-        model.addAttribute("postFile", postImages);
+        model.addAttribute("postFile", postFiles);
         model.addAttribute("commentDto", commentDto);
 
         return "pages/board/update";

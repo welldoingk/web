@@ -93,6 +93,11 @@ body {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+.galleryText .text {
+    font-size: 12px;
+    color: #ffffff;
+
+}
 hr {
     margin: 1rem 0;
     color: inherit;
@@ -242,7 +247,7 @@ sup {
 }
 
 a {
-    color: #214252;
+    color: #000000;
     text-decoration: underline;
 }
 
@@ -686,7 +691,7 @@ progress {
 
 @media (min-width: 1400px) {
     .container, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
-        max-width: 1320px;
+        max-width: 1520px;
     }
 }
 
@@ -13277,8 +13282,9 @@ fieldset:disabled .btn {
 .site-nav {
     position: relative;
     width: 100%;
-    background-color: #4e575c;
+    background-color: #ffffff;
     padding: 10px 0;
+    border-bottom: 1px #000000;
 }
 
 .site-nav h1, .site-nav .h1 {
@@ -13302,15 +13308,15 @@ fieldset:disabled .btn {
     padding: 10px 10px;
     display: inline-block;
     text-decoration: none !important;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .site-nav .site-navigation .site-menu > li > a:hover {
-    color: #fff;
+    color: #7a7a7a;
 }
 
 .site-nav .site-navigation .site-menu > li.active > a {
-    color: #fff;
+    color: #000000;
 }
 
 .site-nav .site-navigation .site-menu .has-children {
@@ -15007,3 +15013,4 @@ textarea {
     background: #fff;
     color: #214252;
 }
+

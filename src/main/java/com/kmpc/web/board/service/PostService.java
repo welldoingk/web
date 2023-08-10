@@ -1,8 +1,8 @@
 package com.kmpc.web.board.service;
 
 import com.kmpc.web.board.dto.MtPostDto;
-import com.kmpc.web.board.entity.PostImage;
-import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.entity.PostFile;
+import com.kmpc.web.board.repository.PostFileRepository;
 import com.kmpc.web.util.CommonUtil;
 import com.kmpc.web.util.S3Uploader;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final PostImageRepository postImageRepository;
+    private final PostFileRepository postFileRepository;
     private final CommonUtil memberUtil;
     private final S3Uploader s3Uploader;
 
@@ -49,7 +49,7 @@ public class PostService {
 
 
         if(postDto.getPostFiles() != null) {
-            List<String> postImages = uploadPostImages(postDto, post);
+            List<String> postImages = uploadPostFiles(postDto, post);
         }
 
 //        fileService.saveFile(postDto, post.getId());
@@ -58,24 +58,24 @@ public class PostService {
     }
 
     @Transactional
-    public MtPostDto saveMtPost(MtPostDto postDto) throws Exception{
+    public MtPostDto saveMtPost(MtPostDto mtPostDto) throws Exception{
         Post post = null;
         Member member = memberUtil.getMember();
         //insert
-        if(postDto.getId() == null){
-            post = postDto.toEntity(memberRepository.findById(member.getMemberId()).get());
+        if(mtPostDto.getId() == null){
+            post = mtPostDto.toEntity(memberRepository.findById(member.getMemberId()).get());
             postRepository.save(post);
         }
 
         //update
         else{
-            post = postRepository.findById(postDto.getId()).get();
-            post.update(postDto.getTitle(), postDto.getContent());
+            post = postRepository.findById(mtPostDto.getId()).get();
+            post.update(mtPostDto.getTitle(), mtPostDto.getContent());
         }
 
 
-        if(postDto.getPostFiles() !=null) {
-            List<String> postImages = uploadPostImages(postDto, post);
+        if(mtPostDto.getPostFiles() !=null) {
+            List<String> postImages = uploadPostFiles(mtPostDto, post);
         }
 
 //        fileService.saveFile(postDto, post.getId());
@@ -83,37 +83,37 @@ public class PostService {
         return post.toMtDto();
     }
 
-     private List<String> uploadPostImages(PostDto postDto, Post post)  {
+     private List<String> uploadPostFiles(PostDto postDto, Post post)  {
         return postDto.getPostFiles().stream()
-                .map(image -> {
+                .map(file -> {
                     try {
-                        return s3Uploader.upload(image, postDto.getBoardId() == 3 ? "MT" : "post");
+                        return s3Uploader.upload(file, postDto.getBoardId() == 3 ? "MT" : "post");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .map(url -> createPostImage(post, url))
-                .map(PostImage::getImageUrl)
+                .map(PostFile::getFileUrl)
                 .collect(Collectors.toList());
     }
 
-    private List<String> uploadPostImages(MtPostDto postDto, Post post)  {
-        return postDto.getPostFiles().stream()
+    private List<String> uploadPostFiles(MtPostDto mtPostDto, Post post)  {
+        return mtPostDto.getPostFiles().stream()
                 .map(image -> {
                     try {
-                        return s3Uploader.upload(image, postDto.getBoardId() == 3 ? "MT" : "post");
+                        return s3Uploader.upload(image, mtPostDto.getBoardId() == 3 ? "MT" : "post");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .map(url -> createPostImage(post, url))
-                .map(PostImage::getImageUrl)
+                .map(PostFile::getFileUrl)
                 .collect(Collectors.toList());
     }
 
-    private PostImage createPostImage(Post post, String url) {
-        return postImageRepository.save(PostImage.builder()
-                .imageUrl(url)
+    private PostFile createPostImage(Post post, String url) {
+        return postFileRepository.save(PostFile.builder()
+                .fileUrl(url)
                 .storeFilename(StringUtils.getFilename(url))
                 .post(post)
                 .build());
@@ -134,5 +134,7 @@ public class PostService {
         post.delete("Y");
         return post;
     }
+
+    public
 
 }

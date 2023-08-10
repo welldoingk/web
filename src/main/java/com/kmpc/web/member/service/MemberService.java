@@ -2,6 +2,7 @@ package com.kmpc.web.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${jwt.domain}")
+    private String domain;
 
     /*회원 가입*/
     @Transactional
@@ -67,7 +71,7 @@ public class MemberService {
         // cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
         cookie.setMaxAge(30 * 60);// 7일 동안 유효
         cookie.setPath("/");
-        cookie.setDomain("localhost");
+        cookie.setDomain(domain);
         cookie.setSecure(false);
 
         response.addCookie(cookie);

@@ -2,6 +2,7 @@ package com.kmpc.web.member.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @Value("${jwt.domain}")
+    private String domain;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -49,7 +53,7 @@ public class MemberController {
     /*회원가입 뷰*/
     @GetMapping("/join")
     public String signUp() {
-        return "pages/member/signUp";
+        return "pages/member/signup";
     }
 
     /*vip 전용 페이지 뷰*/
@@ -101,6 +105,7 @@ public class MemberController {
         jwtCookie.setValue(null);
         jwtCookie.setMaxAge(0);
         jwtCookie.setPath("/");
+        jwtCookie.setDomain(domain);
         response.addCookie(jwtCookie);
 
         return "redirect:/login";

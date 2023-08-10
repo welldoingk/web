@@ -58,45 +58,35 @@
                             th:text="*{content}"
                     ></textarea>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="formFileMultiple"
+                    >파일업로드</label
+                    >
+                    <input
+                            accept="*"
+                            class="form-control"
+                            id="formFileMultiple"
+                            name="postFiles"
+                            type="file"
+                    />
+                </div>
                 <br/>
-<!--                <div class="mb-3">-->
-<!--                    <label for="content">첨부파일</label>-->
-<!--                    <p th:each="postFile, index : ${postFile}">-->
-<!--                        <a-->
-<!--                                th:href="@{/fileDownload/{postId}(postId=${postFile.fileId})}"-->
-<!--                                th:text="${postFile.originFileName}"-->
-<!--                        >파일이름1.png</a-->
-<!--                        >-->
-<!--                        <span>-->
-<!--                            <button-->
-<!--                                    class="btn btn-outline-danger"-->
-<!--                                    th:fileId="${postFile.postFileId}"-->
-<!--                                    th:onclick="postDelete(this.getAttribute('fileId'))"-->
-<!--                                    type="button"-->
-<!--                            >-->
-<!--                            삭제-->
-<!--                            </button>-->
-<!--                        </span>-->
-<!--                    </p>-->
-<!--                    <br/>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label" for="formFileMultiple"-->
-<!--                        >파일업로드</label-->
-<!--                        >-->
-<!--                        <input-->
-<!--                                class="form-control"-->
-<!--                                id="formFileMultiple"-->
-<!--                                multiple-->
-<!--                                name="multipartFile"-->
-<!--                                type="file"-->
-<!--                        />-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="mb-3" th:if="${postFile}">
+                    <label for="content">첨부파일</label>
+                    <p th:each="postFile, index : ${postFile}">
+                        <a th:href="${postFile.fileUrl}"
+                           th:text="${postFile.storeFilename}">파일이름1.png</a>
+                        <span><a class="btn-sm" th:fileId="${postFile.id}"
+                                      th:onclick="postFileDel(this.getAttribute('fileId'))"
+                            >삭제</a></span>
+                    </p>
+                </div>
                 <br/>
                 <div>
                     <button class="btn btn-sm btn-primary"
-                       id="btnSave"
-                       type="submit"
+                            id="btnSave"
+                            type="submit"
                     >
                         수정
                     </button>
@@ -138,6 +128,32 @@
         });
     }
 
+     function boardDelete(fileId){
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                //배열생성
+                const form = document.createElement('form');
+                form.setAttribute('method', 'post');        //Post 메소드 적용
+                form.setAttribute('action', '/board/delPostFile');
 
+                //파일 id
+                var input1 = document.createElement('input');
+                input1.setAttribute("type", "hidden");
+                input1.setAttribute("name", "postFileId");
+                input1.setAttribute("value", fileId);
+
+                //게시판 id
+                const selectedElements = document.getElementById("id");
+                var input2 = document.createElement('input');
+                input2.setAttribute("type", "hidden");
+                input2.setAttribute("name", "postId");
+                input2.setAttribute("value", selectedElements.value);
+
+                form.appendChild(input1);
+                form.appendChild(input2);
+                console.log(form);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
 </script>
 </html>

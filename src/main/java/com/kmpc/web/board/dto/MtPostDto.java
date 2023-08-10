@@ -38,12 +38,12 @@ public class MtPostDto {
     private String memberId; // 사용자 이름
 
     private List<MultipartFile> postFiles;
-    private String imageUrl;
+    private String fileUrl;
 
     @QueryProjection
     @Builder
     public MtPostDto(Long id, String title, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Long viewCount,
-                     String username, Long boardId, String gbVal, String imageUrl) {
+                     String username, Long boardId, String gbVal, String fileUrl, String memberId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -51,9 +51,10 @@ public class MtPostDto {
         this.modifiedAt = modifiedAt;
         this.viewCount = viewCount;
         this.username = username;
+        this.memberId = memberId;
         this.boardId = boardId;
         this.gbVal = gbVal;
-        this.imageUrl = imageUrl;
+        this.fileUrl = fileUrl;
     }
 
     public Post toEntity(Member member) {

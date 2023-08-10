@@ -52,12 +52,8 @@ public class CommentService {
             parent = commentRepository.findById(requestDto.getParentId()).get();
         }
         if (requestDto.getCommentId() != null) {
-            comment = Comment.builder()
-                    .id(requestDto.getCommentId())
-                    .member(memberRepository.findByMemberId(requestDto.getMemberId()).get())
-                    .post(post)
-                    .content(requestDto.getContent())
-                    .build();
+            comment = commentRepository.findById(requestDto.getCommentId()).get();
+            comment.updateContent(requestDto.getContent());
 
         }else {
             comment = Comment.builder()

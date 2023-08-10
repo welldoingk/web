@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
@@ -42,7 +41,7 @@ public class Post extends Timestamped {
     private Member member;
 
     @OneToMany(mappedBy = "post", orphanRemoval = true)
-    private List<PostImage> postImages;
+    private List<PostFile> postFiles;
 
     public Post update(String title, String content) {
         this.title = title;
@@ -84,6 +83,7 @@ public class Post extends Timestamped {
                 .createAt(getCreateAt())
                 .modifiedAt(getModifiedAt())
                 .username(member.getMemberName())
+                .memberId(member.getMemberId())
                 .build();
     }
 

@@ -4,9 +4,9 @@ import com.kmpc.web.board.dto.CommentDto;
 import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
-import com.kmpc.web.board.entity.PostImage;
+import com.kmpc.web.board.entity.PostFile;
 import com.kmpc.web.board.repository.PostCustomRepository;
-import com.kmpc.web.board.repository.PostImageRepository;
+import com.kmpc.web.board.repository.PostFileRepository;
 import com.kmpc.web.board.repository.PostRepository;
 import com.kmpc.web.board.service.CommentService;
 import com.kmpc.web.board.service.PostService;
@@ -39,7 +39,7 @@ public class GalleryController {
 
     private final PostCustomRepository postCustomRepository;
     private final PostRepository postRepository;
-    private final PostImageRepository postImageRepository;
+    private final PostFileRepository postFileRepository;
     private final CodeRepository codeRepository;
     private final PostService postService;
     private final CommentService commentService;
@@ -47,14 +47,22 @@ public class GalleryController {
     private final MemberRepository memberRepository;
 
     @GetMapping("/mt")
-    public String mtList(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+    public String mtList(Map<String, String> map, Pageable pageable, Model model) {
         Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, null);
         List<Code> codeList = codeRepository.findByClassCode("MT");
 
+        map.put("mtNo", codeList.get(0).getCodeNo());
         model.addAttribute("list", results);
         model.addAttribute("codeList", codeList);
         model.addAttribute("map", map);
         return "pages/gallery/mtList";
+    }
+
+     @GetMapping("/mtAjax")
+    @ResponseBody
+    public Page<MtPostDto> mtListByAjax(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, null);
+        return results;
     }
 
     @GetMapping("/recent")
@@ -91,6 +99,13 @@ public class GalleryController {
         return "pages/gallery/memberList";
     }
 
+    @GetMapping("/memberAjax")
+    @ResponseBody
+    public Page<MtPostDto> memberListByAjax(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, map.get("memberId"));
+        return results;
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/upload")
     public String uploadPage(Model model) {
@@ -120,11 +135,11 @@ public class GalleryController {
         }
 
         MtPostDto saveMtPost = postService.saveMtPost(mtPostDto);
-        return "redirect:/gallery/detail/" + saveMtPost.getId();
+        return "redirect:/gallery/member/detail/" + saveMtPost.getId();
     }
 
-    @GetMapping("/detail/{postId}")
-    public String detail(@PathVariable Long postId, Model model) {
+    @GetMapping("/{type}/detail/{postId}")
+    public String detail(@PathVariable String type, @PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
         Post nextPost = postRepository.findNextPost(postId);
         Post prevPost = postRepository.findPrevPost(postId);
@@ -138,7 +153,8 @@ public class GalleryController {
         model.addAttribute("prevPost", prevPost);
         model.addAttribute("commentDto", commentDto);
         model.addAttribute("code", mt);
-        model.addAttribute("postFile", postImageRepository.findByPost(post));
+        model.addAttribute("type", type);
+        model.addAttribute("postFile", postFileRepository.findByPost(post));
 
         return "pages/gallery/detail";
     }
@@ -148,14 +164,14 @@ public class GalleryController {
         String classCode = "MT";
         List<Code> codeList = codeRepository.findByClassCode(classCode);
         Post post = postService.selectPostDetail(postId);
-        List<PostImage> postImages = postImageRepository.findByPost(post);
+        List<PostFile> postFiles = postFileRepository.findByPost(post);
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
         PostDto mtPostDto = post.toDto();
 
 
         model.addAttribute("mtPostDto", mtPostDto);
         // model.addAttribute("postFile", customPostRepository.selectPostFileDetail(postId));
-        model.addAttribute("postFile", postImages);
+        model.addAttribute("postFile", postFiles);
         model.addAttribute("commentDto", commentDto);
         model.addAttribute("codeList", codeList);
 

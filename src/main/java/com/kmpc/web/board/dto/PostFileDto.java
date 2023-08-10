@@ -1,31 +1,31 @@
 package com.kmpc.web.board.dto;
 
+import com.kmpc.web.board.entity.PostFile;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.kmpc.web.board.entity.PostImage}
+ * DTO for {@link PostFile}
  */
 @Data
-public class PostImageDto implements Serializable {
+public class PostFileDto implements Serializable {
+    private Long id;
+    private String fileUrl;
+    private String storeFilename;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
-    private Long id;
-    private String imageUrl;
-    private String storeFilename;
 
     @QueryProjection
     @Builder
-    public PostImageDto(LocalDateTime createAt, LocalDateTime modifiedAt, Long id, String imageUrl, String storeFilename) {
+    public PostFileDto(LocalDateTime createAt, LocalDateTime modifiedAt, Long id, String fileUrl, String storeFilename) {
+        this.id = id;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
-        this.id = id;
-        this.imageUrl = imageUrl;
+        this.fileUrl = fileUrl;
         this.storeFilename = storeFilename;
     }
 }

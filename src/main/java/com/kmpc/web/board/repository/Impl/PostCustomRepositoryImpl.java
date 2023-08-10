@@ -1,27 +1,31 @@
 package com.kmpc.web.board.repository.Impl;
 
-import com.kmpc.web.board.dto.MtPostDto;
-import com.kmpc.web.board.dto.PostDto;
-import com.kmpc.web.board.dto.QMtPostDto;
-import com.kmpc.web.board.dto.QPostDto;
+import com.kmpc.web.board.dto.*;
+import com.kmpc.web.board.entity.QPostFile;
 import com.kmpc.web.board.repository.PostCustomRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static com.kmpc.web.board.entity.QPost.post;
-import static com.kmpc.web.board.entity.QPostImage.postImage;
+import static com.kmpc.web.board.entity.QPostFile.postFile;
 import static com.kmpc.web.member.entity.QMember.member;
 
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class PostCustomRepositoryImpl implements PostCustomRepository {
@@ -42,24 +46,22 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         return new PageImpl<>(content, pageable, count);
     }
 
-//    @Override
-//    public List<PostFileDto> selectPostFileDetail(Long boardId) {
-//        List<PostFileDto> content = jpaQueryFactory
-//                .select(new QPostFileDto(
-//                         postFile.id
-//                        ,postFile.file.id
-//                        ,postFile.file.originFileName
-//                        ,postFile.file.size
-//                        ,postFile.file.extension
-//                        ,postFile.file.uploadDir
-//                ))
-//                .from(postFile)
-//                .leftJoin(postFile.file)
-//                .where(postFile.postId.eq(boardId))
-//                .where(postFile.delYn.eq("N"))
-//                .fetch();
-//        return content;
-//    }
+    @Override
+    public List<PostFileDto> selectPostFileDetail(Long postId) {
+        List<PostFileDto> content = jpaQueryFactory
+                .select(new QPostFileDto(
+                        postFile.createAt,
+                        postFile.modifiedAt,
+                        postFile.id,
+                        postFile.fileUrl,
+                        postFile.storeFilename
+                ))
+                .from(postFile)
+                .leftJoin(postFile.post)
+                .where(postFile.post.id.eq(postId))
+                .fetch();
+        return content;
+    }
 
     private Long getCount(Long BoardId) {
         Long count = jpaQueryFactory
@@ -108,14 +110,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         member.memberName,
                         post.boardId,
                         post.gbVal,
-                        postImage.imageUrl
+                        postFile.fileUrl,
+                        member.memberId
                 ))
                 .from(post)
                 .leftJoin(post.member, member)
-                .leftJoin(post.postImages, postImage)
+                .leftJoin(post.postFiles, postFile)
                 .where(isEqToGbVal(map.get("mtNo")))
                 .where(isEqToBoardId(boardId))
                 .where(isEqToMemberId(memberId))
+                .where(afterCreateAtByStartDate(map.get("startDate")))
                 .where(post.delYn.ne("Y"))
                 .orderBy(post.id.desc())
                 .offset(pageable.getOffset())
@@ -142,5 +146,15 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private BooleanExpression isEqToPostId(Long postId) {
         return postId != null ? post.id.eq(postId) : null;
+    }
+
+    private BooleanExpression afterCreateAtByStartDate(String startDate) {
+        if (startDate == null){
+            return null;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(startDate+"-01T00:00:00", formatter);
+        log.info(dateTime.toString());
+        return startDate != null ? post.createAt.after(dateTime) : null;
     }
 }

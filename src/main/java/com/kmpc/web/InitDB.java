@@ -46,64 +46,64 @@ public class InitDB {
 
         public void userDBInit() {
 
-            List<Code> codeList = codeRepository.findAll();
-            if (codeList.isEmpty()) {
-                Code code = Code.builder()
-                        .classCode("MT")
-                        .codeNo("1")
-                        .codeName("북한산")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("MT")
-                        .codeNo("2")
-                        .codeName("설악산")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("MT")
-                        .codeNo("3")
-                        .codeName("백두산")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("Notice")
-                        .codeNo("1")
-                        .codeName("Head")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("Notice")
-                        .codeNo("2")
-                        .codeName("산행")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("Notice")
-                        .codeNo("3")
-                        .codeName("중요")
-                        .build();
-
-                codeRepository.save(code);
-
-                code = Code.builder()
-                        .classCode("Notice")
-                        .codeNo("4")
-                        .codeName("일반")
-                        .build();
-
-                codeRepository.save(code);
-            }
+//            List<Code> codeList = codeRepository.findAll();
+//            if (codeList.isEmpty()) {
+//                Code code = Code.builder()
+//                        .classCode("MT")
+//                        .codeNo("1")
+//                        .codeName("북한산")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("MT")
+//                        .codeNo("2")
+//                        .codeName("설악산")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("MT")
+//                        .codeNo("3")
+//                        .codeName("백두산")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("Notice")
+//                        .codeNo("1")
+//                        .codeName("Head")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("Notice")
+//                        .codeNo("2")
+//                        .codeName("산행")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("Notice")
+//                        .codeNo("3")
+//                        .codeName("중요")
+//                        .build();
+//
+//                codeRepository.save(code);
+//
+//                code = Code.builder()
+//                        .classCode("Notice")
+//                        .codeNo("4")
+//                        .codeName("일반")
+//                        .build();
+//
+//                codeRepository.save(code);
+//            }
 
             List<Board> boardList = boardRepository.findAll();
             if (boardList.isEmpty()) {
@@ -150,105 +150,105 @@ public class InitDB {
                 memberRepository.save(member);
             }
 
-            List<Post> postList = postRepository.findAll();
-            if (postList.isEmpty()) {
-                Post post;
-                PostFile postFile;
-
-                post = Post.builder()
-                        .member(memberRepository.findByMemberId("1").get())
-                        .title("공지 테스트")
-                        .content("")
-                        .boardId(1L)
-                        .build();
-                postFile = PostFile.builder()
-                        .post(post)
-                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                        .storeFilename("C06_1938.jpg")
-                        .build();
-                // member 저장
-                postRepository.save(post);
-                postFileRepository.save(postFile);
-
-                Comment comment1 = Comment.builder()
-                        .content("contentcontentcontent")
-                        .post(post)
-                        .member(memberRepository.findByMemberId("1").get())
-                        .build();
-                commentRepository.save(comment1);
-                Comment comment2 = Comment.builder()
-                        .content("contentcontentcontent")
-                        .post(post)
-                        .parent(comment1)
-                        .member(memberRepository.findByMemberId("1").get())
-                        .build();
-                commentRepository.save(comment2);
-
-                post = Post.builder()
-                        .member(memberRepository.findByMemberId("1").get())
-                        .title("자유 테스트")
-                        .content("")
-                        .boardId(2L)
-                        .build();
-                postFile = PostFile.builder()
-                        .post(post)
-                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                        .storeFilename("C06_1938.jpg")
-                        .build();
-                // member 저장
-                postRepository.save(post);
-                postFileRepository.save(postFile);
-
-                for (int i = 0; i < 100; i++) {
-
-                    post = Post.builder()
-                            .member(memberRepository.findByMemberId("1").get())
-                            .gbVal("1")
-                            .boardId(3L)
-                            .build();
-                    postFile = PostFile.builder()
-                            .post(post)
-                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                            .storeFilename("C06_1938.jpg")
-                            .build();
-                    // member 저장
-                    postRepository.save(post);
-                    postFileRepository.save(postFile);
-                }
-
-                for (int i = 0; i < 15; i++) {
-
-                    post = Post.builder()
-                            .member(memberRepository.findByMemberId("1").get())
-                            .gbVal("2")
-                            .boardId(3L)
-                            .build();
-                    postFile = PostFile.builder()
-                            .post(post)
-                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                            .storeFilename("C06_1938.jpg")
-                            .build();
-                    // member 저장
-                    postRepository.save(post);
-                    postFileRepository.save(postFile);
-                }
-                for (int i = 0; i < 23; i++) {
-
-                    post = Post.builder()
-                            .member(memberRepository.findByMemberId("1").get())
-                            .gbVal("3")
-                            .boardId(3L)
-                            .build();
-                    postFile = PostFile.builder()
-                            .post(post)
-                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
-                            .storeFilename("C06_1938.jpg")
-                            .build();
-                    // member 저장
-                    postRepository.save(post);
-                    postFileRepository.save(postFile);
-                }
-            }
+//            List<Post> postList = postRepository.findAll();
+//            if (postList.isEmpty()) {
+//                Post post;
+//                PostFile postFile;
+//
+//                post = Post.builder()
+//                        .member(memberRepository.findByMemberId("1").get())
+//                        .title("공지 테스트")
+//                        .content("")
+//                        .boardId(1L)
+//                        .build();
+//                postFile = PostFile.builder()
+//                        .post(post)
+//                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+//                        .storeFilename("C06_1938.jpg")
+//                        .build();
+//                // member 저장
+//                postRepository.save(post);
+//                postFileRepository.save(postFile);
+//
+//                Comment comment1 = Comment.builder()
+//                        .content("contentcontentcontent")
+//                        .post(post)
+//                        .member(memberRepository.findByMemberId("1").get())
+//                        .build();
+//                commentRepository.save(comment1);
+//                Comment comment2 = Comment.builder()
+//                        .content("contentcontentcontent")
+//                        .post(post)
+//                        .parent(comment1)
+//                        .member(memberRepository.findByMemberId("1").get())
+//                        .build();
+//                commentRepository.save(comment2);
+//
+//                post = Post.builder()
+//                        .member(memberRepository.findByMemberId("1").get())
+//                        .title("자유 테스트")
+//                        .content("")
+//                        .boardId(2L)
+//                        .build();
+//                postFile = PostFile.builder()
+//                        .post(post)
+//                        .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+//                        .storeFilename("C06_1938.jpg")
+//                        .build();
+//                // member 저장
+//                postRepository.save(post);
+//                postFileRepository.save(postFile);
+//
+//                for (int i = 0; i < 100; i++) {
+//
+//                    post = Post.builder()
+//                            .member(memberRepository.findByMemberId("1").get())
+//                            .gbVal("1")
+//                            .boardId(3L)
+//                            .build();
+//                    postFile = PostFile.builder()
+//                            .post(post)
+//                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+//                            .storeFilename("C06_1938.jpg")
+//                            .build();
+//                    // member 저장
+//                    postRepository.save(post);
+//                    postFileRepository.save(postFile);
+//                }
+//
+//                for (int i = 0; i < 15; i++) {
+//
+//                    post = Post.builder()
+//                            .member(memberRepository.findByMemberId("1").get())
+//                            .gbVal("2")
+//                            .boardId(3L)
+//                            .build();
+//                    postFile = PostFile.builder()
+//                            .post(post)
+//                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+//                            .storeFilename("C06_1938.jpg")
+//                            .build();
+//                    // member 저장
+//                    postRepository.save(post);
+//                    postFileRepository.save(postFile);
+//                }
+//                for (int i = 0; i < 23; i++) {
+//
+//                    post = Post.builder()
+//                            .member(memberRepository.findByMemberId("1").get())
+//                            .gbVal("3")
+//                            .boardId(3L)
+//                            .build();
+//                    postFile = PostFile.builder()
+//                            .post(post)
+//                            .fileUrl("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com/post/C06_1938.jpg")
+//                            .storeFilename("C06_1938.jpg")
+//                            .build();
+//                    // member 저장
+//                    postRepository.save(post);
+//                    postFileRepository.save(postFile);
+//                }
+//            }
 
         }
     }

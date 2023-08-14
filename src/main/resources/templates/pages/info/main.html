@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content"
+>
+<head>
+    <title>Sigma - Free Bootstrap 4.0 Template</title>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aa = /*[[${list}]]*/;
+    /*]]>*/
+</script>
+<style>
+    .galleryText {
+        font-size: 11px;
+        color: #ffffff;
+
+    }
+</style>
+<body>
+<br>
+<section id="section bg-light">
+
+    <div class="container">
+
+        <div class="row align-items-stretch retro-layout justify-content-md-center">
+
+            <div class="col-xl-2 col-xs-2 mt-5">
+                <br>
+                <div class="">
+                    <div class="card-body">
+                        <ul style="list-style-type: none;">
+                            <li><a href="#a">1. 소개</a></li>
+                            <li><a href="#b">2. 인사말</a></li>
+                            <li><a href="#">3. 조직도</a></li>
+                            <li><a href="#">4. 회원명부</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-10 col-xs-10">
+                <img id="a" src="/images/info/info2.jpg" style="width: 80%">
+                <img id="b" src="/images/info/info1.jpg" style="width: 80%">
+            </div>
+            <div id="endList"></div>
+
+        </div>
+
+    </div>
+    </div>
+
+</section>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    /*]]>*/
+</script>
+</html>

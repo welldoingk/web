@@ -1,7 +1,12 @@
 package com.kmpc.web.configuration;
 
+import com.kmpc.web.configuration.handler.CustomAuthFailureHandler;
+import com.kmpc.web.configuration.handler.CustomAuthSuccessHandler;
 import com.kmpc.web.jwt.JwtAuthFilter;
 import com.kmpc.web.jwt.JwtUtil;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,12 +29,16 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import java.io.IOException;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final CustomAuthFailureHandler customAuthFailureHandler;
+    private final CustomAuthSuccessHandler customAuthSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,7 +60,7 @@ public class SpringSecurityConfig {
         config.addAllowedOrigin("https://kmpc-img-bucket.s3.ap-northeast-2.amazonaws.com");
         config.addAllowedOrigin("http://ec2-13-125-207-204.ap-northeast-2.compute.amazonaws.com:8080");
         config.addAllowedMethod("*"); // 모든 메소드 허용.
-        config.addAllowedHeader("Access-Control-Allow-Origin");
+        config.addAllowedHeader("*");
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -88,7 +99,14 @@ public class SpringSecurityConfig {
          * 1. 인증이 되지 않은 사용자가 permitAll()페이지가 아닌 페이지에 접근할 때 /login으로 강제 이동 시킨다.
          * 2. 이때의 인증은 위에 필터에 등록해 놓은 JWT 토큰의 유무(유효성 검증) 기준이다.
          */
-        http.formLogin(login -> login.loginPage("/login"));
+        http.formLogin(login -> login.loginPage("/login")
+                        .usernameParameter("memberId")
+                        .passwordParameter("password")
+                        .loginProcessingUrl("/api/signin")
+                        .successHandler(customAuthSuccessHandler)
+                        .failureHandler(customAuthFailureHandler)
+                        .permitAll()
+        );
 
         /* 인가 (권한 인증) 실패 시 아래의 핸들러 작동 ex) 멤버인데 -> VIP 멤버의 페이지를 접근하는 경우 */
         http.exceptionHandling(handlingConfigurer -> handlingConfigurer

@@ -16,8 +16,10 @@ import com.kmpc.web.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +50,11 @@ public class PostService {
         }
 
 
-        if(postDto.getPostFiles() != null) {
+        int checkNum =1;
+        for(MultipartFile image:postDto.getPostFiles()){
+            if(image.isEmpty()) checkNum=0;
+        }
+        if(checkNum==1) {
             List<String> postImages = uploadPostFiles(postDto, post);
         }
 
@@ -73,8 +79,11 @@ public class PostService {
             post.update(mtPostDto.getTitle(), mtPostDto.getContent());
         }
 
-
-        if(mtPostDto.getPostFiles() !=null) {
+        int checkNum =1;
+        for(MultipartFile image:mtPostDto.getPostFiles()){
+            if(image.isEmpty()) checkNum=0;
+        }
+        if(checkNum==1) {
             List<String> postImages = uploadPostFiles(mtPostDto, post);
         }
 
@@ -134,7 +143,5 @@ public class PostService {
         post.delete("Y");
         return post;
     }
-
-    public
 
 }

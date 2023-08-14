@@ -1,6 +1,7 @@
 package com.kmpc.web.board.controller;
 
 import com.kmpc.web.board.dto.CommentDto;
+import com.kmpc.web.board.dto.MtPostDto;
 import com.kmpc.web.board.dto.PostDto;
 import com.kmpc.web.board.entity.Post;
 import com.kmpc.web.board.entity.PostFile;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +45,20 @@ public class PostController {
     private final CommentService commentService;
     private final CommonUtil commonUtil;
 
+
+    @GetMapping({"/", "/index"})
+    public String recentList(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, null);
+
+        model.addAttribute("list", results);
+        model.addAttribute("map", map);
+        return "pages/gallery/recentList";
+    }
+
+    @GetMapping("info")
+    public String infoPage(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+        return "pages/info/main";
+    }
     @GetMapping("/board")
     public String main(String searchVal, Pageable pageable,
             Model model) {
@@ -69,7 +85,7 @@ public class PostController {
         Member member = commonUtil.getMember();
 
         String classCode = boardId == 1 ? "Notice" :  (boardId == 3 ? "MT" : null);
-        List<Code> codeList = codeRepository.findByClassCode(classCode);
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders(classCode);
 
 
         PostDto postDto = new PostDto();

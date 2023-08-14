@@ -39,10 +39,12 @@ public class PostDto {
 
     private List<MultipartFile> postFiles;
 
+    private Long orders;
+
     @QueryProjection
     @Builder
     public PostDto(Long id, String title, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Long viewCount,
-                   String username, Long boardId, String gbVal) {
+                   String username, Long boardId, String gbVal, Long orders) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -52,6 +54,7 @@ public class PostDto {
         this.username = username;
         this.boardId = boardId;
         this.gbVal = gbVal;
+        this.orders = orders;
     }
 
     public Post toEntity(Member member) {
@@ -61,6 +64,7 @@ public class PostDto {
                 .content(content)
                 .boardId(boardId)
                 .gbVal(gbVal)
+                .orders(orders)
                 .build();
     }
 

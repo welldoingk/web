@@ -49,7 +49,7 @@ public class GalleryController {
     @GetMapping("/mt")
     public String mtList(Map<String, String> map, Pageable pageable, Model model) {
         Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, null);
-        List<Code> codeList = codeRepository.findByClassCode("MT");
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("MT");
 
         map.put("mtNo", codeList.get(0).getCodeNo());
         model.addAttribute("list", results);
@@ -58,7 +58,7 @@ public class GalleryController {
         return "pages/gallery/mtList";
     }
 
-     @GetMapping("/mtAjax")
+    @GetMapping("/mtAjax")
     @ResponseBody
     public Page<MtPostDto> mtListByAjax(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
         Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 3L, null);
@@ -83,7 +83,7 @@ public class GalleryController {
 
     @GetMapping("/member")
     public String memberList(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
-        List<Member> memberList = memberRepository.findByRole(UserRoleEnum.VIP_MEMBER);
+        List<Member> memberList = memberRepository.findByRoleOrderByMemberIdAsc(UserRoleEnum.VIP_MEMBER);
         String memberId;
         if (map.get("memberId") == null) {
             memberId = memberList.get(0).getMemberId();
@@ -106,13 +106,33 @@ public class GalleryController {
         return results;
     }
 
+    @GetMapping("/event")
+    public String eventList(@RequestParam(required = false) Map<String, String> map, Pageable pageable, Model model) {
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 4L, null);
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("Event");
+
+        map.put("eventNo", codeList.get(0).getCodeNo());
+        model.addAttribute("list", results);
+        model.addAttribute("codeList", codeList);
+        model.addAttribute("map", map);
+
+        return "pages/gallery/eventList";
+    }
+
+    @GetMapping("/eventAjax")
+    @ResponseBody
+    public Page<MtPostDto> eventListAjax(@RequestParam Map<String, String> map, Pageable pageable, Model model) {
+        Page<MtPostDto> results = postCustomRepository.selectGalleryList(map, pageable, 4L, null);
+        return results;
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/upload")
     public String uploadPage(Model model) {
         Member member = commonUtil.getMember();
 
         String classCode = "MT";
-        List<Code> codeList = codeRepository.findByClassCode(classCode);
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders(classCode);
 
         MtPostDto mtPostDto = new MtPostDto();
         mtPostDto.setUsername(member.getMemberName());
@@ -126,10 +146,29 @@ public class GalleryController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/eventUpload")
+    public String eventUploadPage(Model model) {
+        Member member = commonUtil.getMember();
+
+        String classCode = "Event";
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders(classCode);
+
+        MtPostDto mtPostDto = new MtPostDto();
+        mtPostDto.setUsername(member.getMemberName());
+        mtPostDto.setBoardId(4L);
+
+        model.addAttribute("mtPostDto", mtPostDto);
+        model.addAttribute("codeList", codeList);
+
+
+        return "pages/gallery/eventUpload";
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/upload")
     public String save(@Valid MtPostDto mtPostDto, BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
-            List<Code> codeList = codeRepository.findByClassCode("MT");
+            List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("MT");
             model.addAttribute("codeList", codeList);
             return "pages/gallery/upload";
         }
@@ -141,8 +180,23 @@ public class GalleryController {
     @GetMapping("/{type}/detail/{postId}")
     public String detail(@PathVariable String type, @PathVariable Long postId, Model model) {
         Post post = postService.selectPostDetail(postId);
-        Post nextPost = postRepository.findNextPost(postId);
-        Post prevPost = postRepository.findPrevPost(postId);
+        Post nextPost = null;
+        Post prevPost = null;
+        switch (type) {
+            case "recent":
+                prevPost = postRepository.findRecentPrevPost(postId);
+                nextPost = postRepository.findRecentNextPost(postId);
+                break;
+            case "mt":
+                prevPost = postRepository.findMtPrevPost(postId, post.getGbVal());
+                nextPost = postRepository.findMtNextPost(postId, post.getGbVal());
+                break;
+            case "member":
+                prevPost = postRepository.findMemberPrevPost(postId, post.getMember().getMemberId());
+                nextPost = postRepository.findMemberNextPost(postId, post.getMember().getMemberId());
+                break;
+        }
+
 
         Code mt = codeRepository.findById(new CodeId("MT", post.getGbVal())).get();
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
@@ -162,7 +216,7 @@ public class GalleryController {
     @GetMapping("/update/{postId}")
     public String updatePage(@PathVariable Long postId, Model model) {
         String classCode = "MT";
-        List<Code> codeList = codeRepository.findByClassCode(classCode);
+        List<Code> codeList = codeRepository.findByClassCodeOrderByOrders(classCode);
         Post post = postService.selectPostDetail(postId);
         List<PostFile> postFiles = postFileRepository.findByPost(post);
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);

@@ -51,6 +51,17 @@
                         </p>
                     </div>
                     <div class="mb-3">
+                        <label for="gbVal">구분</label>
+                        <select class="form-control" id="gbVal" name="gbVal" th:if="${codeList} and ${postDto.boardId} == '1' ">
+                            <option value="">-- 선택 --</option>
+                            <option th:each="code, index : ${codeList}" th:value="${code?.codeNo}"
+                                    th:text="${code?.codeName}">
+                        </select>
+                        <p th:errors="*{gbVal}" th:if="${#fields.hasErrors('gbVal')}">
+                            Incorrect date
+                        </p>
+                    </div>
+                    <div class="mb-3">
                         <label for="reg_id">작성자</label>
                         <input
                                 class="form-control"
@@ -68,7 +79,7 @@
                                 id="boardContent"
                                 name="content"
                                 placeholder="내용을 입력해 주세요"
-                                rows="1"
+                                rows="10"
                         ></textarea>
                     </div>
                     <div class="mb-3">

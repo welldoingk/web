@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <style>
     .galleryText {
-        font-size: 12px;
+        font-size: 11px;
         color: #ffffff;
 
     }
@@ -43,7 +43,7 @@
                            th:href="@{/gallery/recent/detail/{postId}(postId=${data.id})}">
                             <div class="featured-img"
                                  th:style="'background-image: url(' + ${data.fileUrl} + ');'"></div>
-                            <div class="galleryText text" th:text="${#temporals.format(data.createAt, 'yyyy.MM.dd') + '/' + data.username}">
+                            <div class="galleryText text" th:text="${#temporals.format(data.createAt, 'yyyy.MM.dd') + ' / ' + data.username}">
                             </div>
                         </a>
                     </div>
@@ -82,7 +82,7 @@
                             <div class="featured-img"
                                  style="background-image: url(${item.fileUrl});"></div>
                             <div class="galleryText text">
-                                ${format + '/' + item.username}
+                                ${format + ' / ' + item.username}
                             </div>
                         </a>
                     </div>`;
@@ -90,6 +90,7 @@
             list.innerHTML += listHtml;
         });
         dataLength = DATA.length;
+        page++;
         isFetching = false; // callback이 끝났으니 isFetching 리셋
     };
 
@@ -116,7 +117,6 @@
         entries.forEach(async (entry) => {
             if (entry.isIntersecting) {
                 console.log('무한 스크롤 실행');
-                page++;
                 console.log('page: ' + page);
                 if (!isFetching) getList();
 

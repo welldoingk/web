@@ -32,7 +32,7 @@
     <div class="container" role="main">
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">업로드</a>
+                <a class="navbar-brand" href="#">이벤트 업로드</a>
             </div>
         </nav>
         <form enctype="multipart/form-data" method="post" th:action="@{/gallery/upload}" th:object="${mtPostDto}">
@@ -41,7 +41,7 @@
             <article>
                 <div class="container" role="main">
                     <div class="form-group">
-                        <label for="gbVal">촬영산</label>
+                        <label for="gbVal">이벤트</label>
                         <select class="form-control" id="gbVal" name="gbVal" th:if="${codeList}">
                             <option value="">-- 선택 --</option>
                             <option th:each="mt, index : ${codeList}" th:value="${mt?.codeNo}"
@@ -60,6 +60,15 @@
                                 readonly
                                 th:value="${#authentication.getPrincipal().name}"
                                 type="text"
+                        />
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg_id">순번</label>
+                        <input
+                                class="form-control"
+                                id="orders"
+                                name="orders"
+                                type="number"
                         />
                     </div>
                     <!--                    <div class="mb-3">-->

@@ -25,13 +25,22 @@ public class Post extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id; // 번호
+
     private Long boardId; // 게시판 번호
+
     private String title; // 제목
+
     private String content; // 내용
+
     private String gbVal; // 구분값
+
     @ColumnDefault("0")
     private Long viewCount; // 조회수
+
     private String delYn; // 삭제여부
+
+    @ColumnDefault("999")
+    private Long orders;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
@@ -70,6 +79,7 @@ public class Post extends Timestamped {
                 .createAt(getCreateAt())
                 .createAt(getModifiedAt())
                 .username(member.getMemberName())
+                .orders(orders)
                 .build();
     }
     public MtPostDto toMtDto() {
@@ -84,11 +94,12 @@ public class Post extends Timestamped {
                 .modifiedAt(getModifiedAt())
                 .username(member.getMemberName())
                 .memberId(member.getMemberId())
+                .orders(orders)
                 .build();
     }
 
     @Builder
-    public Post(String title, String content, Long viewCount, String delYn, Member member, Long boardId, String gbVal) {
+    public Post(String title, String content, Long viewCount, String delYn, Member member, Long boardId, String gbVal, Long orders) {
         this.title = title;
         this.content = content;
         this.viewCount = 0L;
@@ -96,5 +107,6 @@ public class Post extends Timestamped {
         this.member = member;
         this.boardId = boardId;
         this.gbVal = gbVal;
+        this.orders = orders;
     }
 }

@@ -94,7 +94,7 @@ body {
 }
 
 .galleryText .text {
-    font-size: 12px;
+    font-size: 11px;
     color: #ffffff;
 
 }
@@ -13432,7 +13432,7 @@ fieldset:disabled .btn {
 }
 
 .site-nav .site-navigation .site-menu .has-children:hover > a, .site-nav .site-navigation .site-menu .has-children:focus > a, .site-nav .site-navigation .site-menu .has-children:active > a {
-    color: #fff;
+    color: #000000;
 }
 
 .site-nav .site-navigation .site-menu .has-children:hover, .site-nav .site-navigation .site-menu .has-children:focus, .site-nav .site-navigation .site-menu .has-children:active {

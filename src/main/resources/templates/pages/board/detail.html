@@ -91,13 +91,13 @@
                         <div class="pe-2">
                             <p
                                     id="memberName"
-                                    th:text="'작성자 :' + ${postDto.username} + ' |'"
+                                    th:text="'작성자 :' + ${postDto.username} "
                             ></p>
                         </div>
                         <div class="pe-2" th:if="${postDto.boardId} == 1">
                             <p
                                     id="gbVal"
-                                    th:text="${postDto.gbVal} == 1 ? '#Head' : (${postDto.gbVal} == 2 ? '#산행' : (${postDto.gbVal} == 3 ? '#중요' : '#일반'))"
+                                    th:text="' |'+${postDto.gbVal} == 1 ? '#Head' : (${postDto.gbVal} == 2 ? '#산행' : (${postDto.gbVal} == 3 ? '#중요' : '#일반'))"
                                     type="text"
                             ></p>
                         </div>
@@ -128,7 +128,8 @@
             <div class="post-content-body">
                 <div class="mb-3">
                     <p id="boardContent"
-                       th:text="${postDto.content}"
+                       th:utext="${postDto.content}"
+                        style="white-space:pre;"
                     ></p>
                 </div>
             </div>
@@ -138,10 +139,10 @@
                 <p th:each="postFile, index : ${postFile}">
                     <a th:href="${postFile.fileUrl}"
                        th:text="${postFile.storeFilename}">파일이름1.png</a>
-<!--                    <span>-->
-<!--                <button th:fileId="${boardFile.boardFileId}" th:onclick="boardDelete(this.getAttribute('fileId'))"-->
-<!--                        type="button" class="btn btn-outline-danger">삭제</button>-->
-<!--            </span>-->
+                    <!--                    <span>-->
+                    <!--                <button th:fileId="${boardFile.boardFileId}" th:onclick="boardDelete(this.getAttribute('fileId'))"-->
+                    <!--                        type="button" class="btn btn-outline-danger">삭제</button>-->
+                    <!--            </span>-->
                 </p>
             </div>
             <div class="pt-1">
@@ -218,29 +219,31 @@
                                 </button>
                             </div>
                         </div>
-                        <ul class="children" th:each="children, index : ${comment.children}">
-                            <li class="comment">
-                                <div class="comment-body">
-                                    <input class="commentId" th:value="${children.id}" type="hidden">
-                                    <hr>
-                                    <h5 th:text="${children.nickname}"></h5>
-                                    <div class="meta"
-                                         th:text="${#temporals.format(children.createAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                                    <p th:if="${comment.delYn} != 'Y'" th:text="${children.content}"></p>
-                                    <p th:if="${children.delYn} == 'Y'" th:text="'삭제된 댓글입니다.'"></p>
-                                    <p>
-                                        <a class="actionBtn rounded"
-                                           data-bs-toggle="collapse"
-                                           sec:authorize="isAuthenticated()"
-                                           th:attr="data-bs-target=|#u${comment.id}"
-                                           th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">수정</a>
-                                        <a class="actionBtn rounded delBtn"
-                                           sec:authorize="isAuthenticated()"
-                                           th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">삭제</a>
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
+                        <div th:each="children, index : ${comment.children}">
+                            <ul class="children" th:if="${children.delYn} != 'Y'">
+                                <li class="comment">
+                                    <div class="comment-body">
+                                        <input class="commentId" th:value="${children.id}" type="hidden">
+                                        <hr>
+                                        <h5 th:text="${children.nickname}"></h5>
+                                        <div class="meta"
+                                             th:text="${#temporals.format(children.createAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+                                        <p th:if="${comment.delYn} != 'Y'" th:text="${children.content}"></p>
+                                        <p th:if="${children.delYn} == 'Y'" th:text="'삭제된 댓글입니다.'"></p>
+                                        <p>
+                                            <a class="actionBtn rounded"
+                                               data-bs-toggle="collapse"
+                                               sec:authorize="isAuthenticated()"
+                                               th:attr="data-bs-target=|#u${comment.id}"
+                                               th:if="${children.memberId != null and children.memberId.equals(#authentication.getName())}">수정</a>
+                                            <a class="actionBtn rounded delBtn"
+                                               sec:authorize="isAuthenticated()"
+                                               th:if="${children.memberId != null and children.memberId.equals(#authentication.getName())}">삭제</a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </div>

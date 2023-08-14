@@ -37,16 +37,10 @@ spring:
 #    username: kmpc
 #    password: kmpc
   datasource:
-    url: jdbc:h2:~/test
-#    url: jdbc:h2:tcp://localhost/~/test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
-  h2:
-    console:
-     enabled: true
-     path: /h2-console
+    url: jdbc:mysql://ec2-13-125-207-204.ap-northeast-2.compute.amazonaws.com:3306/kmpc?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -85,7 +79,7 @@ spring:
   data:
     web:
       pageable:
-        default-page-size: 30
+        default-page-size: 16
   web:
     resources:
       static-locations: file:src/main/resources/static/

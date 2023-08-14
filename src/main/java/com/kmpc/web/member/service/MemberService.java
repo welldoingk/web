@@ -40,6 +40,8 @@ public class MemberService {
                         .password(passwordEncoder.encode(requestDto.getPassword()))
                         .memberName(requestDto.getMemberName())
                         .nickname(requestDto.getNickname())
+                        .birthYear(requestDto.getBirthYear())
+                        .local(requestDto.getLocal())
                         .build();
         memberRepository.save(member);
 
@@ -61,6 +63,7 @@ public class MemberService {
         /*비밀번호 다름.*/
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             log.warn("비밀번호가 일치하지 않습니다.");
+
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -76,6 +79,19 @@ public class MemberService {
 
         response.addCookie(cookie);
 
+    }
+
+    public void loginS(Member member, HttpServletResponse response){
+        /*토큰을 쿠키로 발급 및 응답에 추가*/
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER,
+                jwtUtil.createToken(member.getMemberId(), member.getRole()));
+        // cookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        cookie.setMaxAge(30 * 60);// 7일 동안 유효
+        cookie.setPath("/");
+        cookie.setDomain(domain);
+        cookie.setSecure(false);
+
+        response.addCookie(cookie);
     }
 
 }

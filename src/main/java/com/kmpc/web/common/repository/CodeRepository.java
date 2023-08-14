@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface CodeRepository extends JpaRepository<Code, CodeId> {
 
-    List<Code> findByClassCode(String classCode);
+    List<Code> findByClassCodeOrderByOrders(String classCode);
     
 }

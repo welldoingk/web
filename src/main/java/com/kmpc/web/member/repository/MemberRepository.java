@@ -14,4 +14,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     Optional<Member> findByMemberId(String memberId);
 
     List<Member> findByRole(UserRoleEnum role);
+    List<Member> findByRoleOrderByMemberIdAsc(UserRoleEnum role);
 }

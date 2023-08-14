@@ -19,6 +19,7 @@
                 <colgroup>
 <!--                    <col width="2%"/>-->
                     <col width="5%"/>
+                    <col th:if="${boardId} == 1" width="5%"/>
                     <col width="20%"/>
                     <col width="5%"/>
                     <col width="5%"/>
@@ -36,6 +37,7 @@
 <!--                        </label>-->
 <!--                    </th>-->
                     <th>번호</th>
+                    <th th:if="${boardId} == 1">구분</th>
                     <th>제목</th>
                     <th>작성자</th>
                     <th>날짜</th>
@@ -60,6 +62,7 @@
                     <td
                             th:text="${totalCount - (size * number) - index.index}"
                     ></td>
+                    <td th:if="${boardId} == 1" th:text="${list.gbVal} == 1 ? '#Head' : (${list.gbVal} == 2 ? '#산행' : (${list.gbVal} == 3 ? '#중요' : '#일반'))"></td>
                     <td><a th:text="${list.title}" th:href="@{/board/detail/{postId}(postId=${list.id})}"></a></td>
                     <td th:text="${list.username}"></td>
                     <td

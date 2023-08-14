@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.kmpc.web.member.dto.LoginRequestDto;
@@ -31,21 +32,21 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    /*index 뷰*/
-    @GetMapping("/index")
-    public String index() {
-        return "index";
-    }
-
     /*로그인 뷰*/
     @GetMapping("/login")
-    public String login(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String login(@RequestParam(value = "error", required = false) String error,
+						@RequestParam(value = "exception", required = false) String exception,
+                        @AuthenticationPrincipal UserDetailsImpl userDetails,
+                        Model model) {
 
         /*이미 로그인된 사용자일 경우 인덱스 페이지로 강제이동.*/
         if (userDetails != null) {
             log.info(userDetails.getMember().getMemberName() + "님이 로그인 페이지로 이동을 시도함. -> index 페이지로 강제 이동 함.");
             return "redirect:/index";
         }
+
+        model.addAttribute("error", error);
+		model.addAttribute("exception", exception);
 
         return "pages/member/signin";
     }
@@ -76,17 +77,17 @@ public class MemberController {
     }
     
     /*로그인 API*/
-    @PostMapping("/api/signin")
-    public String login(LoginRequestDto requestDto, HttpServletResponse response) {
-        memberService.login(requestDto, response);
-        return "redirect:/index";
-    }
+//    @PostMapping("/api/signin")
+//    public String login(LoginRequestDto requestDto, HttpServletResponse response) {
+//        memberService.login(requestDto, response);
+//        return "redirect:/index";
+//    }
 
     /*서버 로그 쿠키 테스트 확인용*/
     @GetMapping("/cookie/test")
     public String test(@CookieValue(value = "Authorization", defaultValue = "", required = false) String test) {
         log.info(test);
-        return "index";
+        return "redirect:/";
     }
 
     /*403, forbidden -> 인가 실패 시*/

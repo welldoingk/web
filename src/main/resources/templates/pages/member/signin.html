@@ -12,10 +12,14 @@
 <section class="section bg-d5">
     <h3 class="text-center">로그인</h3>
     <div class="signin-wrapper">
-        <div class="signin form-wrapper" style="height: 340px;">
+        <div class="signin form-wrapper" style="height: 440px;">
             <form th:action="@{/api/signin}" method="post">
-                <input type="text" name="memberId" placeholder="아이디" class="form-field"/>
-                <input type="password" name="password" placeholder="비밀번호" class="form-field"/>
+                <div th:if="${error}">
+                    <div class="alert alert-danger" th:text="${exception}">
+                    </div>
+                </div>
+                <input type="text" id="memberId" name="memberId" placeholder="아이디" class="form-field"/>
+                <input type="password" id="password" name="password" placeholder="비밀번호" class="form-field"/>
                 <div class="form-chk">
                     <input type="checkbox" name="remember-me" id="rememberMe">
                     <label for="rememberMe">자동 로그인</label>
@@ -33,5 +37,6 @@
     sginup.addEventListener("click", function () {
         location.href = "/join"
     })
+
 </script>
 </html>

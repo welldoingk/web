@@ -85,7 +85,13 @@
                     <a href="#"
                        th:text="${#temporals.format(postDto.createAt, 'yyyy')}"></a>
                 </h2>
-
+                <h2 class="me-auto bd-highlight posts-entry-title" th:if="${type} == 'event'">이벤트 상세 화면 :
+                    <a th:href="'/gallery/event?eventNo='+ ${code.codeNo}"
+                       th:text="${code.codeName}">이벤트</a>
+                </h2>
+                <h2 class="me-auto bd-highlight posts-entry-title" th:if="${type} == 'recent'">
+                    <span th:text="${#temporals.format(postDto.createAt, 'yyyy-MM-dd')}"></span> / <a th:href="'/gallery/member?memberId='+ ${postDto.memberId}" th:text="${postDto.username}">회원명</a>
+                </h2>
                 <div class="">
                     <a class="p-2 bd-highlight"
                        id="btnDel"
@@ -112,16 +118,16 @@
 
             <div class="d-flex justify-content-center">
                 <button class="carousel-control-next col-2 align-middle" th:text=" ${nextPost} ? '❮' : '' "></button>
-                <img class="image-box col-10" th:alt="${postFile[0]?.getFileUrl}" th:src="${postFile[0]?.getFileUrl} + '?yn'">
+                <img class="image-box col-10" th:alt="${postFile[0]?.getFileUrl}"
+                     th:src="${postFile[0]?.getFileUrl} + '?yn'">
                 <button class="carousel-control-prev col-2 align-middle" th:text=" ${prevPost} ? '❯' : '' "></button>
             </div>
-            <div class="mb-3" id="text">
-                <label class="form-label" for="metaInfo"
-                >메타정보</label>
-                <input class="form-control"
-                       id="metaInfo"
-                       readonly
-                       type="text"/>
+            <div class="mb-3" id="metaData" th:if="${postDto.content}" th:utext="${postDto.content}">
+            </div>
+            <div class="mb-3" id="text" th:if="!${postDto.content}">
+                <!--                <label class="form-label" for="metaInfo"-->
+                <!--                >메타정보</label>-->
+
             </div>
 
             <div class="comment-form-wrap bg-light p-3" sec:authorize="isAuthenticated()">
@@ -193,45 +199,47 @@
                                 </button>
                             </div>
                         </div>
-                        <ul class="children" th:each="children, index : ${comment.children}">
-                            <li class="comment">
-                                <div class="comment-body">
-                                    <input class="commentId" th:value="${children.id}" type="hidden">
-                                    <hr>
-                                    <h5 th:text="${children.nickname}"></h5>
-                                    <div class="meta"
-                                         th:text="${#temporals.format(children.createAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                                    <p th:if="${children.delYn} != 'Y'" th:text="${children.content}"></p>
-                                    <p th:if="${children.delYn} == 'Y'" th:text="'삭제된 댓글입니다.'"></p>
-                                    <p>
-                                        <a class="actionBtn rounded"
-                                           data-bs-toggle="collapse"
-                                           sec:authorize="isAuthenticated()"
-                                           th:attr="data-bs-target=|#ru${comment.id}"
-                                           th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">수정</a>
-                                        <a class="actionBtn rounded delBtn"
-                                           sec:authorize="isAuthenticated()"
-                                           th:if="${comment.memberId != null and comment.memberId.equals(#authentication.getName())}">삭제</a>
-                                    </p>
-                                </div>
-                                <div class="collapse" data-bs-parent="#comment" sec:authorize="isAuthenticated()"
-                                     th:id="ru + ${comment.id}">
-                                    <div class="input-group update">
-                                        <label for="updateContent" style="display: none">수정</label>
-                                        <input class="form-control content" name="content"
-                                               placeholder="수정 댓글을 입력해주세요"
-                                               type="text">
-                                        <input class="form-control commentId" name="commentId"
-                                               th:value="${comment.id}"
-                                               type="hidden">
-                                        <button class="btn btn-primary updateBtn"
-                                                type="button"
-                                                value="작성">수정
-                                        </button>
+                        <div th:each="children, index : ${comment.children}">
+                            <ul class="children" th:if="${children.delYn} != 'Y'">
+                                <li class="comment">
+                                    <div class="comment-body">
+                                        <input class="commentId" th:value="${children.id}" type="hidden">
+                                        <hr>
+                                        <h5 th:text="${children.nickname}"></h5>
+                                        <div class="meta"
+                                             th:text="${#temporals.format(children.createAt, 'yyyy-MM-dd HH:mm:ss')}"></div>
+                                        <p th:if="${children.delYn} != 'Y'" th:text="${children.content}"></p>
+                                        <p th:if="${children.delYn} == 'Y'" th:text="'삭제된 댓글입니다.'"></p>
+                                        <p>
+                                            <a class="actionBtn rounded"
+                                               data-bs-toggle="collapse"
+                                               sec:authorize="isAuthenticated()"
+                                               th:attr="data-bs-target=|#ru${comment.id}"
+                                               th:if="${children.memberId != null and children.memberId.equals(#authentication.getName())}">수정</a>
+                                            <a class="actionBtn rounded delBtn"
+                                               sec:authorize="isAuthenticated()"
+                                               th:if="${children.memberId != null and children.memberId.equals(#authentication.getName())}">삭제</a>
+                                        </p>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
+                                    <div class="collapse" data-bs-parent="#comment" sec:authorize="isAuthenticated()"
+                                         th:id="ru + ${comment.id}">
+                                        <div class="input-group update">
+                                            <label for="updateContent" style="display: none">수정</label>
+                                            <input class="form-control content" name="content"
+                                                   placeholder="수정 댓글을 입력해주세요"
+                                                   type="text">
+                                            <input class="form-control commentId" name="commentId"
+                                                   th:value="${comment.id}"
+                                                   type="hidden">
+                                            <button class="btn btn-primary updateBtn"
+                                                    type="button"
+                                                    value="작성">수정
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </div>

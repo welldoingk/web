@@ -8,6 +8,8 @@
 <head>
     <title>Sigma - Free Bootstrap 4.0 Template</title>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     var aa = /*[[${list}]]*/;
@@ -20,8 +22,6 @@
 
     }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-
 <body>
 <br>
 <section id="section bg-light">
@@ -31,17 +31,17 @@
         <div class="row align-items-stretch retro-layout justify-content-md-center">
 
             <div class="col-xl-2 col-xs-2 mt-5">
+                <br>
                 <div class="">
-                    <div class="">
-                        회원별 작품
+                    <div class="card-title">
+                        이벤트 목록 및 화면
                     </div>
                     <div class="card-body">
-                        <div class="form-check" th:each="member, index : ${memberList}">
-                            <input class="form-check-input" type="radio" th:value="${member.memberId}" id="radio"
-                                   name="radio"
-                                   th:checked="${param.memberId == null && (map.memberId eq member.memberId) || param.memberId != null && (#strings.toString(member.memberId) eq #strings.toString(param.memberId))}">
-                            <label class="form-check-label" for="radio" th:text="${member.memberName}">
-                                회원
+                        <div class="form-check" th:each="evnet, index : ${codeList}">
+                            <input class="form-check-input" type="radio" th:value="${evnet.codeNo}" id="radio" name="radio"
+                                   th:checked="${param.mtNo == null && (map.eventNo eq evnet.codeNo) || param.mtNo != null && (#strings.toString(evnet.codeNo) eq #strings.toString(param.mtNo))}">
+                            <label class="form-check-label" for="radio" th:text="${evnet.codeName}">
+
                             </label>
                         </div>
 
@@ -50,24 +50,15 @@
             </div>
             <div class="col-xl-10 col-xs-10">
                 <div class="row mb-6">
-                    <div class="col-4 col-md input-group">
-                    <label for="datePick">기준년월 : </label>
-                        <span class="input-group-text"><i class="bi bi-calendar-week"></i></span>
-                        <input id="datePick" class="" type="text"
-                               th:value="${#calendars.format(#calendars.createNow(), 'yyyy.MM')}">
-                    </div>
+<!--                    <div class="col-4 col-md input-group">-->
+<!--                        <label for="datePick">기준년월 : </label>-->
+<!--                        <span class="input-group-text"><i class="bi bi-calendar-week"></i></span>-->
+<!--                        <input id="datePick" class="" type="text"-->
+<!--                               th:value="${#calendars.format(#calendars.createNow(), 'yyyy.MM')}">-->
+<!--                    </div>-->
                 </div>
                 <br>
                 <div class="row align-items-stretch retro-layout" id="list">
-                    <!--                    <div class="col-md-2" th:each="data, index : ${list}">-->
-                    <!--                        <a th:href="@{/gallery/detail/c/{postId}(postId=${data.id})}"-->
-                    <!--                           class="h-entry mb-30 v-height gradient">-->
-                    <!--                            <div class="featured-img"-->
-                    <!--                                 th:style="'background-image: url(' + ${data.imageUrl} + ');'"></div>-->
-                    <!--                            <div class="text">-->
-                    <!--                            </div>-->
-                    <!--                        </a>-->
-                    <!--                    </div>-->
 
                 </div>
                 <div id="endList"></div>
@@ -81,7 +72,6 @@
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
-
     let isFetching = false
     const list = document.getElementById("list");
     const endList = document.getElementById("endList");
@@ -93,22 +83,6 @@
 
     let page = 0;
     let dataLength;
-
-    const datePick = document.getElementById("datePick");
-    var fp = flatpickr(datePick, {
-        "locale": "ko",
-        plugins: [
-            new monthSelectPlugin({
-                shorthand: true, //defaults to false
-                dateFormat: "Y-m", //defaults to "F Y"
-            })
-        ]
-    });
-    datePick.addEventListener("change", () => {
-        page = 0
-        list.innerHTML = '';
-        init();
-    });
 
 
     const radios = document.querySelectorAll("input[name='radio']");
@@ -123,16 +97,17 @@
     });
 
     const drawList = (DATA) => {
+        console.log("!")
         let listHtml = "";
         DATA.forEach((item, index) => {
             const format = moment(item.createAt).format('YYYY.MM.DD');
             listHtml = `<div class="col-md-3">
                         <a class="h-entry mb-30 v-height gradient"
-                           href="/gallery/member/detail/${item.id}">
+                           href="/gallery/mt/detail/${item.id}">
                             <div class="featured-img"
                                  style="background-image: url(${item.fileUrl});"></div>
                             <div class="galleryText text">
-                                ${format + ' / ' + item.username}
+                            ${format + ' / ' + item.username}
                             </div>
                         </a>
                     </div>`;
@@ -149,11 +124,11 @@
         console.log("page" + page)
         var params = {
             page: page,
-            startDate: datePick.value,
-            memberId: Array.from(radios).find(radio => radio.checked).value
+            eventNo: Array.from(radios).find(radio => radio.checked).value,
+            sort: "orders,asc"
         }
         $.ajax({
-            url: `/gallery/memberAjax`,
+            url: `/gallery/eventAjax`,
             type: 'get',
             contentType: 'application/json; charset=utf-8',
             data: params,

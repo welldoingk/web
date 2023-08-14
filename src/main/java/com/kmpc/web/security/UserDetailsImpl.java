@@ -1,5 +1,6 @@
 package com.kmpc.web.security;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import com.kmpc.web.member.entity.Member;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Getter
 @Slf4j
 public class UserDetailsImpl implements UserDetails {
 
@@ -23,10 +25,6 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
         this.username = memberId;
         this.name = name;
-    }
-
-    public Member getMember(){
-        return this.member;
     }
 
     @Override
@@ -49,10 +47,6 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String getNickName() {

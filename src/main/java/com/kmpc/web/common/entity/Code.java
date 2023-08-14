@@ -23,11 +23,11 @@ public class Code extends Timestamped {
 
     private String remark;
 
-    private String orders;
+    private Long orders;
 
 
     @Builder
-    public Code(String classCode, String codeNo, String codeName, String orders){
+    public Code(String classCode, String codeNo, String codeName, Long orders){
         this.classCode = classCode;
         this.codeNo = codeNo;
         this.codeName = codeName;

@@ -1,24 +1,23 @@
 package com.kmpc.web.board.repository.Impl;
 
 import com.kmpc.web.board.dto.*;
-import com.kmpc.web.board.entity.QPostFile;
 import com.kmpc.web.board.repository.PostCustomRepository;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import static com.kmpc.web.board.entity.QPost.post;
 import static com.kmpc.web.board.entity.QPostFile.postFile;
@@ -40,7 +39,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     @Override
     public Page<MtPostDto> selectGalleryList(Map<String, String> map,
-                                              Pageable pageable, Long boardId, String memberId) {
+                                             Pageable pageable, Long boardId, String memberId) {
         List<MtPostDto> content = getPostGalleryDtos(map, pageable, boardId, memberId);
         Long count = getCount(boardId);
         return new PageImpl<>(content, pageable, count);
@@ -84,7 +83,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.viewCount,
                         member.memberName,
                         post.boardId,
-                        post.gbVal
+                        post.gbVal,
+                        post.orders
                 ))
                 .from(post)
                 .leftJoin(post.member, member)
@@ -111,7 +111,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.boardId,
                         post.gbVal,
                         postFile.fileUrl,
-                        member.memberId
+                        member.memberId,
+                        post.orders
                 ))
                 .from(post)
                 .leftJoin(post.member, member)
@@ -121,7 +122,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .where(isEqToMemberId(memberId))
                 .where(afterCreateAtByStartDate(map.get("startDate")))
                 .where(post.delYn.ne("Y"))
-                .orderBy(post.id.desc())
+                .orderBy(postSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -149,12 +150,31 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     private BooleanExpression afterCreateAtByStartDate(String startDate) {
-        if (startDate == null){
+        if (startDate == null) {
             return null;
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime dateTime = LocalDateTime.parse(startDate+"-01T00:00:00", formatter);
+        LocalDateTime dateTime = LocalDateTime.parse(startDate + "-01T00:00:00", formatter);
         log.info(dateTime.toString());
         return startDate != null ? post.createAt.after(dateTime) : null;
+    }
+
+    private OrderSpecifier<?> postSort(Pageable page) {
+        //서비스에서 보내준 Pageable 객체에 정렬조건 null 값 체크
+        if (!page.getSort().isEmpty()) {
+            //정렬값이 들어 있으면 for 사용하여 값을 가져온다
+            for (Sort.Order order : page.getSort()) {
+                // 서비스에서 넣어준 DESC or ASC 를 가져온다.
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                // 서비스에서 넣어준 정렬 조건을 스위치 케이스 문을 활용하여 셋팅하여 준다.
+                switch (order.getProperty()) {
+                    case "id":
+                        return new OrderSpecifier(direction, post.id);
+                    case "orders":
+                        return new OrderSpecifier(direction, post.orders);
+                }
+            }
+        }
+        return new OrderSpecifier(Order.DESC, post.id);
     }
 }

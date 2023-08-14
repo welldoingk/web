@@ -60,10 +60,9 @@
             <div class="site-navigation">
                 <div class="row g-0 align-items-center">
                     <div class="col-2">
-                        <a class="logo m-0 float-start" href="/index"
+                        <a class="logo m-0 float-start" href="/"
                         >
-                            <img src="/images/logo1.png">
-                            <img src="/images/logo2.png">
+                            <img src="/images/logo.png" style="width:240px;height: 60px ">
 <!--                            K-MPC<span class="text-primary">.</span>-->
                         </a
                         >
@@ -82,13 +81,18 @@
                                     <li><a href="/board/2">자유게시판</a></li>
                                 </ul>
                             </li>
-                            <li><a href="category.html">클럽소개</a></li>
-                            <li><a href="category.html">이벤트</a></li>
+                            <li><a href="/info">클럽소개</a></li>
+                            <li class="has-children active">
+                                <a href="/gallery/event">이벤트</a>
+                                <ul class="dropdown">
+                                    <li><a href="/gallery/eventUpload">이벤트 upload</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-3 text-end">
                         <a
-                                class="burger ms-auto float-end site-menu-toggle js-menu-toggle d-inline-block d-lg-none light"
+                                class="burger ms-auto float-end site-menu-toggle js-menu-toggle d-inline-block d-lg-none gray"
                                 href="#"
                         >
                             <span></span>
@@ -117,5 +121,6 @@
         </div>
     </div>
 </nav>
+<hr style="color: #b9c8d9; border: 2px">
 </body>
 </html>

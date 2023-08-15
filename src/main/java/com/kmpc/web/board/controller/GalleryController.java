@@ -168,13 +168,23 @@ public class GalleryController {
     @PostMapping("/upload")
     public String save(@Valid MtPostDto mtPostDto, BindingResult result, Model model) throws Exception {
         if (result.hasErrors()) {
-            List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("MT");
-            model.addAttribute("codeList", codeList);
-            return "pages/gallery/upload";
+            if (mtPostDto.getBoardId()==3) {
+                List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("MT");
+                model.addAttribute("codeList", codeList);
+                return "pages/gallery/upload";
+            } else if (mtPostDto.getBoardId()==4){
+                List<Code> codeList = codeRepository.findByClassCodeOrderByOrders("Event");
+                model.addAttribute("codeList", codeList);
+                return "pages/gallery/eventUpload";
+            }
         }
 
         MtPostDto saveMtPost = postService.saveMtPost(mtPostDto);
-        return "redirect:/gallery/member/detail/" + saveMtPost.getId();
+        if (saveMtPost.getBoardId()==3) {
+            return "redirect:/gallery/member/detail/" + saveMtPost.getId();
+        }else{
+            return "redirect:/gallery/event/detail/" + saveMtPost.getId();
+        }
     }
 
     @GetMapping("/{type}/detail/{postId}")
@@ -182,6 +192,7 @@ public class GalleryController {
         Post post = postService.selectPostDetail(postId);
         Post nextPost = null;
         Post prevPost = null;
+        Code code = null;
         switch (type) {
             case "recent":
                 prevPost = postRepository.findRecentPrevPost(postId);
@@ -190,15 +201,21 @@ public class GalleryController {
             case "mt":
                 prevPost = postRepository.findMtPrevPost(postId, post.getGbVal());
                 nextPost = postRepository.findMtNextPost(postId, post.getGbVal());
+                code  = codeRepository.findById(new CodeId("MT", post.getGbVal())).get();
                 break;
             case "member":
                 prevPost = postRepository.findMemberPrevPost(postId, post.getMember().getMemberId());
                 nextPost = postRepository.findMemberNextPost(postId, post.getMember().getMemberId());
                 break;
+            case "event":
+                prevPost = postRepository.findEventPrevPost(postId, post.getGbVal());
+                nextPost = postRepository.findEventNextPost(postId, post.getGbVal());
+                code  = codeRepository.findById(new CodeId("Event", post.getGbVal())).get();
+                break;
         }
 
 
-        Code mt = codeRepository.findById(new CodeId("MT", post.getGbVal())).get();
+
         List<CommentDto> commentDto = commentService.findCommentsByPostId(postId);
 
         MtPostDto postDto = post.toMtDto();
@@ -206,7 +223,7 @@ public class GalleryController {
         model.addAttribute("nextPost", nextPost);
         model.addAttribute("prevPost", prevPost);
         model.addAttribute("commentDto", commentDto);
-        model.addAttribute("code", mt);
+        model.addAttribute("code", code);
         model.addAttribute("type", type);
         model.addAttribute("postFile", postFileRepository.findByPost(post));
 

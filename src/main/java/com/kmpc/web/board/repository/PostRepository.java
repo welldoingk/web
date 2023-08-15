@@ -34,6 +34,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post findMtNextPost(@Param("id") Long postId,@Param("gbVal") String gbVal);
 
     @Query(value = "SELECT * FROM post "
+            + "WHERE post_id = "
+             + "(SELECT prev_no FROM (SELECT post_id, LAG(post_id, 1, -1) OVER(ORDER BY post_id) AS prev_no "
+            + "FROM post WHERE 1=1 AND del_yn != 'Y' AND board_id = '4' AND GB_VAL = :gbVal) B "
+            + "WHERE post_id = :id )", nativeQuery = true)
+    Post findEventPrevPost(@Param("id") Long postId,@Param("gbVal") String gbVal);
+
+    @Query(value = "SELECT * FROM post "
+			+ "WHERE post_id = (SELECT prev_no FROM (SELECT post_id, LEAD(post_id, 1, -1) OVER(ORDER BY post_id) AS prev_no "
+            + "FROM post WHERE 1=1 AND del_yn != 'Y' AND board_id = '4' AND GB_VAL = :gbVal) B "
+            + "WHERE post_id = :id )", nativeQuery = true)
+    Post findEventNextPost(@Param("id") Long postId,@Param("gbVal") String gbVal);
+
+    @Query(value = "SELECT * FROM post "
             + "WHERE post_id = " +
             "(SELECT prev_no FROM (SELECT post_id, LAG(post_id, 1, -1) OVER(ORDER BY post_id) AS prev_no "
             + "FROM post WHERE 1=1 AND del_yn != 'Y' AND board_id = '3' AND MEMBER_ID = :memberId) B "

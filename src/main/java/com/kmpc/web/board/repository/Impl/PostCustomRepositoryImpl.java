@@ -118,6 +118,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .leftJoin(post.member, member)
                 .leftJoin(post.postFiles, postFile)
                 .where(isEqToGbVal(map.get("mtNo")))
+                .where(isEqToGbVal(map.get("eventNo")))
                 .where(isEqToBoardId(boardId))
                 .where(isEqToMemberId(memberId))
                 .where(afterCreateAtByStartDate(map.get("startDate")))
